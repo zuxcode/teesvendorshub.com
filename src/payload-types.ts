@@ -90,7 +90,7 @@ export interface Config {
       | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -132,7 +132,7 @@ export interface User {
   createdAt: string;
   email: string;
   hash?: string | null;
-  id: string;
+  id: number;
   lockUntil?: string | null;
   loginAttempts?: number | null;
   password?: string | null;
@@ -160,7 +160,7 @@ export interface Media {
   focalX?: number | null;
   focalY?: number | null;
   height?: number | null;
-  id: string;
+  id: number;
   mimeType?: string | null;
   thumbnailURL?: string | null;
   updatedAt: string;
@@ -181,7 +181,7 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
-  id: string;
+  id: number;
   key: string;
 }
 /**
@@ -193,18 +193,18 @@ export interface PayloadLockedDocument {
   document?:
     | ({
         relationTo: "users";
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: "media";
-        value: string | Media;
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
-  id: string;
+  id: number;
   updatedAt: string;
   user: {
     relationTo: "users";
-    value: string | User;
+    value: number | User;
   };
 }
 /**
@@ -213,12 +213,12 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   createdAt: string;
-  id: string;
+  id: number;
   key?: string | null;
   updatedAt: string;
   user: {
     relationTo: "users";
-    value: string | User;
+    value: number | User;
   };
   value?:
     | {
@@ -237,7 +237,7 @@ export interface PayloadPreference {
 export interface PayloadMigration {
   batch?: number | null;
   createdAt: string;
-  id: string;
+  id: number;
   name?: string | null;
   updatedAt: string;
 }

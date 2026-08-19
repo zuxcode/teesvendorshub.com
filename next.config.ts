@@ -8,11 +8,27 @@ const dirname = path.dirname(__filename);
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ["image/avif", "image/webp"],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     localPatterns: [
       {
         pathname: "/api/media/file/**",
       },
     ],
+    qualities: [50, 75, 100],
+    remotePatterns: [
+      {
+        hostname: "admin.teesvendorshub.com",
+        pathname: "/assets/**",
+        protocol: "https",
+      },
+      {
+        hostname: "teesvendorshub.com",
+        pathname: "/**",
+        protocol: "https",
+      },
+    ],
+    unoptimized: process.env.NODE_ENV === "development",
   },
   turbopack: {
     root: path.resolve(dirname),
