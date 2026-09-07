@@ -11,6 +11,10 @@ export const Media: CollectionConfig = {
       type: "text",
     },
   ],
+  labels: {
+    plural: "Media Library",
+    singular: "Media Library",
+  },
   slug: "media",
   upload: true,
 };

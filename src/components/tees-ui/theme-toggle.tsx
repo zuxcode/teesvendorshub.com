@@ -5,7 +5,7 @@
 "use client";
 
 import { Monitor, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@teispace/next-themes";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,15 +32,15 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-32">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun className="h-4 w-4" />
+          <Sun className="w-4 h-4" />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon className="h-4 w-4" />
+          <Moon className="w-4 h-4" />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Monitor className="h-4 w-4" />
+          <Monitor className="w-4 h-4" />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
