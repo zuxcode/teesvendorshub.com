@@ -1,0 +1,62 @@
+import type { Access, FieldAccess } from "payload";
+import { ROLE } from "@/constant";
+import type { User } from "@/payload-types";
+
+export const isPublicAccess: Access<User> = () => true;
+
+export const isAuthenticated: Access = ({ req }) => Boolean(req.user);
+
+export const isOwner: Access = ({ req }) => {
+  if (!req.user) {
+    return false;
+  }
+
+  return {
+    user: {
+      equals: req.user.id,
+    },
+  };
+};
+
+export const isAdminOrOwner: Access = ({ req }) => {
+  if (!req.user) {
+    return false;
+  }
+
+  if (req.user.role === ROLE.ADMIN) {
+    return true;
+  }
+
+  return {
+    user: {
+      equals: req.user.id,
+    },
+  };
+};
+
+// export const isAdminOrOwnerFieldAccess: FieldAccess<User> = ({ req, doc }) => {
+//   if (!req.user) {
+//     return false;
+//   }
+
+//   if (req.user.role === ROLE.ADMIN) {
+//     return true;
+//   }
+
+//   if (req.user.id) {
+//     return {
+//       user: {
+//         equals: req.user.id,
+//       },
+//     };
+//   }
+
+//   return false;
+// };
+
+export const isAdmin: Access = ({ req }) => req.user?.role === ROLE.ADMIN;
+
+// FIELD ACCESS
+
+export const isAdminOnlyFieldAccess: FieldAccess = ({ req }) =>
+  req.user?.role === ROLE.ADMIN;
