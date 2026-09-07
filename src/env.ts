@@ -1,0 +1,19 @@
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+export const env = createEnv({
+  experimental__runtimeEnv: process.env,
+
+  server: {
+    // SMTP_FROM_EMAIL: z.email(),
+    // SMTP_FROM_NAME: z.string().min(1),
+    // SMTP_HOST: z.string().min(1),
+    // SMTP_PORT: z.coerce.number().int().positive(),
+    // SMTP_SECURE: z.stringbool().default(false),
+    // SMTP_USERNAME: z.string().min(1),
+
+    DATABASE_URL: z.url(),
+    PAYLOAD_SECRET: z.string().min(1),
+    SMTP_PASSWORD: z.string().min(1),
+  },
+});
