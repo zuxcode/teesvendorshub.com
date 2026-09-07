@@ -1,4 +1,10 @@
-import { ArrowUpRight, BadgeCheck, ShieldCheck, Zap } from "lucide-react";
+import {
+  ArrowUpRight,
+  BadgeCheck,
+  ShapesIcon,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import "@/lib/styles/homepage.css";
 import { Button } from "@/components/ui/button";
@@ -61,6 +67,17 @@ export default function HeroSection() {
             >
               Browse the catalog
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Button>
+
+            <Button
+              className="rounded-full border-border bg-card/60 backdrop-blur-md hover:border-foreground/20 hover:bg-card"
+              size="lg"
+              variant="outline"
+            >
+              <span className="flex h-5.5 w-5.5 items-center justify-center rounded-full border border-border">
+                <ShapesIcon className="h-2.5 w-2.5 fill-current" />
+              </span>
+              View Categories
             </Button>
           </div>
 

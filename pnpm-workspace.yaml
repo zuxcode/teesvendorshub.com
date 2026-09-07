@@ -4,3 +4,8 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   workerd: true
+minimumReleaseAgeExclude:
+  - hookforge-core@0.0.2-canary.23bf755
+  - hookforge-nextjs@0.0.2-canary.23bf755
+  - hookbase-core@0.0.1 || 0.0.2 || 0.0.3
+  - hookbase-nextjs@0.0.1 || 0.0.2 || 0.0.3

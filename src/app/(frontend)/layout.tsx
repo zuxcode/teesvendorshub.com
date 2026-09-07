@@ -1,4 +1,4 @@
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@teispace/next-themes";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
@@ -10,7 +10,7 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { SiteNavbar } from "@/layout/nav-bar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const jakarta = Plus_Jakarta_Sans({
   display: "swap",
@@ -62,13 +62,16 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             template='<div class="bar" role="bar"><div class="peg"></div></div>'
           />
           <NuqsAdapter>
-            <main className="py-6">
-              <SiteNavbar />
-              {children}
-            </main>
+            <TooltipProvider>
+              <main className="flex min-h-screen flex-col justify-between py-6">
+                {/* <SiteNavbar /> */}
+                {children}
+                {/* <SiteFooter /> */}
+              </main>
+            </TooltipProvider>
           </NuqsAdapter>
+          <Toaster closeButton position="top-center" richColors />
         </ThemeProvider>
-        <Toaster closeButton position="top-center" richColors />
       </body>
     </html>
   );

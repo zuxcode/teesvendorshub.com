@@ -7,6 +7,6 @@
     "ultracite/biome/vitest"
   ],
   "files": {
-    // "includes": ["!!payload-types.ts"]
+    "includes": ["!!payload-types.ts", "!!src/components/ui/**/*.{ts,tsx}"]
   }
 }
