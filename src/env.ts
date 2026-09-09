@@ -5,6 +5,7 @@ export const env = createEnv({
   experimental__runtimeEnv: process.env,
 
   server: {
+    BLOB_READ_WRITE_TOKEN: z.string().min(1),
     // SMTP_FROM_EMAIL: z.email(),
     // SMTP_FROM_NAME: z.string().min(1),
     // SMTP_HOST: z.string().min(1),

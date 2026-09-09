@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'product-library': ProductLibrary;
+    products: Product;
+    categories: Category;
+    'sim-cards': SimCard;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -79,6 +83,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'product-library': ProductLibrarySelect<false> | ProductLibrarySelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'sim-cards': SimCardsSelect<false> | SimCardsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -179,6 +187,179 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * Central product image library.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-library".
+ */
+export interface ProductLibrary {
+  id: number;
+  /**
+   * User who uploaded this file.
+   */
+  uploadedBy: number | User;
+  /**
+   * User who last updated this file.
+   */
+  updatedBy?: (number | null) | User;
+  /**
+   * Required for accessibility and SEO. Describe what the image shows.
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Products available for purchase. Sensitive product information is restricted to authorized users.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  /**
+   * Unique product name, e.g. UK 🇬🇧 Lebara Product.
+   */
+  name: string;
+  /**
+   * Describe the product and its included features.
+   */
+  description: string;
+  /**
+   * Primary product image.
+   */
+  productImage: number | ProductLibrary;
+  status: 'available' | 'Pending' | 'sold' | 'delivered';
+  price: number;
+  /**
+   * Country associated with this Product.
+   */
+  country?: string | null;
+  /**
+   * Category this product belongs to.
+   */
+  category: number | Category;
+  /**
+   * Sensitive Product information. Visible only to authorized users.
+   */
+  secret: string;
+  /**
+   * Admin who listed this product.
+   */
+  createdBy: number | User;
+  /**
+   * Admin who last updated this product.
+   */
+  updatedBy?: (number | null) | User;
+  /**
+   * Customer who purchased this product.
+   */
+  buyer?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Product categories used to organize the TVH product catalog.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  /**
+   * Category name, e.g. SIM Cards, Data Plans, Accessories.
+   */
+  name: string;
+  /**
+   * Short description of what products belong to this category.
+   */
+  description?: string | null;
+  createdBy: number | User;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * SIM cards available for purchase. Sensitive SIM information is restricted to authorized users.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sim-cards".
+ */
+export interface SimCard {
+  id: number;
+  /**
+   * Unique SIM product name, e.g. UK 🇬🇧 Lebara SIM.
+   */
+  name: string;
+  /**
+   * Describe the SIM card and its included features.
+   */
+  description: string;
+  /**
+   * Primary SIM card product image.
+   */
+  productImage: number | ProductLibrary;
+  /**
+   * SIM card type.
+   */
+  type: 'physical_sim' | 'e_sim';
+  status: 'available' | 'low_stock' | 'out_of_stock';
+  price: number;
+  /**
+   * Country associated with this SIM card.
+   */
+  country: string;
+  /**
+   * Admin who listed this SIM card.
+   */
+  createdBy: number | User;
+  /**
+   * Admin who last updated this SIM card.
+   */
+  updatedBy?: (number | null) | User;
+  /**
+   * Customer who purchased this SIM card.
+   */
+  buyer?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -303,6 +484,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'product-library';
+        value: number | ProductLibrary;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'sim-cards';
+        value: number | SimCard;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -390,6 +587,109 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-library_select".
+ */
+export interface ProductLibrarySelect<T extends boolean = true> {
+  uploadedBy?: T;
+  updatedBy?: T;
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  productImage?: T;
+  status?: T;
+  price?: T;
+  country?: T;
+  category?: T;
+  secret?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  buyer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sim-cards_select".
+ */
+export interface SimCardsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  productImage?: T;
+  type?: T;
+  status?: T;
+  price?: T;
+  country?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  buyer?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -9,7 +9,7 @@ import {
 } from "@/lib/constant/constant";
 import type { TeesLink } from "@/lib/types";
 
-export function SiteFooter() {
+export function AppFooter() {
   return (
     <footer className="border-border/60 border-t bg-card/55">
       <div className="mx-auto max-w-360 px-5 pt-16 sm:px-10 sm:pt-20 lg:px-18">

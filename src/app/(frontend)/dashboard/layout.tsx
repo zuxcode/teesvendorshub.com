@@ -1,43 +1,38 @@
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardEffect } from "@/features/dashboard/dashboard-effect";
+import { ProductImagesServer } from "@/features/sim-card/product-images-server";
+import { DashboardFooter } from "@/layout/footer/dashboard-footer";
+import { DashboardTopNav } from "@/layout/nav/dashboard-top-nav";
+import { getAuthenticateUser } from "@/lib/services/get-auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
   sidebar,
 }: {
   children: ReactNode;
   sidebar: ReactNode;
 }) {
+  const { user } = await getAuthenticateUser();
+
   return (
     <SidebarProvider>
       {sidebar}
 
       <SidebarInset>
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-          <div className="flex w-full items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
+        <DashboardTopNav />
+        <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col">
+          {children}
+        </div>
 
-            <Separator className="mx-1 h-4" orientation="vertical" />
-
-            <div className="flex items-center">
-              <h1 className="font-medium text-sm">Dashboard</h1>
-            </div>
-          </div>
-        </header>
-
-        {/* Page content */}
-        <main className="flex-1">
-          <div className="mx-auto w-full max-w-[1600px] p-4 md:p-6 lg:p-8">
-            {children}
-          </div>
-        </main>
+        <DashboardEffect user={user} />
+        <DashboardFooter />
       </SidebarInset>
+
+      <Suspense fallback={null}>
+        <ProductImagesServer />
+      </Suspense>
     </SidebarProvider>
   );
 }

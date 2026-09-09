@@ -1,5 +1,6 @@
 import type { Access, FieldAccess } from "payload";
 import { ROLE } from "@/constant";
+import { getRelationshipId } from "@/lib/get-relationship-id";
 import type { User } from "@/payload-types";
 
 export const isPublicAccess: Access<User> = () => true;
@@ -34,29 +35,26 @@ export const isAdminOrOwner: Access = ({ req }) => {
   };
 };
 
-// export const isAdminOrOwnerFieldAccess: FieldAccess<User> = ({ req, doc }) => {
-//   if (!req.user) {
-//     return false;
-//   }
-
-//   if (req.user.role === ROLE.ADMIN) {
-//     return true;
-//   }
-
-//   if (req.user.id) {
-//     return {
-//       user: {
-//         equals: req.user.id,
-//       },
-//     };
-//   }
-
-//   return false;
-// };
-
 export const isAdmin: Access = ({ req }) => req.user?.role === ROLE.ADMIN;
 
 // FIELD ACCESS
-
 export const isAdminOnlyFieldAccess: FieldAccess = ({ req }) =>
   req.user?.role === ROLE.ADMIN;
+
+export const isAdminOrBuyerOnlyFieldAccess: FieldAccess = ({ req, doc }) => {
+  if (!req.user) {
+    return false;
+  }
+
+  if (req.user.role === ROLE.ADMIN) {
+    return true;
+  }
+
+  const buyerId = getRelationshipId(doc?.buyer);
+
+  if (req.user.id !== buyerId) {
+    return false;
+  }
+
+  return doc?.status === "delivered";
+};
