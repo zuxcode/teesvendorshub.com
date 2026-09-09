@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import "@/lib/styles/homepage.css";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
@@ -61,14 +62,15 @@ export default function HeroSection() {
           </p>
 
           <div className="anim-fade-up mt-8 flex flex-wrap items-center gap-4 delay-6">
-            <Button
-              className="group rounded-full bg-linear-to-r from-primary to-secondary font-bold text-primary-foreground hover:shadow-[0_14px_34px_color-mix(in_oklab,var(--primary)_28%,transparent)]"
-              size="lg"
-            >
-              Browse the catalog
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Button>
-
+            <Link href="/dashboard/sim">
+              <Button
+                className="group rounded-full bg-linear-to-r from-primary to-secondary font-bold text-primary-foreground hover:shadow-[0_14px_34px_color-mix(in_oklab,var(--primary)_28%,transparent)]"
+                size="lg"
+              >
+                Browse the catalog
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Button>
+            </Link>
             <Button
               className="rounded-full border-border bg-card/60 backdrop-blur-md hover:border-foreground/20 hover:bg-card"
               size="lg"
