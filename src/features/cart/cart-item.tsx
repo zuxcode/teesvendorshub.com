@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: <Surpress> */
 "use client";
 
-import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Button } from "@/components/ui/button";
@@ -27,19 +27,7 @@ export function CartItem({ productId }: CartItemProps) {
   const { incrementItem, decrementItem, removeItem } = useCartActions();
 
   if (!product || quantity <= 0) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-center">
-          <ShoppingCart className="mx-auto mb-3 size-10 text-muted-foreground" />
-
-          <p className="font-medium">Your cart is empty</p>
-
-          <p className="mt-1 text-muted-foreground text-sm">
-            Add some products to get started.
-          </p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const image = imageId ? getImageById(imageId) : undefined;
@@ -104,7 +92,7 @@ export function CartItem({ productId }: CartItemProps) {
             onClick={() => removeItem(productId)}
             size="icon"
             type="button"
-            variant="ghost"
+            variant="destructive"
           >
             <Trash2 className="size-4" />
             <span className="sr-only">Remove {product.name}</span>

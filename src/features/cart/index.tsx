@@ -20,6 +20,8 @@ export function CartSheet() {
 
   const cartCount = cartItemCount > 99 ? "99+" : cartItemCount;
 
+  const IsCartEmpty = cartItemCount <= 0;
+
   return (
     <Sheet>
       <SheetTrigger
@@ -47,6 +49,20 @@ export function CartSheet() {
             Review your items before checkout.
           </SheetDescription>
         </SheetHeader>
+
+        {IsCartEmpty && (
+          <div className="flex flex-1 items-center justify-center">
+            <div className="text-center">
+              <ShoppingCart className="mx-auto mb-3 size-10 text-muted-foreground" />
+
+              <p className="font-medium">Your cart is empty</p>
+
+              <p className="mt-1 text-muted-foreground text-sm">
+                Add some products to get started.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-6">
           {cartItemIds.map((productId) => (
