@@ -26,7 +26,7 @@ import {
 import { NavigationItem } from "./nav-item";
 import { AppSidebarFooter } from "./side-bar-footer";
 
-const BASE_PATH = "/dashboard";
+const _BASE_PATH = "/dashboard";
 
 const navigation = {
   insights: [

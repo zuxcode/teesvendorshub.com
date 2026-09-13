@@ -18,7 +18,7 @@ interface Props {
 export function NavigationItem({ icon: Icon, title, url, badge }: Props) {
   const { getActiveLinkProps } = useNextActiveLink();
 
-  const { active } = getActiveLinkProps(url, {
+  const { active, ...attr } = getActiveLinkProps(url, {
     exact: BASE_DASHBOARD_PATH === url,
   });
 
@@ -29,6 +29,7 @@ export function NavigationItem({ icon: Icon, title, url, badge }: Props) {
           className="h-9 rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:font-medium data-[active=true]:text-primary"
           isActive={active}
           tooltip={title}
+          {...attr}
         >
           <Icon className="size-4" strokeWidth={active ? 2 : 1.75} />
 

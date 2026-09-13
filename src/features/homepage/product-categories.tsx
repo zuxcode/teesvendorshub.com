@@ -152,7 +152,7 @@ export function ProductCategories() {
   // Bumped on every manual arrow click so the autoplay effect below
   // restarts its timer — without this, a click a moment before the next
   // scheduled tick caused an immediate second jump right after.
-  const [lastInteraction, setLastInteraction] = useState(0);
+  const [_lastInteraction, setLastInteraction] = useState(0);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   const scrollCarousel = useCallback(
@@ -185,7 +185,7 @@ export function ProductCategories() {
     scrollCarousel("next");
   }, [scrollCarousel]);
 
-  const showPreviousCategories = useCallback(() => {
+  const _showPreviousCategories = useCallback(() => {
     scrollCarousel("previous");
   }, [scrollCarousel]);
 
@@ -245,7 +245,7 @@ export function ProductCategories() {
     const autoplayTimer = window.setInterval(showNextCategories, AUTOPLAY_MS);
 
     return () => window.clearInterval(autoplayTimer);
-  }, [carousel, showNextCategories, isHovering, lastInteraction]);
+  }, [carousel, showNextCategories, isHovering]);
 
   // Thin scroll-progress indicator — mutates the bar's width directly via
   // ref rather than React state, since this fires on every scroll frame
@@ -320,7 +320,6 @@ export function ProductCategories() {
           onMouseLeave={() => setIsHovering(false)}
           ref={setCarousel}
           role="region"
-          tabIndex={0}
         >
           {productCategories.map((category) => {
             const Icon = category.icon;

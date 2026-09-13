@@ -7,6 +7,12 @@
     "ultracite/biome/vitest"
   ],
   "files": {
-    "includes": ["!!payload-types.ts", "!!src/components/ui/**/*.{ts,tsx}"]
+    "includes": [
+      "!!payload-types.ts",
+      "!!src/components/ui/**/*.{ts,tsx}",
+      "!!tests/**/*.{ts,tsx}",
+      "!src/app/(payload)/admin/importMap.js",
+      "!src/app/(payload)/layout.tsx"
+    ]
   }
 }

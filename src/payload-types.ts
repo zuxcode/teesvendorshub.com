@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | "Pacific/Midway"
+  | "Pacific/Niue"
+  | "Pacific/Honolulu"
+  | "Pacific/Rarotonga"
+  | "America/Anchorage"
+  | "Pacific/Gambier"
+  | "America/Los_Angeles"
+  | "America/Tijuana"
+  | "America/Denver"
+  | "America/Phoenix"
+  | "America/Chicago"
+  | "America/Guatemala"
+  | "America/New_York"
+  | "America/Bogota"
+  | "America/Caracas"
+  | "America/Santiago"
+  | "America/Buenos_Aires"
+  | "America/Sao_Paulo"
+  | "Atlantic/South_Georgia"
+  | "Atlantic/Azores"
+  | "Atlantic/Cape_Verde"
+  | "Europe/London"
+  | "Europe/Berlin"
+  | "Africa/Lagos"
+  | "Europe/Athens"
+  | "Africa/Cairo"
+  | "Europe/Moscow"
+  | "Asia/Riyadh"
+  | "Asia/Dubai"
+  | "Asia/Baku"
+  | "Asia/Karachi"
+  | "Asia/Tashkent"
+  | "Asia/Calcutta"
+  | "Asia/Dhaka"
+  | "Asia/Almaty"
+  | "Asia/Jakarta"
+  | "Asia/Bangkok"
+  | "Asia/Shanghai"
+  | "Asia/Singapore"
+  | "Asia/Tokyo"
+  | "Asia/Seoul"
+  | "Australia/Brisbane"
+  | "Australia/Sydney"
+  | "Pacific/Guam"
+  | "Pacific/Noumea"
+  | "Pacific/Auckland"
+  | "Pacific/Fiji";
 
 export interface Config {
   auth: {
@@ -69,29 +69,35 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    'product-library': ProductLibrary;
+    "product-library": ProductLibrary;
     products: Product;
     categories: Category;
-    'sim-cards': SimCard;
-    'payload-kv': PayloadKv;
-    'payload-jobs': PayloadJob;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "sim-cards": SimCard;
+    "payload-kv": PayloadKv;
+    "payload-jobs": PayloadJob;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'product-library': ProductLibrarySelect<false> | ProductLibrarySelect<true>;
+    "product-library": ProductLibrarySelect<false> | ProductLibrarySelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    'sim-cards': SimCardsSelect<false> | SimCardsSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "sim-cards": SimCardsSelect<false> | SimCardsSelect<true>;
+    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+    "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
+    "payload-locked-documents":
+      | PayloadLockedDocumentsSelect<false>
+      | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences":
+      | PayloadPreferencesSelect<false>
+      | PayloadPreferencesSelect<true>;
+    "payload-migrations":
+      | PayloadMigrationsSelect<false>
+      | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -99,11 +105,6 @@ export interface Config {
   fallbackLocale: null;
   globals: {};
   globalsSelect: {};
-  locale: null;
-  widgets: {
-    collections: CollectionsWidget;
-  };
-  user: User;
   jobs: {
     tasks: {
       sendWelcomeEmail: TaskSendWelcomeEmail;
@@ -113,6 +114,11 @@ export interface Config {
       };
     };
     workflows: unknown;
+  };
+  locale: null;
+  user: User;
+  widgets: {
+    collections: CollectionsWidget;
   };
 }
 export interface UserAuthOperations {
@@ -138,27 +144,28 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
-  role?: ('admin' | 'customer') | null;
+  _verificationToken?: string | null;
+  _verified?: boolean | null;
+  collection: "users";
+  createdAt: string;
+  email: string;
   /**
    * Customer's full name (used in emails & orders)
    */
   fullName: string;
+  hash?: string | null;
+  id: number;
+  lockUntil?: string | null;
+  loginAttempts?: number | null;
+  password?: string | null;
   /**
    * Optional — useful for SMS notifications or Paystack payments (Nigeria)
    */
   phone?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
+  resetPasswordToken?: string | null;
+  role?: ("admin" | "customer") | null;
   salt?: string | null;
-  hash?: string | null;
-  _verified?: boolean | null;
-  _verificationToken?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
   sessions?:
     | {
         id: string;
@@ -166,27 +173,26 @@ export interface User {
         expiresAt: string;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
-  id: number;
   alt: string;
-  updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
   filename?: string | null;
-  mimeType?: string | null;
   filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  height?: number | null;
+  id: number;
+  mimeType?: string | null;
+  thumbnailURL?: string | null;
+  updatedAt: string;
+  url?: string | null;
+  width?: number | null;
 }
 /**
  * Central product image library.
@@ -195,30 +201,18 @@ export interface Media {
  * via the `definition` "product-library".
  */
 export interface ProductLibrary {
-  id: number;
-  /**
-   * User who uploaded this file.
-   */
-  uploadedBy: number | User;
-  /**
-   * User who last updated this file.
-   */
-  updatedBy?: (number | null) | User;
   /**
    * Required for accessibility and SEO. Describe what the image shows.
    */
   alt: string;
-  updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
   filename?: string | null;
-  mimeType?: string | null;
   filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  height?: number | null;
+  id: number;
+  mimeType?: string | null;
   sizes?: {
     thumbnail?: {
       url?: string | null;
@@ -245,6 +239,18 @@ export interface ProductLibrary {
       filename?: string | null;
     };
   };
+  thumbnailURL?: string | null;
+  updatedAt: string;
+  /**
+   * User who last updated this file.
+   */
+  updatedBy?: (number | null) | User;
+  /**
+   * User who uploaded this file.
+   */
+  uploadedBy: number | User;
+  url?: string | null;
+  width?: number | null;
 }
 /**
  * Products available for purchase. Sensitive product information is restricted to authorized users.
@@ -253,47 +259,47 @@ export interface ProductLibrary {
  * via the `definition` "products".
  */
 export interface Product {
-  id: number;
   /**
-   * Unique product name, e.g. UK 🇬🇧 Lebara Product.
+   * Customer who purchased this product.
    */
-  name: string;
-  /**
-   * Describe the product and its included features.
-   */
-  description: string;
-  /**
-   * Primary product image.
-   */
-  productImage: number | ProductLibrary;
-  status: 'available' | 'Pending' | 'sold' | 'delivered';
-  price: number;
-  /**
-   * Country associated with this Product.
-   */
-  country?: string | null;
+  buyer?: (number | null) | User;
   /**
    * Category this product belongs to.
    */
   category: number | Category;
   /**
-   * Sensitive Product information. Visible only to authorized users.
+   * Country associated with this Product.
    */
-  secret: string;
+  country?: string | null;
+  createdAt: string;
   /**
    * Admin who listed this product.
    */
   createdBy: number | User;
   /**
+   * Describe the product and its included features.
+   */
+  description: string;
+  id: number;
+  /**
+   * Unique product name, e.g. UK 🇬🇧 Lebara Product.
+   */
+  name: string;
+  price: number;
+  /**
+   * Primary product image.
+   */
+  productImage: number | ProductLibrary;
+  /**
+   * Sensitive Product information. Visible only to authorized users.
+   */
+  secret: string;
+  status: "available" | "Pending" | "sold" | "delivered";
+  updatedAt: string;
+  /**
    * Admin who last updated this product.
    */
   updatedBy?: (number | null) | User;
-  /**
-   * Customer who purchased this product.
-   */
-  buyer?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * Product categories used to organize the TVH product catalog.
@@ -302,19 +308,19 @@ export interface Product {
  * via the `definition` "categories".
  */
 export interface Category {
+  createdAt: string;
+  createdBy: number | User;
+  /**
+   * Short description of what products belong to this category.
+   */
+  description?: string | null;
   id: number;
   /**
    * Category name, e.g. SIM Cards, Data Plans, Accessories.
    */
   name: string;
-  /**
-   * Short description of what products belong to this category.
-   */
-  description?: string | null;
-  createdBy: number | User;
-  updatedBy?: (number | null) | User;
   updatedAt: string;
-  createdAt: string;
+  updatedBy?: (number | null) | User;
 }
 /**
  * SIM cards available for purchase. Sensitive SIM information is restricted to authorized users.
@@ -323,51 +329,49 @@ export interface Category {
  * via the `definition` "sim-cards".
  */
 export interface SimCard {
-  id: number;
   /**
-   * Unique SIM product name, e.g. UK 🇬🇧 Lebara SIM.
+   * Customer who purchased this SIM card.
    */
-  name: string;
-  /**
-   * Describe the SIM card and its included features.
-   */
-  description: string;
-  /**
-   * Primary SIM card product image.
-   */
-  productImage: number | ProductLibrary;
-  /**
-   * SIM card type.
-   */
-  type: 'physical_sim' | 'e_sim';
-  status: 'available' | 'low_stock' | 'out_of_stock';
-  price: number;
+  buyer?: (number | null) | User;
   /**
    * Country associated with this SIM card.
    */
   country: string;
+  createdAt: string;
   /**
    * Admin who listed this SIM card.
    */
   createdBy: number | User;
   /**
+   * Describe the SIM card and its included features.
+   */
+  description: string;
+  id: number;
+  /**
+   * Unique SIM product name, e.g. UK 🇬🇧 Lebara SIM.
+   */
+  name: string;
+  price: number;
+  /**
+   * Primary SIM card product image.
+   */
+  productImage: number | ProductLibrary;
+  status: "available" | "low_stock" | "out_of_stock";
+  /**
+   * SIM card type.
+   */
+  type: "physical_sim" | "e_sim";
+  updatedAt: string;
+  /**
    * Admin who last updated this SIM card.
    */
   updatedBy?: (number | null) | User;
-  /**
-   * Customer who purchased this SIM card.
-   */
-  buyer?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: number;
-  key: string;
   data:
     | {
         [k: string]: unknown;
@@ -377,44 +381,37 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+  id: number;
+  key: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
+  completedAt?: string | null;
+  createdAt: string;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
   id: number;
   /**
    * Input data provided to the job
    */
   input?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  taskStatus?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  completedAt?: string | null;
-  totalTried?: number | null;
-  /**
-   * If hasError is true this job will not be retried
-   */
-  hasError?: boolean | null;
-  /**
-   * If hasError is true, this is the error that caused it
-   */
-  error?:
     | {
         [k: string]: unknown;
       }
@@ -430,7 +427,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'sendWelcomeEmail';
+        taskSlug: "inline" | "sendWelcomeEmail";
         taskID: string;
         input?:
           | {
@@ -450,7 +447,7 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        state: 'failed' | 'succeeded';
+        state: "failed" | "succeeded";
         error?:
           | {
               [k: string]: unknown;
@@ -463,63 +460,74 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'sendWelcomeEmail') | null;
-  queue?: string | null;
-  waitUntil?: string | null;
   processing?: boolean | null;
+  queue?: string | null;
+  taskSlug?: ("inline" | "sendWelcomeEmail") | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  totalTried?: number | null;
   updatedAt: string;
-  createdAt: string;
+  waitUntil?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
+  createdAt: string;
   document?:
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: number | User;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: "media";
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'product-library';
+        relationTo: "product-library";
         value: number | ProductLibrary;
       } | null)
     | ({
-        relationTo: 'products';
+        relationTo: "products";
         value: number | Product;
       } | null)
     | ({
-        relationTo: 'categories';
+        relationTo: "categories";
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'sim-cards';
+        relationTo: "sim-cards";
         value: number | SimCard;
       } | null);
   globalSlug?: string | null;
+  id: number;
+  updatedAt: string;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
+  createdAt: string;
   id: number;
+  key?: string | null;
+  updatedAt: string;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
-  key?: string | null;
   value?:
     | {
         [k: string]: unknown;
@@ -529,39 +537,36 @@ export interface PayloadPreference {
     | number
     | boolean
     | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
+  batch?: number | null;
+  createdAt: string;
   id: number;
   name?: string | null;
-  batch?: number | null;
   updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  role?: T;
-  fullName?: T;
-  phone?: T;
-  updatedAt?: T;
+  _verificationToken?: T;
+  _verified?: T;
   createdAt?: T;
   email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
+  fullName?: T;
   hash?: T;
-  _verified?: T;
-  _verificationToken?: T;
-  loginAttempts?: T;
   lockUntil?: T;
+  loginAttempts?: T;
+  phone?: T;
+  resetPasswordExpiration?: T;
+  resetPasswordToken?: T;
+  role?: T;
+  salt?: T;
   sessions?:
     | T
     | {
@@ -569,6 +574,7 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -576,37 +582,31 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
   filename?: T;
-  mimeType?: T;
   filesize?: T;
-  width?: T;
-  height?: T;
   focalX?: T;
   focalY?: T;
+  height?: T;
+  mimeType?: T;
+  thumbnailURL?: T;
+  updatedAt?: T;
+  url?: T;
+  width?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-library_select".
  */
 export interface ProductLibrarySelect<T extends boolean = true> {
-  uploadedBy?: T;
-  updatedBy?: T;
   alt?: T;
-  updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
   filename?: T;
-  mimeType?: T;
   filesize?: T;
-  width?: T;
-  height?: T;
   focalX?: T;
   focalY?: T;
+  height?: T;
+  mimeType?: T;
   sizes?:
     | T
     | {
@@ -641,75 +641,80 @@ export interface ProductLibrarySelect<T extends boolean = true> {
               filename?: T;
             };
       };
+  thumbnailURL?: T;
+  updatedAt?: T;
+  updatedBy?: T;
+  uploadedBy?: T;
+  url?: T;
+  width?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  productImage?: T;
-  status?: T;
-  price?: T;
-  country?: T;
-  category?: T;
-  secret?: T;
-  createdBy?: T;
-  updatedBy?: T;
   buyer?: T;
-  updatedAt?: T;
+  category?: T;
+  country?: T;
   createdAt?: T;
+  createdBy?: T;
+  description?: T;
+  name?: T;
+  price?: T;
+  productImage?: T;
+  secret?: T;
+  status?: T;
+  updatedAt?: T;
+  updatedBy?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
   createdAt?: T;
+  createdBy?: T;
+  description?: T;
+  name?: T;
+  updatedAt?: T;
+  updatedBy?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sim-cards_select".
  */
 export interface SimCardsSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  productImage?: T;
-  type?: T;
-  status?: T;
-  price?: T;
-  country?: T;
-  createdBy?: T;
-  updatedBy?: T;
   buyer?: T;
-  updatedAt?: T;
+  country?: T;
   createdAt?: T;
+  createdBy?: T;
+  description?: T;
+  name?: T;
+  price?: T;
+  productImage?: T;
+  status?: T;
+  type?: T;
+  updatedAt?: T;
+  updatedBy?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T;
   data?: T;
+  key?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs_select".
  */
 export interface PayloadJobsSelect<T extends boolean = true> {
-  input?: T;
-  taskStatus?: T;
   completedAt?: T;
-  totalTried?: T;
-  hasError?: T;
+  createdAt?: T;
   error?: T;
+  hasError?: T;
+  input?: T;
   log?:
     | T
     | {
@@ -723,44 +728,45 @@ export interface PayloadJobsSelect<T extends boolean = true> {
         error?: T;
         id?: T;
       };
-  taskSlug?: T;
-  queue?: T;
-  waitUntil?: T;
   processing?: T;
+  queue?: T;
+  taskSlug?: T;
+  taskStatus?: T;
+  totalTried?: T;
   updatedAt?: T;
-  createdAt?: T;
+  waitUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  createdAt?: T;
   document?: T;
   globalSlug?: T;
-  user?: T;
   updatedAt?: T;
-  createdAt?: T;
+  user?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-  user?: T;
-  key?: T;
-  value?: T;
-  updatedAt?: T;
   createdAt?: T;
+  key?: T;
+  updatedAt?: T;
+  user?: T;
+  value?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-  name?: T;
   batch?: T;
-  updatedAt?: T;
   createdAt?: T;
+  name?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -770,7 +776,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: 'full';
+  width: "full";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -793,7 +799,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

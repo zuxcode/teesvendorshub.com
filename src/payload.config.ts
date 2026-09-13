@@ -7,7 +7,6 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { CategoriesCollection } from "./collections/category";
-import { Media } from "./collections/Media";
 import { ProductLibraryCollection } from "./collections/media/product-library";
 import { ProductsCollection } from "./collections/product";
 import { SimCardsCollection } from "./collections/product/sim-card";
@@ -37,7 +36,6 @@ export default buildConfig({
   },
   collections: [
     UsersCollection,
-    Media,
     ProductLibraryCollection,
     ProductsCollection,
     CategoriesCollection,
