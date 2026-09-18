@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -68,36 +68,38 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    media: Media;
-    "product-library": ProductLibrary;
+    'product-library': ProductLibrary;
     products: Product;
     categories: Category;
-    "sim-cards": SimCard;
-    "payload-kv": PayloadKv;
-    "payload-jobs": PayloadJob;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    inventory: Inventory;
+    'tax-rules': TaxRule;
+    orders: Order;
+    'order-items': OrderItem;
+    transactions: Transaction;
+    payments: Payment;
+    'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    "product-library": ProductLibrarySelect<false> | ProductLibrarySelect<true>;
+    'product-library': ProductLibrarySelect<false> | ProductLibrarySelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    "sim-cards": SimCardsSelect<false> | SimCardsSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
-    "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+    inventory: InventorySelect<false> | InventorySelect<true>;
+    'tax-rules': TaxRulesSelect<false> | TaxRulesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    'order-items': OrderItemsSelect<false> | OrderItemsSelect<true>;
+    transactions: TransactionsSelect<false> | TransactionsSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -105,6 +107,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {};
   globalsSelect: {};
+  locale: null;
+  widgets: {
+    collections: CollectionsWidget;
+  };
+  user: User;
   jobs: {
     tasks: {
       sendWelcomeEmail: TaskSendWelcomeEmail;
@@ -114,11 +121,6 @@ export interface Config {
       };
     };
     workflows: unknown;
-  };
-  locale: null;
-  user: User;
-  widgets: {
-    collections: CollectionsWidget;
   };
 }
 export interface UserAuthOperations {
@@ -144,28 +146,27 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  _verificationToken?: string | null;
-  _verified?: boolean | null;
-  collection: "users";
-  createdAt: string;
-  email: string;
+  id: number;
+  role?: ('admin' | 'customer') | null;
   /**
    * Customer's full name (used in emails & orders)
    */
   fullName: string;
-  hash?: string | null;
-  id: number;
-  lockUntil?: string | null;
-  loginAttempts?: number | null;
-  password?: string | null;
   /**
    * Optional — useful for SMS notifications or Paystack payments (Nigeria)
    */
   phone?: string | null;
-  resetPasswordExpiration?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
   resetPasswordToken?: string | null;
-  role?: ("admin" | "customer") | null;
+  resetPasswordExpiration?: string | null;
   salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
   sessions?:
     | {
         id: string;
@@ -173,26 +174,8 @@ export interface User {
         expiresAt: string;
       }[]
     | null;
-  updatedAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  alt: string;
-  createdAt: string;
-  filename?: string | null;
-  filesize?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  height?: number | null;
-  id: number;
-  mimeType?: string | null;
-  thumbnailURL?: string | null;
-  updatedAt: string;
-  url?: string | null;
-  width?: number | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * Central product image library.
@@ -201,18 +184,30 @@ export interface Media {
  * via the `definition` "product-library".
  */
 export interface ProductLibrary {
+  id: number;
+  /**
+   * User who uploaded this file.
+   */
+  uploadedBy: number | User;
+  /**
+   * User who last updated this file.
+   */
+  updatedBy?: (number | null) | User;
   /**
    * Required for accessibility and SEO. Describe what the image shows.
    */
   alt: string;
+  updatedAt: string;
   createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
   filename?: string | null;
+  mimeType?: string | null;
   filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-  height?: number | null;
-  id: number;
-  mimeType?: string | null;
   sizes?: {
     thumbnail?: {
       url?: string | null;
@@ -239,67 +234,77 @@ export interface ProductLibrary {
       filename?: string | null;
     };
   };
-  thumbnailURL?: string | null;
-  updatedAt: string;
-  /**
-   * User who last updated this file.
-   */
-  updatedBy?: (number | null) | User;
-  /**
-   * User who uploaded this file.
-   */
-  uploadedBy: number | User;
-  url?: string | null;
-  width?: number | null;
 }
 /**
- * Products available for purchase. Sensitive product information is restricted to authorized users.
+ * Products available for purchase. Product type determines fulfillment, while product kind identifies the product category.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
 export interface Product {
+  id: number;
   /**
-   * Customer who purchased this product.
+   * Product name displayed to customers, e.g. UK 🇬🇧 Lebara SIM.
    */
-  buyer?: (number | null) | User;
+  name: string;
+  /**
+   * Customer-facing description of the product and its included features.
+   */
+  description: string;
+  /**
+   * Primary image displayed for the product.
+   */
+  productImage: number | ProductLibrary;
+  /**
+   * URL-friendly identifier generated from the product name.
+   */
+  slug: string;
+  /**
+   * Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.
+   */
+  productType: 'physical' | 'digital';
+  /**
+   * Product lifecycle status. Inventory availability is determined from stock.
+   */
+  status: 'active' | 'draft' | 'inactive' | 'archived';
+  /**
+   * Current inventory quantity. Stock is updated through inventory movements.
+   */
+  stock: number;
+  /**
+   * Marketing badges displayed on the product.
+   */
+  badges?: ('best_seller' | 'coming_soon' | 'featured' | 'new' | 'trending')[] | null;
+  /**
+   * Current selling price of the product in Nigerian Naira.
+   */
+  price: number;
+  /**
+   * Country associated with the product or service.
+   */
+  country?: string | null;
   /**
    * Category this product belongs to.
    */
   category: number | Category;
   /**
-   * Country associated with this Product.
-   */
-  country?: string | null;
-  createdAt: string;
-  /**
-   * Admin who listed this product.
-   */
-  createdBy: number | User;
-  /**
-   * Describe the product and its included features.
-   */
-  description: string;
-  id: number;
-  /**
-   * Unique product name, e.g. UK 🇬🇧 Lebara Product.
-   */
-  name: string;
-  price: number;
-  /**
-   * Primary product image.
-   */
-  productImage: number | ProductLibrary;
-  /**
-   * Sensitive Product information. Visible only to authorized users.
+   * Sensitive product information visible only to authorized administrators or the purchasing buyer.
    */
   secret: string;
-  status: "available" | "Pending" | "sold" | "delivered";
-  updatedAt: string;
+  /**
+   * Customer associated with this product purchase.
+   */
+  buyer?: (number | null) | User;
+  /**
+   * Admin who created this product.
+   */
+  createdBy: number | User;
   /**
    * Admin who last updated this product.
    */
   updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Product categories used to organize the TVH product catalog.
@@ -308,70 +313,441 @@ export interface Product {
  * via the `definition` "categories".
  */
 export interface Category {
-  createdAt: string;
-  createdBy: number | User;
+  id: number;
   /**
-   * Short description of what products belong to this category.
+   * Human-readable category name.
+   */
+  name: string;
+  /**
+   * URL-friendly identifier generated from the category name.
+   */
+  slug: string;
+  /**
+   * Short description used for category pages and SEO.
    */
   description?: string | null;
-  id: number;
   /**
-   * Category name, e.g. SIM Cards, Data Plans, Accessories.
+   * Optional image representing the category.
    */
-  name: string;
-  updatedAt: string;
-  updatedBy?: (number | null) | User;
-}
-/**
- * SIM cards available for purchase. Sensitive SIM information is restricted to authorized users.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sim-cards".
- */
-export interface SimCard {
+  categoryImage?: (number | null) | ProductLibrary;
   /**
-   * Customer who purchased this SIM card.
+   * Optional parent category for nested categories.
    */
-  buyer?: (number | null) | User;
+  parent?: (number | null) | Category;
+  status: 'active' | 'inactive';
   /**
-   * Country associated with this SIM card.
+   * Optional metadata for the category page.
    */
-  country: string;
-  createdAt: string;
+  seo?: {
+    /**
+     * Custom SEO title for the category page.
+     */
+    title?: string | null;
+    /**
+     * Custom SEO description for the category page.
+     */
+    description?: string | null;
+  };
   /**
-   * Admin who listed this SIM card.
+   * Admin who created this product.
    */
   createdBy: number | User;
   /**
-   * Describe the SIM card and its included features.
-   */
-  description: string;
-  id: number;
-  /**
-   * Unique SIM product name, e.g. UK 🇬🇧 Lebara SIM.
-   */
-  name: string;
-  price: number;
-  /**
-   * Primary SIM card product image.
-   */
-  productImage: number | ProductLibrary;
-  status: "available" | "low_stock" | "out_of_stock";
-  /**
-   * SIM card type.
-   */
-  type: "physical_sim" | "e_sim";
-  updatedAt: string;
-  /**
-   * Admin who last updated this SIM card.
+   * Admin who last updated this product.
    */
   updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Immutable inventory movement history. Current stock is maintained on the product.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory".
+ */
+export interface Inventory {
+  id: number;
+  /**
+   * Product affected by this inventory movement.
+   */
+  product: number | Product;
+  /**
+   * Business reason for the inventory quantity change.
+   */
+  type: 'restock' | 'sale' | 'return' | 'adjustment' | 'damaged' | 'expired';
+  /**
+   * Quantity changed by this movement. Positive values increase stock; negative values decrease stock.
+   */
+  quantity: number;
+  /**
+   * Product stock immediately before this movement.
+   */
+  quantityBefore: number;
+  /**
+   * Product stock immediately after this movement.
+   */
+  quantityAfter: number;
+  /**
+   * Optional order, payment, shipment, transaction, or external reference.
+   */
+  reference?: string | null;
+  /**
+   * Additional information explaining this inventory movement.
+   */
+  notes?: string | null;
+  /**
+   * Admin or system user responsible for this inventory movement.
+   */
+  createdBy: number | User;
+  /**
+   * Kept for consistency with the audit model. Inventory records cannot be updated.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Tax rules used to calculate taxes during checkout.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tax-rules".
+ */
+export interface TaxRule {
+  id: number;
+  /**
+   * Tax rule name displayed to administrators, e.g. "VAT".
+   */
+  name: string;
+  /**
+   * Optional description explaining when this tax rule applies.
+   */
+  description?: string | null;
+  /**
+   * Determines whether the tax is calculated as a percentage or fixed amount.
+   */
+  type: 'percentage' | 'fixed';
+  /**
+   * Tax percentage applied to the taxable amount. Enter 7.5 for 7.5%.
+   */
+  rate?: number | null;
+  /**
+   * Fixed tax amount in the store currency.
+   */
+  amount?: number | null;
+  /**
+   * Currency used when a fixed tax amount is configured.
+   */
+  currency: 'NGN';
+  /**
+   * Country where this tax rule applies.
+   */
+  country: 'NG';
+  /**
+   * Determines which products are subject to this tax rule.
+   */
+  appliesTo: 'all' | 'products' | 'categories';
+  /**
+   * Products to which this tax rule applies.
+   */
+  products?: (number | Product)[] | null;
+  /**
+   * Categories to which this tax rule applies.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Only active tax rules are considered during checkout.
+   */
+  status: 'active' | 'inactive';
+  /**
+   * Optional date from which this tax rule becomes effective.
+   */
+  effectiveFrom?: string | null;
+  /**
+   * Optional date after which this tax rule is no longer effective.
+   */
+  effectiveUntil?: string | null;
+  /**
+   * Admin who created this tax rule.
+   */
+  createdBy: number | User;
+  /**
+   * Admin who last updated this tax rule.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Customer orders and their transaction lifecycle.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  /**
+   * Unique customer-facing order number.
+   */
+  orderNumber: string;
+  /**
+   * Customer who placed the order.
+   */
+  buyer: number | User;
+  /**
+   * Overall lifecycle status of the order.
+   */
+  orderStatus: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
+  /**
+   * Payment status for this order.
+   */
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'partially-refunded' | 'partially-paid';
+  /**
+   * Current fulfillment state of the entire order.
+   */
+  fulfillmentStatus: 'pending' | 'processing' | 'partially-fulfilled' | 'fulfilled' | 'cancelled';
+  /**
+   * Currency used for the order.
+   */
+  currency: 'NGN';
+  /**
+   * Sum of all order item line totals before shipping and tax.
+   */
+  subtotal: number;
+  /**
+   * Total shipping cost charged for the order.
+   */
+  shippingAmount: number;
+  /**
+   * Total tax charged for the order.
+   */
+  taxAmount: number;
+  /**
+   * Final amount payable by the customer, including shipping and tax.
+   */
+  total: number;
+  /**
+   * Customer email captured when the order was placed.
+   */
+  email: string;
+  /**
+   * Customer phone number captured when the order was placed.
+   */
+  phone?: string | null;
+  /**
+   * Shipping information captured when the order was placed.
+   */
+  shippingAddress: {
+    fullName: string;
+    addressLine1: string;
+    addressLine2?: string | null;
+    city: string;
+    state: string;
+    postalCode?: string | null;
+    country: string;
+  };
+  /**
+   * Customer-provided instructions concerning delivery.
+   */
+  deliveryInstructions?: string | null;
+  /**
+   * Internal administrative notes. Never expose these to customers.
+   */
+  internalNotes?: string | null;
+  /**
+   * User responsible for creating the order.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * User responsible for the most recent order update.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Immutable snapshots of products purchased as part of an order.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order-items".
+ */
+export interface OrderItem {
+  id: number;
+  /**
+   * Order this item belongs to.
+   */
+  order: number | Order;
+  /**
+   * Original product purchased. Historical snapshot fields remain authoritative for this order item.
+   */
+  product: number | Product;
+  /**
+   * Product name captured at the time of purchase.
+   */
+  productName: string;
+  /**
+   * Product type captured at the time of purchase.
+   */
+  productType: 'physical' | 'digital';
+  /**
+   * Product image associated with the product at purchase time.
+   */
+  productImage?: (number | null) | ProductLibrary;
+  /**
+   * Unit price captured at the time of purchase.
+   */
+  unitPrice: number;
+  /**
+   * Quantity purchased.
+   */
+  quantity: number;
+  /**
+   * Final amount charged for this order item.
+   */
+  lineTotal: number;
+  /**
+   * Fulfillment state of this individual order item.
+   */
+  fulfillmentStatus: 'pending' | 'processing' | 'fulfilled' | 'cancelled' | 'failed';
+  /**
+   * Additional purchase-specific data required for fulfillment. Do not store inventory state here.
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Immutable financial transaction history for orders and payments.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions".
+ */
+export interface Transaction {
+  id: number;
+  /**
+   * Unique internal transaction reference.
+   */
+  reference: string;
+  /**
+   * Order associated with this financial transaction.
+   */
+  order: number | Order;
+  /**
+   * Customer associated with the transaction.
+   */
+  customer: number | User;
+  /**
+   * Financial event represented by this transaction.
+   */
+  type: 'payment' | 'refund' | 'chargeback';
+  /**
+   * Current processing state of this transaction.
+   */
+  status: 'pending' | 'successful' | 'failed' | 'cancelled';
+  /**
+   * Transaction amount stored in the smallest currency unit.
+   */
+  amount: number;
+  /**
+   * Currency used for this transaction.
+   */
+  currency: 'NGN';
+  /**
+   * Payment provider responsible for processing the transaction.
+   */
+  provider: 'transactpay' | 'manual';
+  /**
+   * Reference supplied by the payment provider.
+   */
+  providerReference?: string | null;
+  /**
+   * Raw or normalized response data received from the payment provider.
+   */
+  providerResponse?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Original transaction associated with a refund or chargeback.
+   */
+  parentTransaction?: (number | null) | Transaction;
+  /**
+   * Payment provider failure code, if available.
+   */
+  failureCode?: string | null;
+  /**
+   * Payment provider failure message, if available.
+   */
+  failureMessage?: string | null;
+  /**
+   * Human-readable explanation of the transaction.
+   */
+  description?: string | null;
+  /**
+   * Admin or system user responsible for creating this transaction.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Kept for audit consistency. Transactions cannot be updated.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: number;
+  paymentReference: string;
+  order: number | Order;
+  buyer: number | User;
+  /**
+   * Amount in the smallest currency unit (kobo).
+   */
+  amount: number;
+  currency: 'NGN';
+  provider: 'transactpay';
+  status: 'pending' | 'paid' | 'failed' | 'partially-paid' | 'refunded' | 'partially-refunded';
+  paidAt?: string | null;
+  refundedAt?: string | null;
+  /**
+   * Additional payment information that does not belong to the core payment model.
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  createdBy: number | User;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
+  id: number;
+  key: string;
   data:
     | {
         [k: string]: unknown;
@@ -381,20 +757,17 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
-  id: number;
-  key: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  completedAt?: string | null;
-  createdAt: string;
+  id: number;
   /**
-   * If hasError is true, this is the error that caused it
+   * Input data provided to the job
    */
-  error?:
+  input?:
     | {
         [k: string]: unknown;
       }
@@ -403,15 +776,25 @@ export interface PayloadJob {
     | number
     | boolean
     | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
   /**
    * If hasError is true this job will not be retried
    */
   hasError?: boolean | null;
-  id: number;
   /**
-   * Input data provided to the job
+   * If hasError is true, this is the error that caused it
    */
-  input?:
+  error?:
     | {
         [k: string]: unknown;
       }
@@ -427,7 +810,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: "inline" | "sendWelcomeEmail";
+        taskSlug: 'inline' | 'sendWelcomeEmail';
         taskID: string;
         input?:
           | {
@@ -447,7 +830,7 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        state: "failed" | "succeeded";
+        state: 'failed' | 'succeeded';
         error?:
           | {
               [k: string]: unknown;
@@ -460,74 +843,79 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  processing?: boolean | null;
+  taskSlug?: ('inline' | 'sendWelcomeEmail') | null;
   queue?: string | null;
-  taskSlug?: ("inline" | "sendWelcomeEmail") | null;
-  taskStatus?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  totalTried?: number | null;
-  updatedAt: string;
   waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  createdAt: string;
+  id: number;
   document?:
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "media";
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: "product-library";
+        relationTo: 'product-library';
         value: number | ProductLibrary;
       } | null)
     | ({
-        relationTo: "products";
+        relationTo: 'products';
         value: number | Product;
       } | null)
     | ({
-        relationTo: "categories";
+        relationTo: 'categories';
         value: number | Category;
       } | null)
     | ({
-        relationTo: "sim-cards";
-        value: number | SimCard;
+        relationTo: 'inventory';
+        value: number | Inventory;
+      } | null)
+    | ({
+        relationTo: 'tax-rules';
+        value: number | TaxRule;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'order-items';
+        value: number | OrderItem;
+      } | null)
+    | ({
+        relationTo: 'transactions';
+        value: number | Transaction;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: number | Payment;
       } | null);
   globalSlug?: string | null;
-  id: number;
-  updatedAt: string;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  createdAt: string;
   id: number;
-  key?: string | null;
-  updatedAt: string;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
+  key?: string | null;
   value?:
     | {
         [k: string]: unknown;
@@ -537,36 +925,39 @@ export interface PayloadPreference {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  batch?: number | null;
-  createdAt: string;
   id: number;
   name?: string | null;
+  batch?: number | null;
   updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  _verificationToken?: T;
-  _verified?: T;
+  role?: T;
+  fullName?: T;
+  phone?: T;
+  updatedAt?: T;
   createdAt?: T;
   email?: T;
-  fullName?: T;
-  hash?: T;
-  lockUntil?: T;
-  loginAttempts?: T;
-  phone?: T;
-  resetPasswordExpiration?: T;
   resetPasswordToken?: T;
-  role?: T;
+  resetPasswordExpiration?: T;
   salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
   sessions?:
     | T
     | {
@@ -574,39 +965,26 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-  updatedAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  createdAt?: T;
-  filename?: T;
-  filesize?: T;
-  focalX?: T;
-  focalY?: T;
-  height?: T;
-  mimeType?: T;
-  thumbnailURL?: T;
-  updatedAt?: T;
-  url?: T;
-  width?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-library_select".
  */
 export interface ProductLibrarySelect<T extends boolean = true> {
+  uploadedBy?: T;
+  updatedBy?: T;
   alt?: T;
+  updatedAt?: T;
   createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
   filename?: T;
+  mimeType?: T;
   filesize?: T;
+  width?: T;
+  height?: T;
   focalX?: T;
   focalY?: T;
-  height?: T;
-  mimeType?: T;
   sizes?:
     | T
     | {
@@ -641,80 +1019,208 @@ export interface ProductLibrarySelect<T extends boolean = true> {
               filename?: T;
             };
       };
-  thumbnailURL?: T;
-  updatedAt?: T;
-  updatedBy?: T;
-  uploadedBy?: T;
-  url?: T;
-  width?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
-  buyer?: T;
-  category?: T;
-  country?: T;
-  createdAt?: T;
-  createdBy?: T;
-  description?: T;
   name?: T;
-  price?: T;
+  description?: T;
   productImage?: T;
-  secret?: T;
+  slug?: T;
+  productType?: T;
   status?: T;
-  updatedAt?: T;
+  stock?: T;
+  badges?: T;
+  price?: T;
+  country?: T;
+  category?: T;
+  secret?: T;
+  buyer?: T;
+  createdBy?: T;
   updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
-  createdAt?: T;
-  createdBy?: T;
-  description?: T;
   name?: T;
-  updatedAt?: T;
+  slug?: T;
+  description?: T;
+  categoryImage?: T;
+  parent?: T;
+  status?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  createdBy?: T;
   updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sim-cards_select".
+ * via the `definition` "inventory_select".
  */
-export interface SimCardsSelect<T extends boolean = true> {
-  buyer?: T;
-  country?: T;
-  createdAt?: T;
-  createdBy?: T;
-  description?: T;
-  name?: T;
-  price?: T;
-  productImage?: T;
-  status?: T;
+export interface InventorySelect<T extends boolean = true> {
+  product?: T;
   type?: T;
-  updatedAt?: T;
+  quantity?: T;
+  quantityBefore?: T;
+  quantityAfter?: T;
+  reference?: T;
+  notes?: T;
+  createdBy?: T;
   updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tax-rules_select".
+ */
+export interface TaxRulesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  type?: T;
+  rate?: T;
+  amount?: T;
+  currency?: T;
+  country?: T;
+  appliesTo?: T;
+  products?: T;
+  categories?: T;
+  status?: T;
+  effectiveFrom?: T;
+  effectiveUntil?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  buyer?: T;
+  orderStatus?: T;
+  paymentStatus?: T;
+  fulfillmentStatus?: T;
+  currency?: T;
+  subtotal?: T;
+  shippingAmount?: T;
+  taxAmount?: T;
+  total?: T;
+  email?: T;
+  phone?: T;
+  shippingAddress?:
+    | T
+    | {
+        fullName?: T;
+        addressLine1?: T;
+        addressLine2?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  deliveryInstructions?: T;
+  internalNotes?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "order-items_select".
+ */
+export interface OrderItemsSelect<T extends boolean = true> {
+  order?: T;
+  product?: T;
+  productName?: T;
+  productType?: T;
+  productImage?: T;
+  unitPrice?: T;
+  quantity?: T;
+  lineTotal?: T;
+  fulfillmentStatus?: T;
+  metadata?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions_select".
+ */
+export interface TransactionsSelect<T extends boolean = true> {
+  reference?: T;
+  order?: T;
+  customer?: T;
+  type?: T;
+  status?: T;
+  amount?: T;
+  currency?: T;
+  provider?: T;
+  providerReference?: T;
+  providerResponse?: T;
+  parentTransaction?: T;
+  failureCode?: T;
+  failureMessage?: T;
+  description?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  paymentReference?: T;
+  order?: T;
+  buyer?: T;
+  amount?: T;
+  currency?: T;
+  provider?: T;
+  status?: T;
+  paidAt?: T;
+  refundedAt?: T;
+  metadata?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-  data?: T;
   key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs_select".
  */
 export interface PayloadJobsSelect<T extends boolean = true> {
-  completedAt?: T;
-  createdAt?: T;
-  error?: T;
-  hasError?: T;
   input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
   log?:
     | T
     | {
@@ -728,45 +1234,44 @@ export interface PayloadJobsSelect<T extends boolean = true> {
         error?: T;
         id?: T;
       };
-  processing?: T;
-  queue?: T;
   taskSlug?: T;
-  taskStatus?: T;
-  totalTried?: T;
-  updatedAt?: T;
+  queue?: T;
   waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  createdAt?: T;
   document?: T;
   globalSlug?: T;
-  updatedAt?: T;
   user?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-  createdAt?: T;
-  key?: T;
-  updatedAt?: T;
   user?: T;
+  key?: T;
   value?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-  batch?: T;
-  createdAt?: T;
   name?: T;
+  batch?: T;
   updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -776,7 +1281,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: "full";
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -799,6 +1304,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }

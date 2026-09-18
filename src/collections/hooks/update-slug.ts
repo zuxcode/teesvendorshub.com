@@ -1,7 +1,5 @@
-import { APIError, type FieldHook, type TypeWithID } from "payload";
-import { slugify } from "payload/shared";
-
-import { ErrorCode, ErrorMessageMap, ErrorStatusMap } from "@/lib/errors/codes";
+import type { FieldHook, TypeWithID } from "payload";
+import { slugify } from "@/lib/slugify";
 
 type SourceField = "title" | (string & {});
 type SlugField = "slug" | (string & {});
@@ -15,38 +13,28 @@ export function updateSlugHook<T extends TypeWithID>({
   sourceField = "title",
   slugField = "slug",
 }: SlugHookOptions = {}): FieldHook<T> {
-  return ({ data, req, operation, originalDoc }) => {
-    if (!req.user) {
-      throw new APIError(
-        ErrorMessageMap.AUTH_FORBIDDEN,
-        ErrorStatusMap.AUTH_FORBIDDEN,
-        { code: ErrorCode.AUTH_FORBIDDEN },
-        true
-      );
-    }
-
+  return ({ data, operation, originalDoc }) => {
     if (!data) {
-      return data;
+      return;
     }
 
     const sourceValue = data[sourceField as keyof typeof data];
 
     if (typeof sourceValue !== "string") {
-      return data;
+      return;
     }
 
     const source = sourceValue.trim();
 
     if (!source) {
-      return data;
+      return;
     }
 
     const currentSlug = data[slugField as keyof typeof data];
 
     if (operation === "create" && !currentSlug) {
       data[slugField as keyof typeof data] = slugify(source) as never;
-
-      return data;
+      return;
     }
 
     if (operation === "update") {
@@ -60,7 +48,5 @@ export function updateSlugHook<T extends TypeWithID>({
         data[slugField as keyof typeof data] = slugify(source) as never;
       }
     }
-
-    return data;
   };
 }

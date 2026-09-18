@@ -1,6 +1,9 @@
 import type { CollectionConfig } from "payload";
 import { isAdmin, isPublicAccess } from "@/access";
+import { CATEGORY_STATUS } from "@/lib/config/collection-config";
+import { createAuditActorHook } from "../hooks/audit-actor";
 import { updateSlugHook } from "../hooks/update-slug";
+import { preventCategoryDelete } from "./hooks/prevent-category-delete";
 
 export const CategoriesCollection: CollectionConfig = {
   access: {
@@ -10,14 +13,7 @@ export const CategoriesCollection: CollectionConfig = {
     update: isAdmin,
   },
   admin: {
-    defaultColumns: [
-      "name",
-      "slug",
-      "parent",
-      "status",
-      "sortOrder",
-      "updatedAt",
-    ],
+    defaultColumns: ["name", "slug", "parent", "status", "updatedAt"],
     description: "Product categories used to organize the TVH product catalog.",
     group: "Ecommerce",
     groupBy: true,
@@ -44,7 +40,7 @@ export const CategoriesCollection: CollectionConfig = {
         readOnly: true,
       },
       hooks: {
-        beforeChange: [
+        beforeValidate: [
           updateSlugHook({
             sourceField: "name",
           }),
@@ -79,6 +75,7 @@ export const CategoriesCollection: CollectionConfig = {
         description: "Optional parent category for nested categories.",
       },
       index: true,
+      maxDepth: 1,
       name: "parent",
       relationTo: "categories",
       type: "relationship",
@@ -93,26 +90,15 @@ export const CategoriesCollection: CollectionConfig = {
       options: [
         {
           label: "Active",
-          value: "active",
+          value: CATEGORY_STATUS.ACTIVE,
         },
         {
           label: "Inactive",
-          value: "inactive",
+          value: CATEGORY_STATUS.INACTIVE,
         },
       ],
       required: true,
       type: "select",
-    },
-
-    {
-      admin: {
-        description: "Controls category ordering in the catalog.",
-        position: "sidebar",
-      },
-      defaultValue: 0,
-      name: "sortOrder",
-      required: true,
-      type: "number",
     },
 
     {
@@ -138,7 +124,46 @@ export const CategoriesCollection: CollectionConfig = {
       name: "seo",
       type: "group",
     },
+
+    {
+      admin: {
+        description: "Admin who created this product.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "createdBy",
+      relationTo: "users",
+      required: true,
+      type: "relationship",
+    },
+
+    {
+      admin: {
+        description: "Admin who last updated this product.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "updatedBy",
+      relationTo: "users",
+      type: "relationship",
+    },
   ],
+
+  hooks: {
+    beforeChange: [
+      createAuditActorHook({
+        createdBy: "createdBy",
+        updatedBy: "updatedBy",
+      }),
+    ],
+    beforeDelete: [preventCategoryDelete],
+  },
+  labels: {
+    plural: "Categories",
+    singular: "Category",
+  },
   slug: "categories",
 
   timestamps: true,

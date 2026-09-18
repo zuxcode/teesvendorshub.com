@@ -1,11 +1,21 @@
+import Sentry from "@sentry/nextjs";
 import { payload } from "./payload";
 
 export async function getProduct() {
-  const result = await payload.find({
-    collection: "products",
-    depth: 0,
-    limit: 10_000,
-  });
+  try {
+    return await payload.find({
+      collection: "products",
+      depth: 0,
+      limit: 10_000,
+    });
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        collection: "products",
+        operation: "getProduct",
+      },
+    });
 
-  return result;
+    throw error;
+  }
 }

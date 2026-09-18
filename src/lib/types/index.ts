@@ -9,3 +9,5 @@ export interface TeesLink {
 export type DocumentId = string | number;
 
 export type FilterValue = "all" | (string & {});
+
+export type StoreStatus = "idle" | "loading" | "ready" | "error";

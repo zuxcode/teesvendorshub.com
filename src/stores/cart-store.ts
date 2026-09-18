@@ -12,6 +12,7 @@ export interface CartItem {
 }
 
 export interface CartStoreState {
+  isOpen: boolean;
   items: Record<string, CartItem>;
 }
 
@@ -23,6 +24,7 @@ export interface CartStoreActions {
   getItemQuantity: (productId: DocumentId) => number;
   incrementItem: (productId: DocumentId) => void;
   removeItem: (productId: DocumentId) => void;
+  setIsOpen: (isOpen: boolean) => void;
   setItemQuantity: (productId: DocumentId, quantity: number) => void;
 }
 
@@ -94,6 +96,12 @@ export const useCartStore = createWithEqualityFn<CartStore>()(
           });
         },
 
+        setIsOpen: (isOpen) => {
+          set((state) => {
+            state.isOpen = isOpen;
+          });
+        },
+
         setItemQuantity: (productId, quantity) => {
           set((state) => {
             if (quantity <= 0) {
@@ -115,6 +123,7 @@ export const useCartStore = createWithEqualityFn<CartStore>()(
           });
         },
       },
+      isOpen: false,
 
       items: {},
     })),
@@ -130,9 +139,13 @@ export const useCartStore = createWithEqualityFn<CartStore>()(
 );
 
 export const useCartItems = () => useCartStore((state) => state.items);
+export const useIsOpen = () => useCartStore((state) => state.isOpen);
 
 export const useCartItemIds = () =>
   useCartStore((state) => Object.keys(state.items));
+
+export const useCartItemValues = () =>
+  useCartStore((state) => Object.values(state.items));
 
 export const useCartItem = (productId: DocumentId) =>
   useCartStore((state) => state.items[productId]);

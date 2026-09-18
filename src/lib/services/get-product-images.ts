@@ -1,11 +1,21 @@
+import { captureException } from "@sentry/nextjs";
 import { payload } from "./payload";
 
 export async function getProductImages() {
-  const result = await payload.find({
-    collection: "product-library",
-    depth: 0,
-    limit: 10_000,
-  });
+  try {
+    return await payload.find({
+      collection: "product-library",
+      depth: 0,
+      limit: 10_000,
+    });
+  } catch (error) {
+    captureException(error, {
+      tags: {
+        collection: "product-library",
+        operation: "getProductImages",
+      },
+    });
 
-  return result;
+    throw error;
+  }
 }

@@ -1,8 +1,3 @@
-/**
- * Standardized error codes returned to clients.
- * Format: DOMAIN_SPECIFIC_REASON
- * Never leak internal messages (DB errors, stack traces) — only these codes + safe messages.
- */
 export const ErrorCode = {
   AUTH_ACCOUNT_LOCKED: "AUTH_ACCOUNT_LOCKED",
   AUTH_ACCOUNT_REQUIRED: "AUTH_ACCOUNT_REQUIRED", // No authentication
@@ -16,6 +11,7 @@ export const ErrorCode = {
 
   // __ Request / Post (400)
   BAD_REQUEST: "BAD_REQUEST",
+  INSUFFICIENT_STOCK: "INSUFFICIENT_STOCK",
 
   // ── Media / uploads (400/413) ───────────────────
   MEDIA_FILE_TOO_LARGE: "MEDIA_FILE_TOO_LARGE",
@@ -25,6 +21,7 @@ export const ErrorCode = {
 
   // ── Payments (if applicable) ────────────────────
   PAYMENT_DECLINED: "PAYMENT_DECLINED",
+  PAYMENT_GATEWAY_ERROR: "PAYMENT_GATEWAY_ERROR",
   PAYMENT_WEBHOOK_INVALID: "PAYMENT_WEBHOOK_INVALID",
 
   // ── Rate limiting / abuse (429) ─────────────────
@@ -63,6 +60,7 @@ export const ErrorStatusMap: Record<ErrorCode, number> = {
   AUTH_UNVERIFIED_EMAIL: 403,
 
   BAD_REQUEST: 400,
+  INSUFFICIENT_STOCK: 404,
 
   MEDIA_FILE_TOO_LARGE: 413,
   MEDIA_INVALID_MIME_TYPE: 400,
@@ -70,6 +68,7 @@ export const ErrorStatusMap: Record<ErrorCode, number> = {
   PAYMENT_ALREADY_PROCESSED: 409,
 
   PAYMENT_DECLINED: 402,
+  PAYMENT_GATEWAY_ERROR: 502,
   PAYMENT_WEBHOOK_INVALID: 400,
 
   RATE_LIMIT_EXCEEDED: 429,
@@ -90,7 +89,6 @@ export const ErrorStatusMap: Record<ErrorCode, number> = {
   VALIDATION_UNIQUE_CONSTRAINT: 409,
 };
 
-/** Client-safe default messages — override per-locale in the frontend */
 export const ErrorMessageMap: Record<ErrorCode, string> = {
   AUTH_ACCOUNT_LOCKED: "This account is temporarily locked. Try again later.",
   AUTH_ACCOUNT_REQUIRED: "Authentication is required to access this resource.",
@@ -102,6 +100,8 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   AUTH_UNVERIFIED_EMAIL: "Please verify your email before continuing.",
 
   BAD_REQUEST: "Invalid JSON payload",
+  INSUFFICIENT_STOCK:
+    "One or more products are no longer available in the requested quantity.",
 
   MEDIA_FILE_TOO_LARGE: "This file is too large to upload.",
   MEDIA_INVALID_MIME_TYPE: "This file type isn't supported.",
@@ -109,6 +109,7 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   PAYMENT_ALREADY_PROCESSED: "This payment has already been processed.",
 
   PAYMENT_DECLINED: "Your payment was declined.",
+  PAYMENT_GATEWAY_ERROR: "The payment service is currently unavailable.",
   PAYMENT_WEBHOOK_INVALID: "Invalid payment webhook.",
 
   RATE_LIMIT_EXCEEDED: "Too many requests. Please slow down.",

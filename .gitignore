@@ -52,3 +52,5 @@ node_modules/
 infra/db.dump
 
 tmp/
+# Sentry Config File
+.env.sentry-build-plugin

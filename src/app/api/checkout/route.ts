@@ -1,36 +1,52 @@
-import { env } from "@/env";
-import { TRANSACTPAY_BASE_URL } from "@/lib/config/app-config";
-import { encryptForge } from "@/lib/secure/transactpay-encrypt";
-import { payload } from "@/lib/services/payload";
+// import { env } from "@/env";
+// import { encryptForge } from "@/lib/secure/transactpay-encrypt";
 
-export const GET = async (_request: Request) => {
-  await payload.db.count({ collection: "media" });
+import { checkOutSchema } from "@/features/checkout/lib/check-out-schema";
+import { API_ERRORS, errorResponse } from "@/lib/errors/api-error";
 
-  const data = {
+export const POST = async (request: Request) => {
+  let jsonBody: unknown = null;
+
+  try {
+    jsonBody = await request.json();
+  } catch {
+    return errorResponse(API_ERRORS.INVALID_JSON_BODY);
+  }
+
+  const parsedBody = checkOutSchema.safeParse(jsonBody);
+
+  if (!parsedBody.success) {
+    return errorResponse(API_ERRORS.INVALID_REQUEST_BODY);
+  }
+};
+
+/**
+ * 
+ 
+  const test = {
     customer: {
       country: "NG",
-      email: "email@transactpay.ai",
-      firstname: "transact",
-      lastname: "pay",
-      mobile: "+2348134543421",
+      email: "test@email.com",
+      firstname: "Transact",
+      lastname: "Pay",
+      mobile: "09150691727",
     },
     order: {
       amount: 100,
       currency: "NGN",
       description: "Pay",
-      reference: "",
+      reference: "yourReferencegaddw",
     },
     payment: {
-      RedirectUrl: "https://www.hi.com",
+      RedirectUrl: "https://www.yourredirecturl.com",
     },
   };
 
-  const encryptedData = encryptForge(data, env.TRANSACT_PAY_ENCRYPTION_KEY);
-
-  console.log(encryptedData);
-
+  const encryptedData = encryptForge(test, env.TRANSACT_PAY_ENCRYPTION_KEY);
   const config = {
-    body: encryptedData,
+    body: JSON.stringify({
+      data: encryptedData,
+    }),
 
     headers: {
       "api-key": env.TRANSACT_PAY_API_KEY,
@@ -42,8 +58,8 @@ export const GET = async (_request: Request) => {
   } as RequestInit;
 
   const res = await fetch(
-    `${TRANSACTPAY_BASE_URL}/payment/checkout/yourReference`,
     // `${TRANSACTPAY_BASE_URL}/payment/order/create`,
+    "https://payment-api-service.transactpay.ai/payment/create",
     config
   );
 
@@ -54,4 +70,4 @@ export const GET = async (_request: Request) => {
   return Response.json({
     message: resJson.message,
   });
-};
+ */

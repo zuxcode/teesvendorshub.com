@@ -1,15 +1,26 @@
+/** biome-ignore-all lint/performance/noNamespaceImport: <supress for sentry> */
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { resendAdapter } from "@payloadcms/email-resend";
+import { sentryPlugin } from "@payloadcms/plugin-sentry";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import * as Sentry from "@sentry/nextjs";
 // import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
+
 import { buildConfig } from "payload";
+import pg from "pg";
 import sharp from "sharp";
-import { CategoriesCollection } from "./collections/category";
+import { CategoriesCollection } from "./collections/category/category-collection";
 import { ProductLibraryCollection } from "./collections/media/product-library";
-import { ProductsCollection } from "./collections/product";
-import { SimCardsCollection } from "./collections/product/sim-card";
+import { OrdersCollection } from "./collections/order/order";
+import { OrderItemsCollection } from "./collections/order/order-item";
+import { PaymentsCollection } from "./collections/payment/payment-collection";
+import { InventoryCollection } from "./collections/inventory/inventory-collection";
+import { ProductsCollection } from "./collections/product/product-collection";
+import { TaxRulesCollection } from "./collections/tax/tax-rule";
+import { TransactionsCollection } from "./collections/transaction/transaction-collection";
 import { UsersCollection } from "./collections/users";
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
 import { env } from "./env";
@@ -39,19 +50,28 @@ export default buildConfig({
     ProductLibraryCollection,
     ProductsCollection,
     CategoriesCollection,
-    SimCardsCollection,
+    InventoryCollection,
+    TaxRulesCollection,
+    OrdersCollection,
+    OrderItemsCollection,
+    TransactionsCollection,
+    PaymentsCollection,
   ],
+  cookiePrefix: "tvh",
 
   cors: {
     headers: ["x-custom-header"],
     origins: [...COR],
   },
   csrf: [...COR],
+
   db: postgresAdapter({
+    pg,
     pool: {
       connectionString: env.DATABASE_URL,
     },
   }),
+  debug: process.env.NODE_ENV === "development",
   editor: lexicalEditor(),
 
   email: resendAdapter({
@@ -83,6 +103,23 @@ export default buildConfig({
     //   },
     //   token: env.BLOB_READ_WRITE_TOKEN,
     // }),
+    sentryPlugin({
+      options: {
+        captureErrors: [401, 403, 404, 409, 422, 429, 500, 501, 502, 503, 504],
+        context: ({ defaultContext, req }) => {
+          const { user } = req;
+          return {
+            ...defaultContext,
+            tags: {
+              locale: req.locale,
+            },
+            user: user || undefined,
+          };
+        },
+        debug: process.env.NODE_ENV === "development",
+      },
+      Sentry,
+    }),
   ],
   secret: env.PAYLOAD_SECRET,
   sharp,

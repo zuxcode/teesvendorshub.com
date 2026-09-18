@@ -1,5 +1,20 @@
-import { CheckoutPage } from "@/features/checkout/checkout-page";
+import { CheckOutContent } from "@/features/checkout";
+import { CheckoutReturnToPreviousPage } from "@/features/checkout/checkout-Back-button";
 
-export default function CheckoutRoute() {
-  return <CheckoutPage />;
+export default function CheckoutPage() {
+  return (
+    <>
+      <div className="mb-8">
+        <CheckoutReturnToPreviousPage />
+
+        <h1 className="mt-5 font-bold text-3xl tracking-tight">Checkout</h1>
+
+        <p className="mt-2 text-muted-foreground">
+          Complete your order securely.
+        </p>
+      </div>
+
+      <CheckOutContent />
+    </>
+  );
 }

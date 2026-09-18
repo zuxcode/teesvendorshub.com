@@ -1,11 +1,21 @@
+import { captureException } from "@sentry/nextjs";
 import { payload } from "./payload";
 
 export async function getSimCardsProduct() {
-  const result = await payload.find({
-    collection: "sim-cards",
-    depth: 0,
-    limit: 10_000,
-  });
+  try {
+    return await payload.find({
+      collection: "sim-cards",
+      depth: 0,
+      limit: 10_000,
+    });
+  } catch (error) {
+    captureException(error, {
+      tags: {
+        collection: "sim-cards",
+        operation: "getSimCardsProduct",
+      },
+    });
 
-  return result;
+    throw error;
+  }
 }

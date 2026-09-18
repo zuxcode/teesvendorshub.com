@@ -5,24 +5,22 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Button } from "@/components/ui/button";
+import { getRelationshipId } from "@/lib/get-relationship-id";
 import type { DocumentId } from "@/lib/types";
 import { useCartActions, useCartItemQuantity } from "@/stores/cart-store";
 import { useProductImageActions } from "@/stores/product-image-store";
-import { useSimCard } from "@/stores/sim-card-store";
+import { useProduct } from "@/stores/product-store";
 
 interface CartItemProps {
   productId: DocumentId;
 }
 
 export function CartItem({ productId }: CartItemProps) {
-  const product = useSimCard(productId);
+  const product = useProduct(productId);
   const quantity = useCartItemQuantity(productId);
   const { getImageById } = useProductImageActions();
 
-  const imageId =
-    typeof product?.productImage === "object"
-      ? product?.productImage.id
-      : product?.productImage;
+  const imageId = getRelationshipId(product?.productImage);
 
   const { incrementItem, decrementItem, removeItem } = useCartActions();
 

@@ -6,6 +6,11 @@
     "ultracite/biome/next",
     "ultracite/biome/vitest"
   ],
+
+  "linter": {
+    "rules": {}
+  },
+
   "files": {
     "includes": [
       "!!payload-types.ts",
