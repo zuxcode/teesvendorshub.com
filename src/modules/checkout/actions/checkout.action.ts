@@ -5,7 +5,6 @@
 import { captureException } from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 import { returnServerError } from "next-safe-action";
-import { env } from "@/env";
 import type { OrderFulfillmentStatus } from "@/modules/order/order.constants";
 import { orderRepository } from "@/modules/order/order.repository";
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
@@ -328,10 +327,7 @@ export const checkOutAction = authenticatedActionClient
           firstname,
           lastname,
           phone: parsedInput.phone,
-          redirectUrl: new URL(
-            PAYMENT_CHECKOUT_REDIRECT_URL,
-            env.NEXT_PUBLIC_APP_URL
-          ).toString(),
+          redirectUrl: PAYMENT_CHECKOUT_REDIRECT_URL,
           reference: orderNumber,
         },
         paymentId: payment.id,
@@ -340,8 +336,6 @@ export const checkOutAction = authenticatedActionClient
       if (error instanceof PaymentError) {
         return returnServerError(paymentServerActionError(error.code));
       }
-
-      console.log(error);
 
       /**
        * The transaction has already committed.

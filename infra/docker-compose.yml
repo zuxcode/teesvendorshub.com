@@ -2,6 +2,17 @@ name: tvh
 # tvh -> TeesVendorHub
 
 services:
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    command: http host.docker.internal:3000
+    # On Linux, uncomment the next line and remove the ports mapping:
+    # network_mode: host
+
   # tees_app:
   #   image: ${IMAGE:-ghcr.io/zuxlab/myforexsignatureacademy:latest}
   #   container_name: tees_app

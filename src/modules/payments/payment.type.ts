@@ -4,6 +4,7 @@ export interface PaymentAdaptor {
   initialize: (
     input: PaymentInitializeInput
   ) => Promise<PaymentInitializeResult>;
+  verifyWebhook: (input: unknown) => VerifyPaymentResult;
 }
 
 export interface PaymentInitializeInput {
@@ -24,19 +25,10 @@ export interface PaymentInitializeResult {
   reference: string;
 }
 
-// export interface PaymentProviderVerifyResult {
-//   amount: number;
-//   currency: string;
-//   reference: string;
-//   status: "successful" | "failed" | "pending";
-// }
-
-// export interface PaymentProviderRefundInput {
-//   amount: number;
-//   reference: string;
-// }
-
-// export interface PaymentProviderRefundResult {
-//   reference: string;
-//   status: "successful" | "failed";
-// }
+export interface VerifyPaymentResult {
+  fee: number;
+  orderAmount: number;
+  orderReference: string;
+  paymentReference: string;
+  totalAmountCharged: number;
+}

@@ -1,7 +1,10 @@
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 
-import { useCartItemValues } from "@/modules/checkout/store/cart-store";
+import {
+  useCartActions,
+  useCartItemValues,
+} from "@/modules/checkout/store/cart-store";
 import { checkOutAction } from "../actions/checkout.action";
 import type { CheckOutSchemaValues } from "../lib/check-out-schema";
 
@@ -9,6 +12,7 @@ const CHECK_OUT_TOAST_ID = "CHECK_OUT_TOAST_ID";
 
 export function useOnSubmitHandler() {
   const cartItems = useCartItemValues();
+  const { clearCart } = useCartActions();
 
   const { execute, isExecuting } = useAction(checkOutAction, {
     onError: ({ error }) => {
@@ -52,8 +56,8 @@ export function useOnSubmitHandler() {
       });
     },
 
-    onSuccess: ({ data }) => {
-      console.log(data);
+    onSuccess: () => {
+      clearCart();
       toast.success("Checkout created successfully.", {
         id: CHECK_OUT_TOAST_ID,
       });

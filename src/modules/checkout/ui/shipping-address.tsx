@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { getAllStates, getStateTowns } from "@/lib/nigeria-geo";
-import type { CheckOutSchemaValues } from "../../modules/checkout/lib/check-out-schema";
+import type { CheckOutSchemaValues } from "../lib/check-out-schema";
 
 export function ShippingAddress() {
   const { register, formState, setValue, watch } =

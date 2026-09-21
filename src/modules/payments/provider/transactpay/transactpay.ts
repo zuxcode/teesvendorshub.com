@@ -3,7 +3,7 @@ import "server-only";
 import { env } from "@/env";
 import { TRANSACTPAY_BASE_URL } from "@/shared/config/app-config";
 import { PaymentProviderError } from "../../payment.errors";
-import type { PaymentAdaptor } from "../../payment.type";
+import type { PaymentAdaptor, VerifyPaymentResult } from "../../payment.type";
 import { encryptForge } from "./helper/transactpay-encrypt";
 
 export const transactPayAdaptor: PaymentAdaptor = {
@@ -58,10 +58,50 @@ export const transactPayAdaptor: PaymentAdaptor = {
 
     return {
       checkoutUrl: data.redirectUrl,
-      reference: input.reference,
+      reference: String(data.orderId),
     };
   },
+  verifyWebhook(input) {
+    if (!isRecord(input)) {
+      throw new PaymentProviderError("Invalid TransactPay webhook payload.");
+    }
+
+    if ("status" in input && input.status !== "success") {
+      throw new PaymentProviderError(
+        "TransactPay webhook indicates an unsuccessful payment."
+      );
+    }
+
+   
+  if (!isPaymentWebhookData(input.data)) {
+    throw new PaymentProviderError(
+      "TransactPay returned an invalid webhook payload."
+    );
+  }
+
+    return input.data;
+  },
 };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isPaymentWebhookData(
+  value: unknown
+): value is VerifyPaymentResult {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.fee === "number" &&
+    typeof value.orderAmount === "number" &&
+    typeof value.orderReference === "string" &&
+    typeof value.paymentReference === "string" &&
+    typeof value.totalAmountCharged === "number"
+  );
+}
 
 interface CreateOrderResponse {
   isSuccess: boolean;

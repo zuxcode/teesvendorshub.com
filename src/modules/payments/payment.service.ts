@@ -15,12 +15,16 @@ export interface InitializeParam {
 }
 
 export interface PaymentService {
+  handleTransactPayWebhook: (input: unknown) => Promise<void>;
   initializePayment: (
     args: InitializeParam
   ) => Promise<PaymentInitializeResult>;
 }
 
 export const paymentService: PaymentService = {
+  handleTransactPayWebhook: (input) => {
+    console.log(input);
+  },
   async initializePayment({ paymentId, input }) {
     const payment = await paymentRepository.findById(paymentId);
 
