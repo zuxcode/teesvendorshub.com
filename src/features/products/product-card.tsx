@@ -8,10 +8,10 @@ import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format-currency";
-import { getRelationshipId } from "@/lib/get-relationship-id";
 import { getProductInventoryState } from "@/lib/products/inventory";
 import type { DocumentId } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 import { useCategory } from "@/stores/category-store";
 import { useProductImage } from "@/stores/product-image-store";
 import {

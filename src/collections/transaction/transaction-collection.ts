@@ -2,12 +2,12 @@ import type { CollectionConfig } from "payload";
 import { isAdmin } from "@/access";
 
 import {
-  CURRENCY,
   PAYMENT_PROVIDER,
   TRANSACTION_STATUS,
   TRANSACTION_TYPE,
 } from "@/lib/config/collection-config";
-import { createAuditActorHook } from "../hooks/audit-actor";
+import { CURRENCY } from "@/modules/order/order.constants";
+import { createAuditActorHook } from "../../shared/payload/hooks/audit-actor";
 
 export const TransactionsCollection: CollectionConfig = {
   access: {

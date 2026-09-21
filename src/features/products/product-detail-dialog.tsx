@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/dialog";
 
 import { formatCurrency } from "@/lib/format-currency";
-import { getRelationshipId } from "@/lib/get-relationship-id";
 import { getProductInventoryState } from "@/lib/products/inventory";
+import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
 import { useCategory } from "@/stores/category-store";
 import { useProductImageActions } from "@/stores/product-image-store";

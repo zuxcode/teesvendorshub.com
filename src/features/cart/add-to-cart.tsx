@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/button";
 
 import type { DocumentId } from "@/lib/types";
 
-import { useCartActions, useCartItemQuantity } from "@/stores/cart-store";
+import {
+  useCartActions,
+  useCartItemQuantity,
+} from "@/modules/checkout/store/cart-store";
 
 interface AddToCartButtonProps {
   disabled?: boolean;

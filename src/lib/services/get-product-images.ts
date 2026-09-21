@@ -1,5 +1,5 @@
 import { captureException } from "@sentry/nextjs";
-import { payload } from "./payload";
+import { payload } from "../../shared/payload/utils/payload";
 
 export async function getProductImages() {
   try {

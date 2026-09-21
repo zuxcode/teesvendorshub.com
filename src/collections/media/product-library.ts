@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isPublicAccess } from "@/access";
 import { IMAGE_MIME_TYPES } from "@/lib/config/collection-config";
-import { createAuditActorHook } from "../hooks/audit-actor";
+import { createAuditActorHook } from "../../shared/payload/hooks/audit-actor";
 import { validateAltText } from "./validation";
 
 export const ProductLibraryCollection: CollectionConfig = {

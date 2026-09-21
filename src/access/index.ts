@@ -1,7 +1,7 @@
 import type { Access, FieldAccess } from "payload";
 import { ROLE } from "@/constant";
-import { getRelationshipId } from "@/lib/get-relationship-id";
 import type { User } from "@/payload-types";
+import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
 export const isPublicAccess: Access<User> = () => true;
 

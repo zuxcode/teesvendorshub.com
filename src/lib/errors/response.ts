@@ -1,37 +1,82 @@
-import { type ErrorCode, ErrorMessageMap, ErrorStatusMap } from "./codes";
+import { ErrorCode, ErrorMessageMap, ErrorStatusMap } from "./codes";
 
-export interface ApiErrorResponse {
-  error: {
-    code: ErrorCode;
-    message: string;
-    fields?: Record<string, string>; // for VALIDATION_FAILED
-    requestId?: string; // correlate with server logs
-  };
+export interface ApiError {
+  code: ErrorCode;
+  message: string;
+  status: number;
+}
+
+export const API_ERRORS = Object.fromEntries(
+  Object.values(ErrorCode).map((code) => [
+    code,
+    {
+      code,
+      message: ErrorMessageMap[code],
+      status: ErrorStatusMap[code],
+    },
+  ])
+) as Record<ErrorCode, ApiError>;
+
+export interface AppErrorOptions {
+  cause?: unknown;
+  fields?: Record<string, string>;
+  message?: string;
 }
 
 export class AppError extends Error {
-  code: ErrorCode;
-  status: number;
-  fields?: Record<string, string>;
+  readonly code: ErrorCode;
+  readonly status: number;
+  readonly fields?: Record<string, string>;
 
-  constructor(
-    code: ErrorCode,
-    opts?: { fields?: Record<string, string>; message?: string }
-  ) {
-    super(opts?.message ?? ErrorMessageMap[code]);
+  constructor(code: ErrorCode, options?: AppErrorOptions) {
+    const error = API_ERRORS[code];
+
+    super(options?.message ?? error.message, {
+      cause: options?.cause,
+    });
+
+    this.name = "AppError";
     this.code = code;
-    this.status = ErrorStatusMap[code];
-    this.fields = opts?.fields;
+    this.status = error.status;
+    this.fields = options?.fields;
   }
 
-  toResponse(requestId?: string): ApiErrorResponse {
+  toResponse(requestId?: string) {
     return {
       error: {
         code: this.code,
-        fields: this.fields,
         message: this.message,
-        requestId,
+        ...(this.fields && {
+          fields: this.fields,
+        }),
+        ...(requestId && {
+          requestId,
+        }),
       },
     };
   }
+}
+
+export function httpErrorResponse(errorCode: ErrorCode) {
+  const error = API_ERRORS[errorCode];
+
+  return Response.json(
+    {
+      code: error.code,
+      message: error.message,
+    },
+    {
+      status: error.status,
+    }
+  );
+}
+
+export function serverActionError(errorCode: ErrorCode) {
+  const error = API_ERRORS[errorCode];
+
+  return {
+    code: error.code,
+    message: error.message,
+    status: error.status,
+  };
 }

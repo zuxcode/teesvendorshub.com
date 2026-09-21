@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { isAdmin, isPublicAccess } from "@/access";
 import { CATEGORY_STATUS } from "@/lib/config/collection-config";
-import { createAuditActorHook } from "../hooks/audit-actor";
-import { updateSlugHook } from "../hooks/update-slug";
+import { createAuditActorHook } from "../../shared/payload/hooks/audit-actor";
+import { updateSlugHook } from "../../shared/payload/hooks/update-slug";
 import { preventCategoryDelete } from "./hooks/prevent-category-delete";
 
 export const CategoriesCollection: CollectionConfig = {

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { createSafeActionClient, returnServerError } from "next-safe-action";
+import { payload } from "../shared/payload/utils/payload";
 import { ErrorMessageMap } from "./errors/codes";
-import { payload } from "./services/payload";
 
 export const publicActionClient = createSafeActionClient({
   defaultValidationErrorsShape: "flattened",

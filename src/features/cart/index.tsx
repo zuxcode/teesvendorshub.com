@@ -17,7 +17,7 @@ import {
   useCartItemCount,
   useCartItemIds,
   useIsOpen,
-} from "@/stores/cart-store";
+} from "@/modules/checkout/store/cart-store";
 
 import { CartItem } from "./cart-item";
 

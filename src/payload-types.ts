@@ -75,7 +75,6 @@ export interface Config {
     'tax-rules': TaxRule;
     orders: Order;
     'order-items': OrderItem;
-    transactions: Transaction;
     payments: Payment;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -93,7 +92,6 @@ export interface Config {
     'tax-rules': TaxRulesSelect<false> | TaxRulesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     'order-items': OrderItemsSelect<false> | OrderItemsSelect<true>;
-    transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -398,7 +396,7 @@ export interface Inventory {
   /**
    * Admin or system user responsible for this inventory movement.
    */
-  createdBy: number | User;
+  createdBy?: (number | null) | User;
   /**
    * Kept for consistency with the audit model. Inventory records cannot be updated.
    */
@@ -624,95 +622,20 @@ export interface OrderItem {
   createdAt: string;
 }
 /**
- * Immutable financial transaction history for orders and payments.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "transactions".
- */
-export interface Transaction {
-  id: number;
-  /**
-   * Unique internal transaction reference.
-   */
-  reference: string;
-  /**
-   * Order associated with this financial transaction.
-   */
-  order: number | Order;
-  /**
-   * Customer associated with the transaction.
-   */
-  customer: number | User;
-  /**
-   * Financial event represented by this transaction.
-   */
-  type: 'payment' | 'refund' | 'chargeback';
-  /**
-   * Current processing state of this transaction.
-   */
-  status: 'pending' | 'successful' | 'failed' | 'cancelled';
-  /**
-   * Transaction amount stored in the smallest currency unit.
-   */
-  amount: number;
-  /**
-   * Currency used for this transaction.
-   */
-  currency: 'NGN';
-  /**
-   * Payment provider responsible for processing the transaction.
-   */
-  provider: 'transactpay' | 'manual';
-  /**
-   * Reference supplied by the payment provider.
-   */
-  providerReference?: string | null;
-  /**
-   * Raw or normalized response data received from the payment provider.
-   */
-  providerResponse?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * Original transaction associated with a refund or chargeback.
-   */
-  parentTransaction?: (number | null) | Transaction;
-  /**
-   * Payment provider failure code, if available.
-   */
-  failureCode?: string | null;
-  /**
-   * Payment provider failure message, if available.
-   */
-  failureMessage?: string | null;
-  /**
-   * Human-readable explanation of the transaction.
-   */
-  description?: string | null;
-  /**
-   * Admin or system user responsible for creating this transaction.
-   */
-  createdBy?: (number | null) | User;
-  /**
-   * Kept for audit consistency. Transactions cannot be updated.
-   */
-  updatedBy?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payments".
  */
 export interface Payment {
   id: number;
   paymentReference: string;
+  /**
+   * URL used by the customer to complete the payment.
+   */
+  checkoutUrl?: string | null;
+  /**
+   * Reference assigned to the payment by the payment provider.
+   */
+  providerReference?: string | null;
   order: number | Order;
   buyer: number | User;
   /**
@@ -721,7 +644,7 @@ export interface Payment {
   amount: number;
   currency: 'NGN';
   provider: 'transactpay';
-  status: 'pending' | 'paid' | 'failed' | 'partially-paid' | 'refunded' | 'partially-refunded';
+  status: 'pending' | 'successful' | 'failed' | 'partially-paid' | 'refunded' | 'partially-refunded';
   paidAt?: string | null;
   refundedAt?: string | null;
   /**
@@ -736,7 +659,7 @@ export interface Payment {
     | number
     | boolean
     | null;
-  createdBy: number | User;
+  createdBy?: (number | null) | User;
   updatedBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
@@ -888,10 +811,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'order-items';
         value: number | OrderItem;
-      } | null)
-    | ({
-        relationTo: 'transactions';
-        value: number | Transaction;
       } | null)
     | ({
         relationTo: 'payments';
@@ -1160,34 +1079,12 @@ export interface OrderItemsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "transactions_select".
- */
-export interface TransactionsSelect<T extends boolean = true> {
-  reference?: T;
-  order?: T;
-  customer?: T;
-  type?: T;
-  status?: T;
-  amount?: T;
-  currency?: T;
-  provider?: T;
-  providerReference?: T;
-  providerResponse?: T;
-  parentTransaction?: T;
-  failureCode?: T;
-  failureMessage?: T;
-  description?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payments_select".
  */
 export interface PaymentsSelect<T extends boolean = true> {
   paymentReference?: T;
+  checkoutUrl?: T;
+  providerReference?: T;
   order?: T;
   buyer?: T;
   amount?: T;

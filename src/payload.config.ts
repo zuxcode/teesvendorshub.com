@@ -14,17 +14,17 @@ import pg from "pg";
 import sharp from "sharp";
 import { CategoriesCollection } from "./collections/category/category-collection";
 import { ProductLibraryCollection } from "./collections/media/product-library";
-import { OrdersCollection } from "./collections/order/order";
-import { OrderItemsCollection } from "./collections/order/order-item";
-import { PaymentsCollection } from "./collections/payment/payment-collection";
-import { InventoryCollection } from "./collections/inventory/inventory-collection";
-import { ProductsCollection } from "./collections/product/product-collection";
 import { TaxRulesCollection } from "./collections/tax/tax-rule";
-import { TransactionsCollection } from "./collections/transaction/transaction-collection";
+// import { TransactionsCollection } from "./collections/transaction/transaction-collection";
 import { UsersCollection } from "./collections/users";
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
 import { env } from "./env";
 import { sendWelcomeEmailTask } from "./lib/tasks/send-welcome-email";
+import { InventoryCollection } from "./modules/inventory/inventory.collection";
+import { OrdersCollection } from "./modules/order/order.collection";
+import { OrderItemsCollection } from "./modules/order/order-item.collection";
+import { PaymentsCollection } from "./modules/payments/payment.collection";
+import { ProductsCollection } from "./modules/products/product.collection";
 
 // import { DOMAIN } from "./lib/constant/constant";
 
@@ -54,7 +54,7 @@ export default buildConfig({
     TaxRulesCollection,
     OrdersCollection,
     OrderItemsCollection,
-    TransactionsCollection,
+    // TransactionsCollection,
     PaymentsCollection,
   ],
   cookiePrefix: "tvh",

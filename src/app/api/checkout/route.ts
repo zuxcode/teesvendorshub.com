@@ -1,8 +1,8 @@
 // import { env } from "@/env";
 // import { encryptForge } from "@/lib/secure/transactpay-encrypt";
 
-import { checkOutSchema } from "@/features/checkout/lib/check-out-schema";
 import { API_ERRORS, errorResponse } from "@/lib/errors/api-error";
+import { checkOutSchema } from "@/modules/checkout/lib/check-out-schema";
 
 export const POST = async (request: Request) => {
   let jsonBody: unknown = null;
