@@ -69,6 +69,7 @@ export default buildConfig({
     pg,
     pool: {
       connectionString: env.DATABASE_URL,
+      ssl: process.env.NODE_ENV !== "development",
     },
   }),
   debug: process.env.NODE_ENV === "development",

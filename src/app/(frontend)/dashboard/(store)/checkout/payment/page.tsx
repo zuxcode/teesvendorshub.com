@@ -1,6 +1,5 @@
 import { CheckCircle2, Clock3, XCircle } from "lucide-react";
 import Link from "next/link";
-import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,8 +20,6 @@ interface PaymentReturnPageProps {
 export default async function PaymentReturnPage({
   searchParams,
 }: PaymentReturnPageProps) {
-  await connection();
-
   const { reference } = await searchParams;
 
   // Replace this with your server-side payment verification/status lookup.
