@@ -5,7 +5,8 @@
 import { captureException } from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 import { returnServerError } from "next-safe-action";
-import type { OrderFulfillmentStatus } from "@/modules/order/order.constants";
+import { env } from "@/env";
+import type { OrderStatus } from "@/modules/order/order.constants";
 import { orderRepository } from "@/modules/order/order.repository";
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
 import {
@@ -178,8 +179,8 @@ export const checkOutAction = authenticatedActionClient
       const lineTotal = product.price * quantity;
 
       orderItems.push({
-        fulfillmentStatus: "pending",
         lineTotal,
+        orderStatus: "pending",
         product,
         productImage: product.productImage,
         productName: product.name,
@@ -231,7 +232,6 @@ export const checkOutAction = authenticatedActionClient
           currency: "NGN",
           deliveryInstructions: parsedInput.deliveryInstructions,
           email: parsedInput.email,
-          fulfillmentStatus: "pending",
           orderNumber,
           orderStatus: "pending",
           paymentStatus: "pending",
@@ -262,9 +262,9 @@ export const checkOutAction = authenticatedActionClient
         // biome-ignore lint/performance/noAwaitInLoops: <Sequential writes are intentional>
         await orderRepository.createOrderItem(
           {
-            fulfillmentStatus: item.fulfillmentStatus,
             lineTotal: item.lineTotal,
             order: order.id,
+            orderStatus: item.orderStatus,
             product: item.product.id,
             productImage: item.productImage,
             productName: item.productName,
@@ -282,7 +282,7 @@ export const checkOutAction = authenticatedActionClient
           buyer: user.id,
           currency: "NGN",
           order: order.id,
-          paymentReference: orderNumber,
+          orderReference: orderNumber,
           provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
           status: "pending",
         },
@@ -327,7 +327,10 @@ export const checkOutAction = authenticatedActionClient
           firstname,
           lastname,
           phone: parsedInput.phone,
-          redirectUrl: PAYMENT_CHECKOUT_REDIRECT_URL,
+          redirectUrl: new URL(
+            PAYMENT_CHECKOUT_REDIRECT_URL,
+            env.NEXT_PUBLIC_APP_URL
+          ).toString(),
           reference: orderNumber,
         },
         paymentId: payment.id,
@@ -358,8 +361,8 @@ export const checkOutAction = authenticatedActionClient
   });
 
 interface CheckoutOrderItem {
-  fulfillmentStatus: OrderFulfillmentStatus;
   lineTotal: number;
+  orderStatus: OrderStatus;
   product: Product;
   productImage: number | ProductLibrary;
   productName: string;

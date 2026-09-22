@@ -126,6 +126,15 @@ export class PaymentProviderUnsupportedError extends PaymentError {
   }
 }
 
+export class PaymentCurrencyMismatchError extends PaymentError {
+  constructor() {
+    super(
+      PaymentErrorCode.PAYMENT_CURRENCY_MISMATCH,
+      PaymentErrorMessage.PAYMENT_CURRENCY_MISMATCH
+    );
+  }
+}
+
 export interface PaymentErrorResponse {
   code: PaymentErrorCode;
   message: string;

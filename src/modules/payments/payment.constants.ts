@@ -13,3 +13,12 @@ export const PAYMENT_STATUS = {
   REFUNDED: "refunded",
   SUCCESSFUL: "successful",
 } as const;
+
+export const PAYMENT_VERIFICATION_STATUS = {
+  FAILED: "failed",
+  PENDING: "pending",
+  SUCCESSFUL: "successful",
+} as const;
+
+export type PaymentVerificationStatus =
+  (typeof PAYMENT_VERIFICATION_STATUS)[keyof typeof PAYMENT_VERIFICATION_STATUS];

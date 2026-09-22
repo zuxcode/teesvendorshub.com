@@ -10,14 +10,17 @@ export interface PaymentRepository {
     transactionID?: ResourceId
   ) => Promise<Payment>;
 
-  findById: (id: ResourceId, transactionID?: ResourceId) => Promise<Payment | null>;
+  findById: (
+    id: ResourceId,
+    transactionID?: ResourceId
+  ) => Promise<Payment | null>;
 
   findByOrderId: (
     orderId: ResourceId,
     transactionID?: ResourceId
   ) => Promise<Payment | null>;
 
-  findByReference: (
+  findByOrderReference: (
     reference: ResourceId,
     transactionID?: ResourceId
   ) => Promise<Payment | null>;
@@ -62,14 +65,14 @@ export const paymentRepository: PaymentRepository = {
     return result.docs[0] ?? null;
   },
 
-  findByReference: async (reference, transactionID) => {
+  findByOrderReference: async (reference, transactionID) => {
     const result = await payload.find({
       collection: "payments",
       depth: 0,
       limit: 1,
       req: { transactionID },
       where: {
-        paymentReference: {
+        orderReference: {
           equals: reference,
         },
       },

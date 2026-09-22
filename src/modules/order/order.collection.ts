@@ -2,7 +2,11 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { CURRENCY } from "./order.constants";
+import {
+  CURRENCY,
+  ORDER_PAYMENT_STATUS,
+  ORDER_STATUS,
+} from "./order.constants";
 
 export const OrdersCollection: CollectionConfig = {
   access: {
@@ -18,7 +22,6 @@ export const OrdersCollection: CollectionConfig = {
       "buyer",
       "orderStatus",
       "paymentStatus",
-      "fulfillmentStatus",
       "total",
       "currency",
       "createdAt",
@@ -63,30 +66,15 @@ export const OrdersCollection: CollectionConfig = {
         description: "Overall lifecycle status of the order.",
         position: "sidebar",
       },
-      defaultValue: "pending",
+      defaultValue: ORDER_STATUS.PENDING,
       index: true,
       name: "orderStatus",
       options: [
-        {
-          label: "Pending",
-          value: "pending",
-        },
-        {
-          label: "Processing",
-          value: "processing",
-        },
-        {
-          label: "Completed",
-          value: "completed",
-        },
-        {
-          label: "Cancelled",
-          value: "cancelled",
-        },
-        {
-          label: "Refunded",
-          value: "refunded",
-        },
+        { label: "Pending", value: ORDER_STATUS.PENDING },
+        { label: "Processing", value: ORDER_STATUS.PROCESSING },
+        { label: "Completed", value: ORDER_STATUS.COMPLETED },
+        { label: "Cancelled", value: ORDER_STATUS.CANCELLED },
+        { label: "Refunded", value: ORDER_STATUS.REFUNDED },
       ],
       required: true,
       type: "select",
@@ -97,67 +85,21 @@ export const OrdersCollection: CollectionConfig = {
         description: "Payment status for this order.",
         position: "sidebar",
       },
-      defaultValue: "pending",
+      defaultValue: ORDER_PAYMENT_STATUS.PENDING,
       index: true,
       name: "paymentStatus",
       options: [
-        {
-          label: "Pending",
-          value: "pending",
-        },
-        {
-          label: "Paid",
-          value: "paid",
-        },
-        {
-          label: "Failed",
-          value: "failed",
-        },
-        {
-          label: "Refunded",
-          value: "refunded",
-        },
+        { label: "Pending", value: ORDER_PAYMENT_STATUS.PENDING },
+        { label: "Paid", value: ORDER_PAYMENT_STATUS.PAID },
+        { label: "Failed", value: ORDER_PAYMENT_STATUS.FAILED },
+        { label: "Refunded", value: ORDER_PAYMENT_STATUS.REFUNDED },
         {
           label: "Partially Refunded",
-          value: "partially-refunded",
+          value: ORDER_PAYMENT_STATUS.PARTIALLY_REFUNDED,
         },
         {
           label: "Partially Paid",
-          value: "partially-paid",
-        },
-      ],
-      required: true,
-      type: "select",
-    },
-
-    {
-      admin: {
-        description: "Current fulfillment state of the entire order.",
-        position: "sidebar",
-      },
-      defaultValue: "pending",
-      index: true,
-      name: "fulfillmentStatus",
-      options: [
-        {
-          label: "Pending",
-          value: "pending",
-        },
-        {
-          label: "Processing",
-          value: "processing",
-        },
-        {
-          label: "Partially Fulfilled",
-          value: "partially-fulfilled",
-        },
-        {
-          label: "Fulfilled",
-          value: "fulfilled",
-        },
-        {
-          label: "Cancelled",
-          value: "cancelled",
+          value: ORDER_PAYMENT_STATUS.PARTIALLY_PAID,
         },
       ],
       required: true,
@@ -357,11 +299,6 @@ export const OrdersCollection: CollectionConfig = {
 
     {
       fields: ["paymentStatus", "createdAt"],
-      unique: false,
-    },
-
-    {
-      fields: ["fulfillmentStatus", "createdAt"],
       unique: false,
     },
 

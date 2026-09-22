@@ -39,17 +39,22 @@
 
 import { captureException } from "@sentry/nextjs";
 import { NextResponse } from "next/server";
-
+import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
 import { paymentService } from "@/modules/payments/payment.service";
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text();
+    const body = await request.json();
 
-    await paymentService.handleTransactPayWebhook(rawBody);
+    await paymentService.handleWebhook({
+      body,
+      provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
+    });
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
+    console.log(error);
+
     captureException(error, {
       tags: {
         actionName: "POST",

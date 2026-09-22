@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/access";
 import { PRODUCT_TYPE } from "../products/product.contants";
-import { ORDER_FULFILLMENT_STATUS } from "./order.constants";
+import { ORDER_STATUS } from "./order.constants";
 
 export const OrderItemsCollection: CollectionConfig = {
   access: {
@@ -19,7 +19,7 @@ export const OrderItemsCollection: CollectionConfig = {
       "unitPrice",
       "lineTotal",
       "productType",
-      "fulfillmentStatus",
+      "orderStatus",
     ],
 
     description:
@@ -138,33 +138,18 @@ export const OrderItemsCollection: CollectionConfig = {
 
     {
       admin: {
-        description: "Fulfillment state of this individual order item.",
+        description: "Overall lifecycle status of the order.",
         position: "sidebar",
       },
-      defaultValue: ORDER_FULFILLMENT_STATUS.PENDING,
+      defaultValue: ORDER_STATUS.PENDING,
       index: true,
-      name: "fulfillmentStatus",
+      name: "orderStatus",
       options: [
-        {
-          label: "Pending",
-          value: ORDER_FULFILLMENT_STATUS.PENDING,
-        },
-        {
-          label: "Processing",
-          value: ORDER_FULFILLMENT_STATUS.PROCESSING,
-        },
-        {
-          label: "Fulfilled",
-          value: ORDER_FULFILLMENT_STATUS.FULFILLED,
-        },
-        {
-          label: "Cancelled",
-          value: ORDER_FULFILLMENT_STATUS.CANCELLED,
-        },
-        {
-          label: "Failed",
-          value: ORDER_FULFILLMENT_STATUS.FAILED,
-        },
+        { label: "Pending", value: ORDER_STATUS.PENDING },
+        { label: "Processing", value: ORDER_STATUS.PROCESSING },
+        { label: "Completed", value: ORDER_STATUS.COMPLETED },
+        { label: "Cancelled", value: ORDER_STATUS.CANCELLED },
+        { label: "Refunded", value: ORDER_STATUS.REFUNDED },
       ],
       required: true,
       type: "select",
@@ -197,12 +182,12 @@ export const OrderItemsCollection: CollectionConfig = {
     },
 
     {
-      fields: ["order", "fulfillmentStatus"],
+      fields: ["order", "orderStatus"],
       unique: false,
     },
 
     {
-      fields: ["fulfillmentStatus"],
+      fields: ["orderStatus"],
       unique: false,
     },
   ],

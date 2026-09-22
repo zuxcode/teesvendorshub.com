@@ -500,10 +500,6 @@ export interface Order {
    */
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'partially-refunded' | 'partially-paid';
   /**
-   * Current fulfillment state of the entire order.
-   */
-  fulfillmentStatus: 'pending' | 'processing' | 'partially-fulfilled' | 'fulfilled' | 'cancelled';
-  /**
    * Currency used for the order.
    */
   currency: 'NGN';
@@ -603,9 +599,9 @@ export interface OrderItem {
    */
   lineTotal: number;
   /**
-   * Fulfillment state of this individual order item.
+   * Overall lifecycle status of the order.
    */
-  fulfillmentStatus: 'pending' | 'processing' | 'fulfilled' | 'cancelled' | 'failed';
+  orderStatus: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
   /**
    * Additional purchase-specific data required for fulfillment. Do not store inventory state here.
    */
@@ -627,7 +623,7 @@ export interface OrderItem {
  */
 export interface Payment {
   id: number;
-  paymentReference: string;
+  orderReference: string;
   /**
    * URL used by the customer to complete the payment.
    */
@@ -636,6 +632,11 @@ export interface Payment {
    * Reference assigned to the payment by the payment provider.
    */
   providerReference?: string | null;
+  /**
+   * Processing Fee
+   */
+  providerFee?: number | null;
+  totalAmountCharged?: number | null;
   order: number | Order;
   buyer: number | User;
   /**
@@ -1033,7 +1034,6 @@ export interface OrdersSelect<T extends boolean = true> {
   buyer?: T;
   orderStatus?: T;
   paymentStatus?: T;
-  fulfillmentStatus?: T;
   currency?: T;
   subtotal?: T;
   shippingAmount?: T;
@@ -1072,7 +1072,7 @@ export interface OrderItemsSelect<T extends boolean = true> {
   unitPrice?: T;
   quantity?: T;
   lineTotal?: T;
-  fulfillmentStatus?: T;
+  orderStatus?: T;
   metadata?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1082,9 +1082,11 @@ export interface OrderItemsSelect<T extends boolean = true> {
  * via the `definition` "payments_select".
  */
 export interface PaymentsSelect<T extends boolean = true> {
-  paymentReference?: T;
+  orderReference?: T;
   checkoutUrl?: T;
   providerReference?: T;
+  providerFee?: T;
+  totalAmountCharged?: T;
   order?: T;
   buyer?: T;
   amount?: T;

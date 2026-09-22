@@ -17,6 +17,7 @@ export const env = createEnv({
     SMTP_PASSWORD: z.string().min(1),
     TRANSACT_PAY_API_KEY: z.string().min(1),
     TRANSACT_PAY_ENCRYPTION_KEY: z.string().min(1),
+    TRANSACT_PAY_SECRET_KEY: z.string().min(1),
   },
 });
 

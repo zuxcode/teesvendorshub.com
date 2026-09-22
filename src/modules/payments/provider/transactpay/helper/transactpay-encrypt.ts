@@ -10,7 +10,7 @@ const { BigInteger } = forge.jsbn;
  * @param {string} rsaPubKey - The RSA public key in base64 XML format.
  * @returns {string} - The encrypted data in base64 encoding.
  */
-export function encryptForge(data: Record<string, unknown>, rsaPubKey: string) {
+export function encryptForge(data: unknown, rsaPubKey: string) {
   // Decode the base64 encoded public key and remove the prefix
   let rsaKeyValue = Buffer.from(rsaPubKey, "base64").toString("utf-8");
   rsaKeyValue = rsaKeyValue.replace("4096!", "");
@@ -52,14 +52,3 @@ function parseBigInteger(b64: string) {
   const decoded = forge.util.decode64(b64);
   return new BigInteger(forge.util.createBuffer(decoded).toHex(), 16);
 }
-
-// // pass payload here
-// const data = Your;
-// Payload;
-
-// const rsaPubKey = "Your_Encryption_Key";
-
-// const encryptedData = encryptForge(data, rsaPubKey);
-// console.log(encryptedData);
-
-// module.exports = encryptForge;

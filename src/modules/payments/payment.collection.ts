@@ -15,7 +15,7 @@ export const PaymentsCollection: CollectionConfig = {
 
   admin: {
     defaultColumns: [
-      "paymentReference",
+      "orderReference",
       "order",
       "status",
       "amount",
@@ -23,7 +23,7 @@ export const PaymentsCollection: CollectionConfig = {
       "provider",
       "createdAt",
     ],
-    useAsTitle: "paymentReference",
+    useAsTitle: "orderReference",
   },
 
   fields: [
@@ -32,8 +32,8 @@ export const PaymentsCollection: CollectionConfig = {
         readOnly: true,
       },
       index: true,
-      label: "Payment Reference",
-      name: "paymentReference",
+      label: "Order Reference",
+      name: "orderReference",
       required: true,
       type: "text",
       unique: true,
@@ -55,6 +55,23 @@ export const PaymentsCollection: CollectionConfig = {
       index: true,
       name: "providerReference",
       type: "text",
+    },
+    {
+      admin: {
+        description: "Processing Fee",
+        readOnly: true,
+      },
+      min: 0,
+      name: "providerFee",
+      type: "number",
+    },
+    {
+      admin: {
+        readOnly: true,
+      },
+      min: 0,
+      name: "totalAmountCharged",
+      type: "number",
     },
 
     {

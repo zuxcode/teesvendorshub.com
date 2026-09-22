@@ -1,10 +1,19 @@
 import type { Currency } from "../order/order.constants";
+import type { PaymentProviderName, PaymentVerificationStatus } from "./payment.constants";
 
 export interface PaymentAdaptor {
   initialize: (
     input: PaymentInitializeInput
   ) => Promise<PaymentInitializeResult>;
-  verifyWebhook: (input: unknown) => VerifyPaymentResult;
+
+  parseWebhook: (input: unknown) => PaymentWebhookData;
+
+  verifyPayment: (reference: string) => Promise<PaymentVerificationResult>;
+}
+
+export interface HandleWebhookInput {
+  body: unknown;
+  provider: PaymentProviderName;
 }
 
 export interface PaymentInitializeInput {
@@ -25,10 +34,16 @@ export interface PaymentInitializeResult {
   reference: string;
 }
 
-export interface VerifyPaymentResult {
+export interface PaymentWebhookData {
+  orderReference: string;
+}
+
+export interface PaymentVerificationResult {
+  amount: number;
+  currency: Currency;
   fee: number;
-  orderAmount: number;
   orderReference: string;
   paymentReference: string;
+  status: PaymentVerificationStatus;
   totalAmountCharged: number;
 }
