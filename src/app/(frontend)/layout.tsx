@@ -12,9 +12,6 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-// import { AppFooter } from "@/features/homepage/site-footer";
-// import { SiteNavbar } from "@/layout/nav-bar";
-
 const jakarta = Plus_Jakarta_Sans({
   display: "swap",
   subsets: ["latin"],
@@ -65,13 +62,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             template='<div class="bar" role="bar"><div class="peg"></div></div>'
           />
           <NuqsAdapter>
-            <TooltipProvider>
-              {/* <main className="flex flex-col justify-between min-h-screen py-6"> */}
-              {/* <SiteNavbar /> */}
-              {children}
-              {/* <AppFooter /> */}
-              {/* </main> */}
-            </TooltipProvider>
+            <TooltipProvider>{children}</TooltipProvider>
           </NuqsAdapter>
           <Toaster closeButton position="top-center" richColors />
         </ThemeProvider>

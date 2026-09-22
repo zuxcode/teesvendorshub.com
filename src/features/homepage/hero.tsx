@@ -62,7 +62,7 @@ export default function HeroSection() {
           </p>
 
           <div className="anim-fade-up mt-8 flex flex-wrap items-center gap-4 delay-6">
-            <Link href="/dashboard/sim">
+            <Link href="/dashboard">
               <Button
                 className="group rounded-full bg-linear-to-r from-primary to-secondary font-bold text-primary-foreground hover:shadow-[0_14px_34px_color-mix(in_oklab,var(--primary)_28%,transparent)]"
                 size="lg"

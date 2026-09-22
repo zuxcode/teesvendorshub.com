@@ -16,15 +16,15 @@ export const SHOP_LINKS: TeesLink[] = [
   {
     disable: false,
     exact: true,
-    href: "/products",
+    href: "/dashboard/products",
     label: "Products",
     tag: "NEW",
   },
   {
     disable: false,
     exact: true,
-    href: "/categories",
-    label: "Categories",
+    href: "/dashboard/sims",
+    label: "Sims",
   },
 ];
 
