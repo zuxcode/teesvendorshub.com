@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { CheckOutContent } from "@/modules/checkout/ui";
 import { CheckoutReturnToPreviousPage } from "@/modules/checkout/ui/checkout-back-button";
 
-export default function CheckoutPage() {
+export default async function CheckoutPage() {
+  await connection();
   return (
     <>
       <div className="mb-8">
