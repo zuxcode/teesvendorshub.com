@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CheckOutSchemaValues } from "../../modules/checkout/lib/check-out-schema";
+import type { CheckOutSchemaValues } from "../lib/check-out-schema";
 
 export function CustomerInformation() {
   const {

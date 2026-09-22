@@ -8,7 +8,11 @@ import {
 
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
-import { PRODUCT_BADGE, PRODUCT_STATUS, PRODUCT_TYPE } from "./product.contants";
+import {
+  PRODUCT_BADGE,
+  PRODUCT_STATUS,
+  PRODUCT_TYPE,
+} from "./product.contants";
 
 export const ProductsCollection: CollectionConfig = {
   access: {

@@ -1,6 +1,6 @@
 import type { Validate } from "payload";
 
-import type { Media } from "@/payload-types";
+import type { ProductLibrary } from "@/payload-types";
 
 /**
  * Alt text is required for image uploads.
@@ -11,7 +11,7 @@ import type { Media } from "@/payload-types";
  * `mimeType` may be unavailable during partial updates,
  * so validation falls back gracefully.
  */
-export const validateAltText: Validate<string, Media> = (
+export const validateAltText: Validate<string, ProductLibrary> = (
   value,
   { data }
 ): true | string => {

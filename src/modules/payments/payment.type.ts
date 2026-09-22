@@ -1,5 +1,8 @@
 import type { Currency } from "../order/order.constants";
-import type { PaymentProviderName, PaymentVerificationStatus } from "./payment.constants";
+import type {
+  PaymentProviderName,
+  PaymentVerificationStatus,
+} from "./payment.constants";
 
 export interface PaymentAdaptor {
   initialize: (

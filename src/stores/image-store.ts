@@ -4,21 +4,21 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 import type { DocumentId } from "@/lib/types";
-import type { Media } from "@/payload-types";
+import type { ProductLibrary } from "@/payload-types";
 
 export interface ImageStoreState {
-  images: Record<DocumentId, Media>;
+  images: Record<DocumentId, ProductLibrary>;
   selectedImageId: DocumentId | null;
 }
 
 export interface ImageStoreActions {
-  addImage: (image: Media) => void;
+  addImage: (image: ProductLibrary) => void;
   clearImages: () => void;
-  getImageById: (id: DocumentId) => Media | undefined;
+  getImageById: (id: DocumentId) => ProductLibrary | undefined;
   removeImage: (id: DocumentId) => void;
-  setImages: (images: Media[]) => void;
+  setImages: (images: ProductLibrary[]) => void;
   setSelectedImageId: (id: DocumentId | null) => void;
-  updateImage: (id: DocumentId, updates: Partial<Media>) => void;
+  updateImage: (id: DocumentId, updates: Partial<ProductLibrary>) => void;
 }
 
 export interface ImageStore extends ImageStoreState {

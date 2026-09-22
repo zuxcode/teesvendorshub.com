@@ -4,7 +4,7 @@ import { payload } from "../../shared/payload/utils/payload";
 export async function getSimCardsProduct() {
   try {
     return await payload.find({
-      collection: "sim-cards",
+      collection: "products",
       depth: 0,
       limit: 10_000,
     });

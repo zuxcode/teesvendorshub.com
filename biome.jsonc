@@ -17,7 +17,8 @@
       "!!src/components/ui/**/*.{ts,tsx}",
       "!!tests/**/*.{ts,tsx}",
       "!src/app/(payload)/admin/importMap.js",
-      "!src/app/(payload)/layout.tsx"
+      "!src/app/(payload)/layout.tsx",
+      "!src/payload-types.ts"
     ]
   }
 }

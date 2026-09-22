@@ -79,23 +79,23 @@ export function CartSheet() {
         </div>
 
         <div className="shrink-0 border-t bg-background px-6 py-4">
-          <Button className="w-full" disabled={isCartEmpty} size="lg">
-            {isCartEmpty ? (
-              <>
-                Checkout
-                <ArrowRight className="size-4" />
-              </>
-            ) : (
-              <Link
-                className="flex place-items-center gap-1.5"
-                href="/dashboard/checkout"
-                // biome-ignore lint/performance/noJsxPropsBind: <surpress optimization>
-                onClick={() => setIsOpen(false)}
-              >
-                Checkout
-                <ArrowRight className="size-4" />
-              </Link>
-            )}
+          <Button
+            className="w-full"
+            disabled={isCartEmpty}
+            render={
+              isCartEmpty ? undefined : (
+                <Link
+                  className="flex place-items-center gap-1.5"
+                  href="/dashboard/checkout"
+                  // biome-ignore lint/performance/noJsxPropsBind: <surpress optimization>
+                  onClick={() => setIsOpen(false)}
+                />
+              )
+            }
+            size="lg"
+          >
+            Checkout
+            <ArrowRight className="size-4" />
           </Button>
         </div>
       </SheetContent>

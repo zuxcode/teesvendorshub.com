@@ -75,6 +75,7 @@ export interface Config {
     'tax-rules': TaxRule;
     orders: Order;
     'order-items': OrderItem;
+    transactions: Transaction;
     payments: Payment;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -92,6 +93,7 @@ export interface Config {
     'tax-rules': TaxRulesSelect<false> | TaxRulesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     'order-items': OrderItemsSelect<false> | OrderItemsSelect<true>;
+    transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -195,6 +197,7 @@ export interface ProductLibrary {
    * Required for accessibility and SEO. Describe what the image shows.
    */
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -618,6 +621,89 @@ export interface OrderItem {
   createdAt: string;
 }
 /**
+ * Immutable financial transaction history for orders and payments.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions".
+ */
+export interface Transaction {
+  id: number;
+  /**
+   * Unique internal transaction reference.
+   */
+  reference: string;
+  /**
+   * Order associated with this financial transaction.
+   */
+  order: number | Order;
+  /**
+   * Customer associated with the transaction.
+   */
+  customer: number | User;
+  /**
+   * Financial event represented by this transaction.
+   */
+  type: 'payment' | 'refund' | 'chargeback';
+  /**
+   * Current processing state of this transaction.
+   */
+  status: 'pending' | 'successful' | 'failed' | 'cancelled';
+  /**
+   * Transaction amount stored in the smallest currency unit.
+   */
+  amount: number;
+  /**
+   * Currency used for this transaction.
+   */
+  currency: 'NGN';
+  /**
+   * Payment provider responsible for processing the transaction.
+   */
+  provider: 'transactpay';
+  /**
+   * Reference supplied by the payment provider.
+   */
+  providerReference?: string | null;
+  /**
+   * Raw or normalized response data received from the payment provider.
+   */
+  providerResponse?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Original transaction associated with a refund or chargeback.
+   */
+  parentTransaction?: (number | null) | Transaction;
+  /**
+   * Payment provider failure code, if available.
+   */
+  failureCode?: string | null;
+  /**
+   * Payment provider failure message, if available.
+   */
+  failureMessage?: string | null;
+  /**
+   * Human-readable explanation of the transaction.
+   */
+  description?: string | null;
+  /**
+   * Admin or system user responsible for creating this transaction.
+   */
+  createdBy?: (number | null) | User;
+  /**
+   * Kept for audit consistency. Transactions cannot be updated.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payments".
  */
@@ -814,6 +900,10 @@ export interface PayloadLockedDocument {
         value: number | OrderItem;
       } | null)
     | ({
+        relationTo: 'transactions';
+        value: number | Transaction;
+      } | null)
+    | ({
         relationTo: 'payments';
         value: number | Payment;
       } | null);
@@ -894,6 +984,7 @@ export interface ProductLibrarySelect<T extends boolean = true> {
   uploadedBy?: T;
   updatedBy?: T;
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1074,6 +1165,30 @@ export interface OrderItemsSelect<T extends boolean = true> {
   lineTotal?: T;
   orderStatus?: T;
   metadata?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions_select".
+ */
+export interface TransactionsSelect<T extends boolean = true> {
+  reference?: T;
+  order?: T;
+  customer?: T;
+  type?: T;
+  status?: T;
+  amount?: T;
+  currency?: T;
+  provider?: T;
+  providerReference?: T;
+  providerResponse?: T;
+  parentTransaction?: T;
+  failureCode?: T;
+  failureMessage?: T;
+  description?: T;
+  createdBy?: T;
+  updatedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

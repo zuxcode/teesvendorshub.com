@@ -2,11 +2,11 @@ import type { CollectionConfig } from "payload";
 import { isAdmin } from "@/access";
 
 import {
-  PAYMENT_PROVIDER,
   TRANSACTION_STATUS,
   TRANSACTION_TYPE,
 } from "@/lib/config/collection-config";
 import { CURRENCY } from "@/modules/order/order.constants";
+import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
 import { createAuditActorHook } from "../../shared/payload/hooks/audit-actor";
 
 export const TransactionsCollection: CollectionConfig = {
@@ -225,12 +225,12 @@ export const TransactionsCollection: CollectionConfig = {
       options: [
         {
           label: "Transactpay",
-          value: PAYMENT_PROVIDER.TRANSACTPAY,
+          value: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
         },
-        {
-          label: "Manual",
-          value: PAYMENT_PROVIDER.MANUAL,
-        },
+        // {
+        //   label: "Manual",
+        //   value: PAYMENT_PROVIDER_NAME.MANUAL,
+        // },
       ],
       required: true,
       type: "select",

@@ -6,8 +6,8 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { resendAdapter } from "@payloadcms/email-resend";
 import { sentryPlugin } from "@payloadcms/plugin-sentry";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import * as Sentry from "@sentry/nextjs";
-// import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 
 import { buildConfig } from "payload";
 import pg from "pg";
@@ -15,7 +15,7 @@ import sharp from "sharp";
 import { CategoriesCollection } from "./collections/category/category-collection";
 import { ProductLibraryCollection } from "./collections/media/product-library";
 import { TaxRulesCollection } from "./collections/tax/tax-rule";
-// import { TransactionsCollection } from "./collections/transaction/transaction-collection";
+import { TransactionsCollection } from "./collections/transaction/transaction-collection";
 import { UsersCollection } from "./collections/users";
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
 import { env } from "./env";
@@ -54,7 +54,7 @@ export default buildConfig({
     TaxRulesCollection,
     OrdersCollection,
     OrderItemsCollection,
-    // TransactionsCollection,
+    TransactionsCollection,
     PaymentsCollection,
   ],
   cookiePrefix: "tvh",
@@ -93,16 +93,16 @@ export default buildConfig({
     tasks: [sendWelcomeEmailTask],
   },
   plugins: [
-    // vercelBlobStorage({
-    //   clientUploads: true,
-    //   collections: {
-    //     media: true,
-    //     "product-library": {
-    //       prefix: "product",
-    //     },
-    //   },
-    //   token: env.BLOB_READ_WRITE_TOKEN,
-    // }),
+    vercelBlobStorage({
+      clientUploads: true,
+      collections: {
+        // media: true,
+        "product-library": {
+          prefix: "product",
+        },
+      },
+      token: env.BLOB_READ_WRITE_TOKEN,
+    }),
     sentryPlugin({
       options: {
         captureErrors: [401, 403, 404, 409, 422, 429, 500, 501, 502, 503, 504],

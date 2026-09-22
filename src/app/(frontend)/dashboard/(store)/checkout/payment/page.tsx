@@ -55,15 +55,15 @@ function PaymentResult({ status, reference }: PaymentResultProps) {
         </CardHeader>
 
         <CardContent className="space-y-5">
-          {reference && (
+          {reference ? (
             <div className="rounded-lg border bg-muted/40 p-4 text-sm">
               <p className="text-muted-foreground">Payment reference</p>
               <p className="mt-1 break-all font-medium">{reference}</p>
             </div>
-          )}
+          ) : null}
 
-          <Button asChild className="w-full">
-            <Link href="/account/orders">View my orders</Link>
+          <Button className="w-full" render={<Link href="/account/orders" />}>
+            View my orders
           </Button>
         </CardContent>
       </Card>
@@ -86,20 +86,24 @@ function PaymentResult({ status, reference }: PaymentResultProps) {
         </CardHeader>
 
         <CardContent className="space-y-5">
-          {reference && (
+          {reference ? (
             <div className="rounded-lg border bg-muted/40 p-4 text-sm">
               <p className="text-muted-foreground">Payment reference</p>
               <p className="mt-1 break-all font-medium">{reference}</p>
             </div>
-          )}
+          ) : null}
 
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button asChild className="flex-1">
-              <Link href="/checkout">Try again</Link>
+            <Button className="flex-1" render={<Link href="/checkout" />}>
+              Try again
             </Button>
 
-            <Button asChild className="flex-1" variant="outline">
-              <Link href="/">Continue shopping</Link>
+            <Button
+              className="flex-1"
+              render={<Link href="/dashboard/products" />}
+              variant="outline"
+            >
+              Continue shopping
             </Button>
           </div>
         </CardContent>
@@ -122,19 +126,23 @@ function PaymentResult({ status, reference }: PaymentResultProps) {
       </CardHeader>
 
       <CardContent className="space-y-5">
-        {reference && (
+        {reference ? (
           <div className="rounded-lg border bg-muted/40 p-4 text-sm">
             <p className="text-muted-foreground">Payment reference</p>
             <p className="mt-1 break-all font-medium">{reference}</p>
           </div>
-        )}
+        ) : null}
 
         <p className="text-muted-foreground text-sm">
           Please don't make another payment while we verify this transaction.
         </p>
 
-        <Button asChild className="w-full" variant="outline">
-          <Link href="/account/orders">View my orders</Link>
+        <Button
+          className="w-full"
+          render={<Link href="/account/orders" />}
+          variant="outline"
+        >
+          View my orders
         </Button>
       </CardContent>
     </Card>

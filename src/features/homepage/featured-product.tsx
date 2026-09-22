@@ -94,7 +94,10 @@ export function FeaturedProduct() {
           {marqueeItems.map((product, index) => (
             <article
               className="flex w-[300px] shrink-0 flex-col overflow-hidden rounded-3xl border border-border bg-card transition-colors hover:border-primary/40 sm:w-[320px]"
-              key={`${product.slug}-${index}`}
+              key={`${product.slug}-${
+                // biome-ignore lint/suspicious/noArrayIndexKey: <Silent>
+                index
+              }`}
             >
               {/* banner */}
               <div className="relative h-28 overflow-hidden border-border/70 border-b p-4">

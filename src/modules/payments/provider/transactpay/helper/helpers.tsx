@@ -83,7 +83,6 @@ export async function getTransactPayErrorMessage(
   return fallback;
 }
 
-
 interface CreateOrderResponse {
   isSuccess: boolean;
   message: string;

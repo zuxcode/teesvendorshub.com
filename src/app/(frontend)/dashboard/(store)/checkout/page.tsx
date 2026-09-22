@@ -1,5 +1,5 @@
 import { CheckOutContent } from "@/modules/checkout/ui";
-import { CheckoutReturnToPreviousPage } from "@/modules/checkout/ui/checkout-Back-button";
+import { CheckoutReturnToPreviousPage } from "@/modules/checkout/ui/checkout-back-button";
 
 export default function CheckoutPage() {
   return (

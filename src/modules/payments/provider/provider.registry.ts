@@ -36,7 +36,7 @@ export const paymentRegistry: PaymentRegistry = {
     throw new PaymentProviderUnsupportedError();
   },
 
-  parseWebhook({provider, body}) {
+  parseWebhook({ provider, body }) {
     if (provider === PAYMENT_PROVIDER_NAME.TRANSACTPAY) {
       return transactPayAdaptor.parseWebhook(body);
     }
