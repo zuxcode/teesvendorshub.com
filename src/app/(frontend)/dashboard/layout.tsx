@@ -1,5 +1,5 @@
+import { connection } from "next/server";
 import { type ReactNode, Suspense } from "react";
-
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardEffect } from "@/features/dashboard/dashboard-effect";
 import { ProductImagesServer } from "@/features/products/product-images-server";
@@ -15,6 +15,7 @@ export default async function DashboardLayout({
   children: ReactNode;
   sidebar: ReactNode;
 }) {
+  await connection();
   const { user } = await getAuthenticateUser();
 
   return (
