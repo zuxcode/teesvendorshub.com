@@ -15,7 +15,7 @@ export const CategoriesCollection: CollectionConfig = {
   admin: {
     defaultColumns: ["name", "slug", "parent", "status", "updatedAt"],
     description: "Product categories used to organize the TVH product catalog.",
-    group: "Ecommerce",
+    group: "Catalog",
     groupBy: true,
     listSearchableFields: ["name", "slug"],
     useAsTitle: "name",

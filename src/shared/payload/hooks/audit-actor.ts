@@ -25,8 +25,6 @@ export function createAuditActorHook<T extends TypeWithID>({
 
     updatedData[updatedBy] = user?.id;
 
-    console.log(req.headers.get("tvh-token"));
-
     return updatedData;
   };
 }

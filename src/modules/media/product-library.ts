@@ -16,7 +16,7 @@ export const ProductLibraryCollection: CollectionConfig = {
   admin: {
     defaultColumns: ["filename", "alt", "createdBy", "updatedBy", "updatedAt"],
     description: "Central product image library.",
-    group: "Ecommerce",
+    group: "Catalog",
     groupBy: true,
     useAsTitle: "filename",
   },
