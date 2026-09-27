@@ -36,7 +36,7 @@ export const ProductsCollection: CollectionConfig = {
     ],
     description:
       "Products available for purchase. Product type determines fulfillment, while product kind identifies the product category.",
-    group: "Ecommerce",
+    group: "Catalog",
     groupBy: true,
     useAsTitle: "name",
   },

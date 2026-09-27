@@ -15,7 +15,7 @@ export const TaxRulesCollection: CollectionConfig = {
   admin: {
     defaultColumns: ["name", "type", "rate", "country", "status", "updatedAt"],
     description: "Tax rules used to calculate taxes during checkout.",
-    group: "Ecommerce",
+    group: "Catalog",
     useAsTitle: "name",
   },
 
