@@ -14,7 +14,7 @@ export const ProductLibraryCollection: CollectionConfig = {
   },
 
   admin: {
-    defaultColumns: ["filename", "alt", "uploadedBy", "updatedBy", "updatedAt"],
+    defaultColumns: ["filename", "alt", "createdBy", "updatedBy", "updatedAt"],
     description: "Central product image library.",
     group: "Ecommerce",
     groupBy: true,
@@ -29,7 +29,7 @@ export const ProductLibraryCollection: CollectionConfig = {
         readOnly: true,
       },
       index: true,
-      name: "uploadedBy",
+      name: "createdBy",
       relationTo: "users",
       required: true,
       type: "relationship",
@@ -61,12 +61,7 @@ export const ProductLibraryCollection: CollectionConfig = {
   ],
 
   hooks: {
-    beforeChange: [
-      createAuditActorHook({
-        createdBy: "uploadedBy",
-        updatedBy: "updatedBy",
-      }),
-    ],
+    beforeChange: [createAuditActorHook()],
   },
 
   labels: {

@@ -11,13 +11,13 @@ export const env = createEnv({
   },
 
   server: {
-    BLOB_READ_WRITE_TOKEN: z.string().min(1),
     DATABASE_URL: z.url(),
     PAYLOAD_SECRET: z.string().min(1),
     SMTP_PASSWORD: z.string().min(1),
     TRANSACT_PAY_API_KEY: z.string().min(1),
     TRANSACT_PAY_ENCRYPTION_KEY: z.string().min(1),
     TRANSACT_PAY_SECRET_KEY: z.string().min(1),
+    TVH_READ_WRITE_TOKEN: z.string().min(1),
   },
 });
 

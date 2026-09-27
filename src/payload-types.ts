@@ -188,7 +188,7 @@ export interface ProductLibrary {
   /**
    * User who uploaded this file.
    */
-  uploadedBy: number | User;
+  createdBy: number | User;
   /**
    * User who last updated this file.
    */
@@ -981,7 +981,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "product-library_select".
  */
 export interface ProductLibrarySelect<T extends boolean = true> {
-  uploadedBy?: T;
+  createdBy?: T;
   updatedBy?: T;
   alt?: T;
   prefix?: T;
