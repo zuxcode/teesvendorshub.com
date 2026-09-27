@@ -12,15 +12,17 @@ import * as Sentry from "@sentry/nextjs";
 import { buildConfig } from "payload";
 import pg from "pg";
 import sharp from "sharp";
+
 import { CategoriesCollection } from "./collections/category/category-collection";
-import { ProductLibraryCollection } from "./collections/media/product-library";
 import { TaxRulesCollection } from "./collections/tax/tax-rule";
 import { TransactionsCollection } from "./collections/transaction/transaction-collection";
 import { UsersCollection } from "./collections/users";
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
 import { env } from "./env";
 import { sendWelcomeEmailTask } from "./lib/tasks/send-welcome-email";
+
 import { InventoryCollection } from "./modules/inventory/inventory.collection";
+import { ProductLibraryCollection } from "./modules/media/product-library";
 import { OrdersCollection } from "./modules/order/order.collection";
 import { OrderItemsCollection } from "./modules/order/order-item.collection";
 import { PaymentsCollection } from "./modules/payments/payment.collection";
@@ -34,9 +36,10 @@ const dirname = path.dirname(filename);
 const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
 
 const COR_DEV = "http://localhost:3000" as const;
+const COR_PREVIEW = "https://thv-nu.vercel.app" as const;
 const COR_PROD = [APP_URL, APP_URL_WWW] as const;
 
-const COR = IS_DEVELOPMENT ? [...COR_PROD, COR_DEV] : COR_PROD;
+const COR = IS_DEVELOPMENT ? [...COR_PROD, COR_DEV, COR_PREVIEW] : COR_PROD;
 
 export default buildConfig({
   admin: {
@@ -69,10 +72,10 @@ export default buildConfig({
     pg,
     pool: {
       connectionString: env.DATABASE_URL,
-      ssl: process.env.NODE_ENV !== "development",
     },
   }),
   debug: process.env.NODE_ENV === "development",
+  defaultDepth: 0,
   editor: lexicalEditor(),
 
   email: resendAdapter({
@@ -95,14 +98,14 @@ export default buildConfig({
   },
   plugins: [
     vercelBlobStorage({
-      clientUploads: true,
+      access: "public",
+      clientUploads: false,
       collections: {
-        // media: true,
         "product-library": {
           prefix: "product",
         },
       },
-      token: env.BLOB_READ_WRITE_TOKEN,
+      token: env.TVH_READ_WRITE_TOKEN,
     }),
     sentryPlugin({
       options: {

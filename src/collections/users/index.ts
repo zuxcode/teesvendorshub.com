@@ -27,14 +27,14 @@ export const UsersCollection: CollectionConfig = {
     useAsTitle: "fullName",
   },
   auth: {
-    cookies: {
-      domain:
-        process.env.NODE_ENV === "production"
-          ? "teesvendorshub.com"
-          : undefined,
-      sameSite: "Strict",
-      secure: process.env.NODE_ENV === "production",
-    },
+    // cookies: {
+    //   domain:
+    //     process.env.NODE_ENV === "production"
+    //       ? "teesvendorshub.com"
+    //       : undefined,
+    //   sameSite: "Strict",
+    //   secure: process.env.NODE_ENV === "production",
+    // },
     forgotPassword: {
       generateEmailHTML: (param) => {
         const resetUrl = `${APP_URL}/auth/reset-password?token=${param?.token}`;

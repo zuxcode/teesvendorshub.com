@@ -17,11 +17,15 @@ export function createAuditActorHook<T extends TypeWithID>({
       ...(data ?? {}),
     } as Record<string, unknown>;
 
+    const { user } = req;
+
     if (operation === "create") {
-      updatedData[createdBy] = req.user?.id;
+      updatedData[createdBy] = user?.id;
     }
 
-    updatedData[updatedBy] = req.user?.id;
+    updatedData[updatedBy] = user?.id;
+
+    console.log(req.headers.get("tvh-token"));
 
     return updatedData;
   };
