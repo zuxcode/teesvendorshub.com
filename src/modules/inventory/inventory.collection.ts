@@ -1,5 +1,5 @@
 import type { CollectionConfig, FieldHook } from "payload";
-import { isAdmin } from "@/access";
+import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { syncProductQuantitySnapshot } from "./helpers/inventory-sync";
 import { INVENTORY_MOVEMENT } from "./inventory.constants";
@@ -25,18 +25,9 @@ const preventManualQuantitySnapshot: FieldHook = ({
 
 export const InventoryCollection: CollectionConfig = {
   access: {
-    /**
-     * Inventory is internal/admin data.
-     *
-     * Do not expose the movement ledger publicly.
-     */
     create: isAdmin,
     delete: preventInventoryModification,
     read: isAdmin,
-
-    /**
-     * Inventory movements are immutable.
-     */
     update: preventInventoryModification,
   },
 
@@ -54,15 +45,11 @@ export const InventoryCollection: CollectionConfig = {
 
     description:
       "Immutable inventory movement history. Current stock is maintained on the product.",
-    group: "Ecommerce",
+    group: "Catalog",
     useAsTitle: "product",
   },
 
   fields: [
-    // -------------------------------------------------------------------------
-    // PRODUCT
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Product affected by this inventory movement.",
@@ -75,10 +62,6 @@ export const InventoryCollection: CollectionConfig = {
       type: "relationship",
     },
 
-    // -------------------------------------------------------------------------
-    // MOVEMENT TYPE
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Business reason for the inventory quantity change.",
@@ -89,6 +72,10 @@ export const InventoryCollection: CollectionConfig = {
       name: "type",
 
       options: [
+        {
+          label: "New stock",
+          value: INVENTORY_MOVEMENT.NEWSTOCK,
+        },
         {
           label: "Restock",
           value: INVENTORY_MOVEMENT.RESTOCK,
@@ -118,10 +105,6 @@ export const InventoryCollection: CollectionConfig = {
       type: "select",
     },
 
-    // -------------------------------------------------------------------------
-    // QUANTITY
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description:
@@ -136,10 +119,6 @@ export const InventoryCollection: CollectionConfig = {
       required: true,
       type: "number",
     },
-
-    // -------------------------------------------------------------------------
-    // STOCK BEFORE
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -159,10 +138,6 @@ export const InventoryCollection: CollectionConfig = {
       type: "number",
     },
 
-    // -------------------------------------------------------------------------
-    // STOCK AFTER
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Product stock immediately after this movement.",
@@ -181,10 +156,6 @@ export const InventoryCollection: CollectionConfig = {
       type: "number",
     },
 
-    // -------------------------------------------------------------------------
-    // REFERENCE
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description:
@@ -196,10 +167,6 @@ export const InventoryCollection: CollectionConfig = {
       type: "text",
     },
 
-    // -------------------------------------------------------------------------
-    // NOTES
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description:
@@ -209,10 +176,6 @@ export const InventoryCollection: CollectionConfig = {
       name: "notes",
       type: "textarea",
     },
-
-    // -------------------------------------------------------------------------
-    // AUDIT ACTOR
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -243,17 +206,8 @@ export const InventoryCollection: CollectionConfig = {
     },
   ],
 
-  // ---------------------------------------------------------------------------
-  // HOOKS
-  // ---------------------------------------------------------------------------
-
   hooks: {
-    beforeChange: [
-      createAuditActorHook({
-        createdBy: "createdBy",
-        updatedBy: "updatedBy",
-      }),
-    ],
+    beforeChange: [createAuditActorHook()],
   },
 
   // ---------------------------------------------------------------------------

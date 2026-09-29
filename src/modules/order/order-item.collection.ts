@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/access";
+import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
 import { PRODUCT_TYPE } from "../products/product.contants";
 import { ORDER_STATUS } from "./order.constants";
 

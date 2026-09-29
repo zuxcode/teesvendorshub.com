@@ -1,12 +1,12 @@
 import { connection } from "next/server";
 import { type ReactNode, Suspense } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { DashboardEffect } from "@/features/dashboard/dashboard-effect";
-import { ProductImagesServer } from "@/features/products/product-images-server";
-import { DashboardFooter } from "@/layout/footer/dashboard-footer";
-import { DashboardTopNav } from "@/layout/nav/dashboard-top-nav";
-import { getAuthenticateUser } from "@/lib/services/get-auth";
 import { cn } from "@/lib/utils";
+import { getAuthenticateUser } from "@/modules/authentication/libs/get-auth";
+import { DashboardEffect } from "@/modules/dashboard/dashboard-effect";
+import { ProductImagesServer } from "@/modules/products/ui/product-images-server";
+import { DashboardFooter } from "@/shared/layout/footer/dashboard-footer";
+import { DashboardTopNav } from "@/shared/layout/nav/dashboard-top-nav";
 
 export default async function DashboardLayout({
   children,

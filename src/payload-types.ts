@@ -72,11 +72,13 @@ export interface Config {
     products: Product;
     categories: Category;
     inventory: Inventory;
-    'tax-rules': TaxRule;
     orders: Order;
     'order-items': OrderItem;
     transactions: Transaction;
     payments: Payment;
+    avatars: Avatar;
+    'notification-channels': NotificationChannel;
+    'product-secrets': ProductSecret;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -90,11 +92,13 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     inventory: InventorySelect<false> | InventorySelect<true>;
-    'tax-rules': TaxRulesSelect<false> | TaxRulesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     'order-items': OrderItemsSelect<false> | OrderItemsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    avatars: AvatarsSelect<false> | AvatarsSelect<true>;
+    'notification-channels': NotificationChannelsSelect<false> | NotificationChannelsSelect<true>;
+    'product-secrets': ProductSecretsSelect<false> | ProductSecretsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -109,6 +113,7 @@ export interface Config {
   globalsSelect: {};
   locale: null;
   widgets: {
+    'connect-telegram': ConnectTelegramWidget;
     collections: CollectionsWidget;
   };
   user: User;
@@ -152,6 +157,7 @@ export interface User {
    * Customer's full name (used in emails & orders)
    */
   fullName: string;
+  avatar?: (number | null) | Avatar;
   /**
    * Optional — useful for SMS notifications or Paystack payments (Nigeria)
    */
@@ -176,6 +182,65 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * Public profile photos for users.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "avatars".
+ */
+export interface Avatar {
+  id: number;
+  /**
+   * User this profile photo belongs to.
+   */
+  user: number | User;
+  /**
+   * User who uploaded this profile photo.
+   */
+  createdBy: number | User;
+  /**
+   * User who last updated this profile photo.
+   */
+  updatedBy?: (number | null) | User;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * Central product image library.
@@ -257,10 +322,6 @@ export interface Product {
    */
   productImage: number | ProductLibrary;
   /**
-   * URL-friendly identifier generated from the product name.
-   */
-  slug: string;
-  /**
    * Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.
    */
   productType: 'physical' | 'digital';
@@ -269,9 +330,13 @@ export interface Product {
    */
   status: 'active' | 'draft' | 'inactive' | 'archived';
   /**
-   * Current inventory quantity. Stock is updated through inventory movements.
+   * Actual inventory quantity available for fulfillment. This is the authoritative stock value and is updated through inventory movements.
    */
   stock: number;
+  /**
+   * Customer-facing inventory quantity used for marketing and storefront display. This does not represent the actual inventory available for fulfillment.
+   */
+  virtualStock: number;
   /**
    * Marketing badges displayed on the product.
    */
@@ -289,13 +354,9 @@ export interface Product {
    */
   category: number | Category;
   /**
-   * Sensitive product information visible only to authorized administrators or the purchasing buyer.
+   * URL-friendly identifier generated from the product name.
    */
-  secret: string;
-  /**
-   * Customer associated with this product purchase.
-   */
-  buyer?: (number | null) | User;
+  slug: string;
   /**
    * Admin who created this product.
    */
@@ -324,37 +385,19 @@ export interface Category {
    */
   slug: string;
   /**
-   * Short description used for category pages and SEO.
-   */
-  description?: string | null;
-  /**
-   * Optional image representing the category.
-   */
-  categoryImage?: (number | null) | ProductLibrary;
-  /**
    * Optional parent category for nested categories.
    */
   parent?: (number | null) | Category;
+  /**
+   * Controls whether the category is available to customers.
+   */
   status: 'active' | 'inactive';
   /**
-   * Optional metadata for the category page.
-   */
-  seo?: {
-    /**
-     * Custom SEO title for the category page.
-     */
-    title?: string | null;
-    /**
-     * Custom SEO description for the category page.
-     */
-    description?: string | null;
-  };
-  /**
-   * Admin who created this product.
+   * Admin who created this category.
    */
   createdBy: number | User;
   /**
-   * Admin who last updated this product.
+   * Admin who last updated this category.
    */
   updatedBy?: (number | null) | User;
   updatedAt: string;
@@ -375,7 +418,7 @@ export interface Inventory {
   /**
    * Business reason for the inventory quantity change.
    */
-  type: 'restock' | 'sale' | 'return' | 'adjustment' | 'damaged' | 'expired';
+  type: 'newstock' | 'restock' | 'sale' | 'return' | 'adjustment' | 'damaged' | 'expired';
   /**
    * Quantity changed by this movement. Positive values increase stock; negative values decrease stock.
    */
@@ -402,77 +445,6 @@ export interface Inventory {
   createdBy?: (number | null) | User;
   /**
    * Kept for consistency with the audit model. Inventory records cannot be updated.
-   */
-  updatedBy?: (number | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Tax rules used to calculate taxes during checkout.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tax-rules".
- */
-export interface TaxRule {
-  id: number;
-  /**
-   * Tax rule name displayed to administrators, e.g. "VAT".
-   */
-  name: string;
-  /**
-   * Optional description explaining when this tax rule applies.
-   */
-  description?: string | null;
-  /**
-   * Determines whether the tax is calculated as a percentage or fixed amount.
-   */
-  type: 'percentage' | 'fixed';
-  /**
-   * Tax percentage applied to the taxable amount. Enter 7.5 for 7.5%.
-   */
-  rate?: number | null;
-  /**
-   * Fixed tax amount in the store currency.
-   */
-  amount?: number | null;
-  /**
-   * Currency used when a fixed tax amount is configured.
-   */
-  currency: 'NGN';
-  /**
-   * Country where this tax rule applies.
-   */
-  country: 'NG';
-  /**
-   * Determines which products are subject to this tax rule.
-   */
-  appliesTo: 'all' | 'products' | 'categories';
-  /**
-   * Products to which this tax rule applies.
-   */
-  products?: (number | Product)[] | null;
-  /**
-   * Categories to which this tax rule applies.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Only active tax rules are considered during checkout.
-   */
-  status: 'active' | 'inactive';
-  /**
-   * Optional date from which this tax rule becomes effective.
-   */
-  effectiveFrom?: string | null;
-  /**
-   * Optional date after which this tax rule is no longer effective.
-   */
-  effectiveUntil?: string | null;
-  /**
-   * Admin who created this tax rule.
-   */
-  createdBy: number | User;
-  /**
-   * Admin who last updated this tax rule.
    */
   updatedBy?: (number | null) | User;
   updatedAt: string;
@@ -753,6 +725,50 @@ export interface Payment {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-channels".
+ */
+export interface NotificationChannel {
+  id: number;
+  admin: number | User;
+  provider: 'telegram';
+  destination: string;
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Sensitive secrets for digital products. Only administrators can manage secrets.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-secrets".
+ */
+export interface ProductSecret {
+  id: number;
+  /**
+   * Sensitive product secret visible only to authorized administrators or the purchasing buyer.
+   */
+  secret: string;
+  /**
+   * Product associated with this secret.
+   */
+  product: number | Product;
+  /**
+   * Customer associated with this product purchase.
+   */
+  buyer?: (number | null) | User;
+  /**
+   * Admin who created this product secret.
+   */
+  createdBy: number | User;
+  /**
+   * Admin who last updated this product secret.
+   */
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -888,10 +904,6 @@ export interface PayloadLockedDocument {
         value: number | Inventory;
       } | null)
     | ({
-        relationTo: 'tax-rules';
-        value: number | TaxRule;
-      } | null)
-    | ({
         relationTo: 'orders';
         value: number | Order;
       } | null)
@@ -906,6 +918,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'payments';
         value: number | Payment;
+      } | null)
+    | ({
+        relationTo: 'avatars';
+        value: number | Avatar;
+      } | null)
+    | ({
+        relationTo: 'notification-channels';
+        value: number | NotificationChannel;
+      } | null)
+    | ({
+        relationTo: 'product-secrets';
+        value: number | ProductSecret;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -956,6 +980,7 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
   fullName?: T;
+  avatar?: T;
   phone?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1039,16 +1064,15 @@ export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   productImage?: T;
-  slug?: T;
   productType?: T;
   status?: T;
   stock?: T;
+  virtualStock?: T;
   badges?: T;
   price?: T;
   country?: T;
   category?: T;
-  secret?: T;
-  buyer?: T;
+  slug?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1061,16 +1085,8 @@ export interface ProductsSelect<T extends boolean = true> {
 export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
-  description?: T;
-  categoryImage?: T;
   parent?: T;
   status?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1088,29 +1104,6 @@ export interface InventorySelect<T extends boolean = true> {
   quantityAfter?: T;
   reference?: T;
   notes?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tax-rules_select".
- */
-export interface TaxRulesSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  type?: T;
-  rate?: T;
-  amount?: T;
-  currency?: T;
-  country?: T;
-  appliesTo?: T;
-  products?: T;
-  categories?: T;
-  status?: T;
-  effectiveFrom?: T;
-  effectiveUntil?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1218,6 +1211,86 @@ export interface PaymentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "avatars_select".
+ */
+export interface AvatarsSelect<T extends boolean = true> {
+  user?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-channels_select".
+ */
+export interface NotificationChannelsSelect<T extends boolean = true> {
+  admin?: T;
+  provider?: T;
+  destination?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-secrets_select".
+ */
+export interface ProductSecretsSelect<T extends boolean = true> {
+  secret?: T;
+  product?: T;
+  buyer?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1286,6 +1359,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "connect-telegram_widget".
+ */
+export interface ConnectTelegramWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

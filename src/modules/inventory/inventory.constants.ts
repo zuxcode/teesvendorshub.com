@@ -2,6 +2,7 @@ export const INVENTORY_MOVEMENT = {
   ADJUSTMENT: "adjustment",
   DAMAGED: "damaged",
   EXPIRED: "expired",
+  NEWSTOCK: "newstock",
   RESTOCK: "restock",
   RETURN: "return",
   SALE: "sale",

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useHasCartItems } from "@/modules/checkout/store/cart-store";
-import { useAuthUser } from "@/stores/user-store";
+import { useAuthUser } from "@/modules/users/stores/user-store";
 import { useOnSubmitHandler } from "../hooks/use-on-submit-handler";
 import {
   type CheckOutSchemaValues,

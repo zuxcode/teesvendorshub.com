@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { ProductDetailDialog } from "@/features/products/product-detail-dialog";
-import { ProductGridSkeleton } from "@/features/products/product-grid-skeleton";
-import { ProductsContent } from "@/features/products/products-content";
+import { ProductDetailDialog } from "@/modules/products/ui/product-detail-dialog";
+import { ProductGridSkeleton } from "@/modules/products/ui/product-grid-skeleton";
+import { ProductsContent } from "@/modules/products/ui/products-content";
 
 export default function ProductsPage() {
   return (

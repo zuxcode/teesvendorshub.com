@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/access";
+import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import {
   CURRENCY,

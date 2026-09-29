@@ -1,9 +1,8 @@
-import "@/lib/styles/homepage.css";
-import { FeaturedProduct } from "@/features/homepage/featured-product";
-import HeroSection from "@/features/homepage/hero";
-import { ProductCategories } from "@/features/homepage/product-categories";
-import { AppFooter } from "@/layout/footer/app-footer";
-import { SiteNavbar } from "@/layout/nav-bar";
+import { FeaturedProduct } from "@/modules/homepage/featured-product";
+import HeroSection from "@/modules/homepage/hero";
+import { ProductCategories } from "@/modules/homepage/product-categories";
+import { AppFooter } from "@/shared/layout/footer/app-footer";
+import { SiteNavbar } from "@/shared/layout/nav-bar";
 
 export default function HomePage() {
   return (

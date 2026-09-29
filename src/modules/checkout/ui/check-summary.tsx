@@ -4,12 +4,12 @@ import { LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency } from "@/lib/format-currency";
 import {
   useCartActions,
   useCartItemIds,
 } from "@/modules/checkout/store/cart-store";
-import { useProductActions } from "@/stores/product-store";
+import { useProductActions } from "@/modules/products/stores/product-store";
+import { formatCurrency } from "@/shared/utils/format-currency";
 import { CheckoutItem } from "./checkout-item";
 
 export function OrderSummary() {

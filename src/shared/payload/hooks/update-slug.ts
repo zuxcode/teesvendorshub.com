@@ -1,5 +1,5 @@
 import type { FieldHook, TypeWithID } from "payload";
-import { slugify } from "@/lib/slugify";
+import { slugify } from "@/shared/utils/slugify";
 
 type SourceField = "title" | (string & {});
 type SlugField = "slug" | (string & {});

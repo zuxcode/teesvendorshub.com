@@ -5,7 +5,6 @@
 import { captureException } from "@sentry/nextjs";
 import { redirect } from "next/navigation";
 import { returnServerError } from "next-safe-action";
-import { env } from "@/env";
 import type { OrderStatus } from "@/modules/order/order.constants";
 import { orderRepository } from "@/modules/order/order.repository";
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
@@ -26,6 +25,7 @@ import type { Order, Payment, Product, ProductLibrary } from "@/payload-types";
 import { PAYMENT_CHECKOUT_REDIRECT_URL } from "@/shared/config/app-config";
 import { globalServerActionError } from "@/shared/errors/global-errors";
 import { payload } from "@/shared/payload/utils/payload";
+import { env } from "@/shared/utils/env";
 import { generateUniqueReference } from "@/shared/utils/generate-unique-ref";
 import { authenticatedActionClient } from "@/shared/utils/server-action";
 import { createCheckoutSchema } from "../lib/check-out-schema";

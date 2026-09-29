@@ -1,15 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { formatCurrency } from "@/lib/format-currency";
-import { getLineTotal } from "@/lib/products/inventory";
-import type { DocumentId } from "@/lib/types";
 import { useCartItemQuantity } from "@/modules/checkout/store/cart-store";
+import { useProductImage } from "@/modules/media/stores/product-image-store";
+import { getLineTotal } from "@/modules/products/libs/inventory";
+import { useProduct } from "@/modules/products/stores/product-store";
+import type { ResourceId } from "@/shared/types";
+import { formatCurrency } from "@/shared/utils/format-currency";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
-import { useProductImage } from "@/stores/product-image-store";
-import { useProduct } from "@/stores/product-store";
 
-export function CheckoutItem({ productId }: { productId: DocumentId }) {
+export function CheckoutItem({ productId }: { productId: ResourceId }) {
   const product = useProduct(productId);
   const quantity = useCartItemQuantity(productId);
 
