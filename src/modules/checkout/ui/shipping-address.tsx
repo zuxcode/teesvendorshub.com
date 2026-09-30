@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { getAllStates, getStateTowns } from "@/lib/nigeria-geo";
-import type { CheckOutSchemaValues } from "../lib/check-out-schema";
+import type { CheckoutPhysicalSchemaValues } from "../lib/check-out-schema";
 
 export function ShippingAddress() {
   const { register, formState, setValue, watch } =
-    useFormContext<CheckOutSchemaValues>();
+    useFormContext<CheckoutPhysicalSchemaValues>();
 
   const { errors } = formState;
 
@@ -71,7 +71,7 @@ export function ShippingAddress() {
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>
 
-            <Select<CheckOutSchemaValues>
+            <Select<CheckoutPhysicalSchemaValues>
               onValueChange={(value) => {
                 setValue(
                   "state",
@@ -109,7 +109,7 @@ export function ShippingAddress() {
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
 
-            <Select<CheckOutSchemaValues>
+            <Select<CheckoutPhysicalSchemaValues>
               onValueChange={(value) => {
                 setValue("city", (value as unknown as string) || "", {
                   shouldDirty: true,

@@ -28,7 +28,7 @@ import { payload } from "@/shared/payload/utils/payload";
 import { env } from "@/shared/utils/env";
 import { generateUniqueReference } from "@/shared/utils/generate-unique-ref";
 import { authenticatedActionClient } from "@/shared/utils/server-action";
-import { createCheckoutSchema } from "../lib/check-out-schema";
+import { createDigitalCheckoutSchema } from "../lib/check-out-schema";
 
 /**
  * CHECKOUT FLOW
@@ -90,7 +90,7 @@ import { createCheckoutSchema } from "../lib/check-out-schema";
  * - Fulfillment occurs only after verified payment and successful inventory update.
  */
 export const checkOutAction = authenticatedActionClient
-  .inputSchema(createCheckoutSchema)
+  .inputSchema(createDigitalCheckoutSchema)
   .action(async ({ parsedInput, ctx }) => {
     const { user } = ctx;
 

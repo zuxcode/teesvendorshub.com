@@ -13,19 +13,19 @@ import pg from "pg";
 import sharp from "sharp";
 
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
-// import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
-// import { CategoriesCollection } from "./modules/category/category-collection";
-// import { InventoryCollection } from "./modules/inventory/inventory.collection";
-// import { AvatarCollection } from "./modules/media/avatar-collection";
-// import { ProductLibraryCollection } from "./modules/media/product-library";
-// import { NotificationChannelCollection } from "./modules/notifications/notification.collection";
-// import { OrdersCollection } from "./modules/order/order.collection";
-// import { OrderItemsCollection } from "./modules/order/order-item.collection";
-// import { PaymentsCollection } from "./modules/payments/payment.collection";
-// import { ProductsCollection } from "./modules/products/collections/product.collection";
-// import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
-// import { TransactionsCollection } from "./modules/transaction/transaction-collection";
-// import { UsersCollection } from "./modules/users";
+import { CategoriesCollection } from "./modules/category/category-collection";
+import { InventoryCollection } from "./modules/inventory/inventory.collection";
+import { AvatarCollection } from "./modules/media/avatar-collection";
+import { ProductLibraryCollection } from "./modules/media/product-library";
+import { NotificationChannelCollection } from "./modules/notifications/notification.collection";
+import { OrdersCollection } from "./modules/order/order.collection";
+import { OrderItemsCollection } from "./modules/order/order-item.collection";
+import { PaymentsCollection } from "./modules/payments/payment.collection";
+import { ProductsCollection } from "./modules/products/collections/product.collection";
+import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
+import { TransactionsCollection } from "./modules/transaction/transaction-collection";
+import { UsersCollection } from "./modules/users";
+import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
 import { env } from "./shared/utils/env";
 
 // import { DOMAIN } from "./lib/constant/constant";
@@ -61,21 +61,21 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
-    // user: UsersCollection.slug,
+    user: UsersCollection.slug,
   },
   collections: [
-    // UsersCollection,
-    // ProductLibraryCollection,
-    // ProductsCollection,
-    // CategoriesCollection,
-    // InventoryCollection,
-    // OrdersCollection,
-    // OrderItemsCollection,
-    // TransactionsCollection,
-    // PaymentsCollection,
-    // AvatarCollection,
-    // NotificationChannelCollection,
-    // ProductSecretCollection,
+    UsersCollection,
+    ProductLibraryCollection,
+    ProductsCollection,
+    CategoriesCollection,
+    InventoryCollection,
+    OrdersCollection,
+    OrderItemsCollection,
+    TransactionsCollection,
+    PaymentsCollection,
+    AvatarCollection,
+    NotificationChannelCollection,
+    ProductSecretCollection,
   ],
   cookiePrefix: "tvh",
 
@@ -111,7 +111,7 @@ export default buildConfig({
       defaultJobsCollection.admin.hidden = false;
       return defaultJobsCollection;
     },
-    // tasks: [sendWelcomeEmailTask],
+    tasks: [sendWelcomeEmailTask],
   },
 
   plugins: [

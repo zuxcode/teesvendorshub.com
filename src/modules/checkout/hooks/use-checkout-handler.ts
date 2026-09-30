@@ -6,11 +6,11 @@ import {
   useCartItemValues,
 } from "@/modules/checkout/store/cart-store";
 import { checkOutAction } from "../actions/checkout.action";
-import type { CheckOutSchemaValues } from "../lib/check-out-schema";
+import type { CheckoutDigitalSchemaValues } from "../lib/check-out-schema";
 
 const CHECK_OUT_TOAST_ID = "CHECK_OUT_TOAST_ID";
 
-export function useOnSubmitHandler() {
+export function useCheckoutHandler() {
   const cartItems = useCartItemValues();
   const { clearCart } = useCartActions();
 
@@ -64,7 +64,7 @@ export function useOnSubmitHandler() {
     },
   });
 
-  const onSubmit = (values: CheckOutSchemaValues) => {
+  const onCheckoutHandler = (values: CheckoutDigitalSchemaValues) => {
     execute({
       ...values,
       items: cartItems.map((item) => ({
@@ -75,7 +75,7 @@ export function useOnSubmitHandler() {
   };
 
   return {
-    execute: onSubmit,
+    execute: onCheckoutHandler,
     isExecuting,
   };
 }

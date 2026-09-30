@@ -50,7 +50,7 @@ export function ProductDetailDialog() {
   const imageId = getRelationshipId(selectedProduct.productImage);
   const image = imageId ? getImageById(imageId) : undefined;
 
-  const inventoryState = getProductInventoryState(selectedProduct.stock);
+  const inventoryState = getProductInventoryState(selectedProduct.virtualStock);
 
   const productType = selectedProduct.productType
     ?.replaceAll("_", " ")
