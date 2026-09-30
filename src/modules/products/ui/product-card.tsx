@@ -70,6 +70,7 @@ export function ProductCard({ id }: ProductCardProps) {
               alt={productImage?.alt || product.name}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               fill
+              loading="eager"
               sizes="
                 (max-width: 640px) 50vw,
                 (max-width: 1024px) 33vw,
