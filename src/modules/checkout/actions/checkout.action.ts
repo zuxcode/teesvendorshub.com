@@ -91,8 +91,11 @@ import { createDigitalCheckoutSchema } from "../lib/check-out-schema";
  */
 export const checkOutAction = authenticatedActionClient
   .inputSchema(createDigitalCheckoutSchema)
-  .action(async ({ parsedInput, ctx }) => {
+  .action(async ({ parsedInput, clientInput, ctx }) => {
     const { user } = ctx;
+
+    console.log(clientInput);
+    console.log(parsedInput);
 
     /**
      * Aggregate quantities by product ID.
@@ -148,15 +151,6 @@ export const checkOutAction = authenticatedActionClient
 
     let subtotal = 0;
 
-    // Calculate server-side when shipping applies.
-    const shippingAmount = 0;
-
-    // Calculate server-side when discounts apply.
-    const discountAmount = 0;
-
-    // Calculate server-side when tax applies.
-    const taxAmount = 0;
-
     for (const [productId, quantity] of quantities) {
       const product = productsById.get(productId);
 
@@ -192,7 +186,7 @@ export const checkOutAction = authenticatedActionClient
       subtotal += lineTotal;
     }
 
-    const total = subtotal + shippingAmount + taxAmount - discountAmount;
+    const total = subtotal;
 
     /**
      * Generate application-level identifiers.
