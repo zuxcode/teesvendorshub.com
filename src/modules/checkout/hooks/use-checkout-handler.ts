@@ -1,30 +1,58 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
 import {
   useCartActions,
   useCartItemValues,
 } from "@/modules/checkout/store/cart-store";
+import { useAuthUser } from "@/modules/users/stores/user-store";
 import { checkOutAction } from "../actions/checkout.action";
-import type { CheckoutDigitalSchemaValues } from "../lib/check-out-schema";
+import {
+  type CheckoutDigitalSchemaValues,
+  getCheckoutSchema,
+  getDefaultValues,
+} from "../lib/check-out-schema";
+import { useCartHasPhysicalProduct } from "./use-cart-has-physical-product";
 
 const CHECK_OUT_TOAST_ID = "CHECK_OUT_TOAST_ID";
 
 export function useCheckoutHandler() {
   const cartItems = useCartItemValues();
   const { clearCart } = useCartActions();
+  const user = useAuthUser();
+  const { cartHasPhysicalProduct } = useCartHasPhysicalProduct();
+  const schema = getCheckoutSchema(cartHasPhysicalProduct);
+
+  const form = useForm({
+    defaultValues: getDefaultValues(cartHasPhysicalProduct, user),
+    mode: "onBlur",
+    resolver: zodResolver(schema),
+  });
+
+  useEffect(() => {
+    form.reset(getDefaultValues(cartHasPhysicalProduct, user));
+  }, [user, form, cartHasPhysicalProduct]);
 
   const { execute, isExecuting } = useAction(checkOutAction, {
     onError: ({ error }) => {
       if (error.validationErrors) {
         const { fieldErrors } = error.validationErrors;
 
-        const errorMessage = Object.values(fieldErrors)
-          .flat()
-          .filter(Boolean)
-          .join(" ");
+        let errorMessage = "Please check your information.";
 
-        toast.error(errorMessage || "Please check your information.", {
+        for (const [field, messages] of Object.entries(fieldErrors)) {
+          if (messages && messages.length > 0) {
+            errorMessage = `${field}: ${messages.join(" ")}`;
+            form.setError(field as keyof CheckoutDigitalSchemaValues, {
+              message: messages.join(" "),
+              type: "manual",
+            });
+          }
+        }
+
+        toast.error(errorMessage, {
           id: CHECK_OUT_TOAST_ID,
         });
 
@@ -75,7 +103,8 @@ export function useCheckoutHandler() {
   };
 
   return {
-    execute: onCheckoutHandler,
+    execute: form.handleSubmit(onCheckoutHandler),
+    form,
     isExecuting,
   };
 }

@@ -483,14 +483,6 @@ export interface Order {
    */
   subtotal: number;
   /**
-   * Total shipping cost charged for the order.
-   */
-  shippingAmount: number;
-  /**
-   * Total tax charged for the order.
-   */
-  taxAmount: number;
-  /**
    * Final amount payable by the customer, including shipping and tax.
    */
   total: number;
@@ -505,14 +497,14 @@ export interface Order {
   /**
    * Shipping information captured when the order was placed.
    */
-  shippingAddress: {
-    fullName: string;
-    addressLine1: string;
+  shippingAddress?: {
+    fullName?: string | null;
+    addressLine1?: string | null;
     addressLine2?: string | null;
-    city: string;
-    state: string;
+    city?: string | null;
+    state?: string | null;
     postalCode?: string | null;
-    country: string;
+    country?: string | null;
   };
   /**
    * Customer-provided instructions concerning delivery.
@@ -681,6 +673,9 @@ export interface Transaction {
  */
 export interface Payment {
   id: number;
+  /**
+   * Unique internal transaction reference.
+   */
   orderReference: string;
   /**
    * URL used by the customer to complete the payment.
@@ -696,6 +691,9 @@ export interface Payment {
   providerFee?: number | null;
   totalAmountCharged?: number | null;
   order: number | Order;
+  /**
+   * Customer associated with the transaction.
+   */
   buyer: number | User;
   /**
    * Amount in the smallest currency unit (kobo).
@@ -1120,8 +1118,6 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentStatus?: T;
   currency?: T;
   subtotal?: T;
-  shippingAmount?: T;
-  taxAmount?: T;
   total?: T;
   email?: T;
   phone?: T;

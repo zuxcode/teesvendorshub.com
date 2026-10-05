@@ -23,12 +23,14 @@ export const PaymentsCollection: CollectionConfig = {
       "provider",
       "createdAt",
     ],
+    group: "Ecommerce",
     useAsTitle: "orderReference",
   },
 
   fields: [
     {
       admin: {
+        description: "Unique internal transaction reference.",
         readOnly: true,
       },
       index: true,
@@ -88,6 +90,7 @@ export const PaymentsCollection: CollectionConfig = {
 
     {
       admin: {
+        description: "Customer associated with the transaction.",
         readOnly: true,
       },
       index: true,

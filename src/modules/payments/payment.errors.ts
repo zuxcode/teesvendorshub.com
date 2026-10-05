@@ -141,10 +141,11 @@ export interface PaymentErrorResponse {
 }
 
 export function paymentServerActionError(
-  code: PaymentErrorCode
+  code: PaymentErrorCode,
+  message?: string
 ): PaymentErrorResponse {
   return {
     code,
-    message: PaymentErrorMessage[code],
+    message: message || PaymentErrorMessage[code],
   };
 }

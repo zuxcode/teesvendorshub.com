@@ -140,32 +140,6 @@ export const OrdersCollection: CollectionConfig = {
 
     {
       admin: {
-        description: "Total shipping cost charged for the order.",
-        position: "sidebar",
-        readOnly: true,
-      },
-      defaultValue: 0,
-      min: 0,
-      name: "shippingAmount",
-      required: true,
-      type: "number",
-    },
-
-    {
-      admin: {
-        description: "Total tax charged for the order.",
-        position: "sidebar",
-        readOnly: true,
-      },
-      defaultValue: 0,
-      min: 0,
-      name: "taxAmount",
-      required: true,
-      type: "number",
-    },
-
-    {
-      admin: {
         description:
           "Final amount payable by the customer, including shipping and tax.",
         position: "sidebar",
@@ -204,12 +178,10 @@ export const OrdersCollection: CollectionConfig = {
       fields: [
         {
           name: "fullName",
-          required: true,
           type: "text",
         },
         {
           name: "addressLine1",
-          required: true,
           type: "text",
         },
         {
@@ -218,12 +190,10 @@ export const OrdersCollection: CollectionConfig = {
         },
         {
           name: "city",
-          required: true,
           type: "text",
         },
         {
           name: "state",
-          required: true,
           type: "text",
         },
         {
@@ -232,7 +202,6 @@ export const OrdersCollection: CollectionConfig = {
         },
         {
           name: "country",
-          required: true,
           type: "text",
         },
       ],

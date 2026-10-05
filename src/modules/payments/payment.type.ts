@@ -22,12 +22,12 @@ export interface HandleWebhookInput {
 export interface PaymentInitializeInput {
   amount: number;
   currency: Currency;
-  customerCountry: string;
+  customerCountry: string| undefined;
   description: string;
   email: string;
   firstname: string;
   lastname: string;
-  phone: string;
+  phone: string | undefined;
   redirectUrl: string;
   reference: string;
 }

@@ -44,7 +44,6 @@ export const ProductSecretCollection: CollectionConfig = {
       admin: {
         description: "Product associated with this secret.",
         position: "sidebar",
-        readOnly: true,
       },
       index: true,
       label: "Product",
