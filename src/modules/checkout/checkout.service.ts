@@ -178,7 +178,6 @@ export class CheckoutService {
           email,
           orderNumber,
           orderStatus: "pending",
-          paymentStatus: "pending",
           phone: shipping?.phone || user.phone,
           ...(shipping
             ? {

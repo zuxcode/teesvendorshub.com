@@ -61,6 +61,9 @@ export function normalizePaymentStatus(
     case "failed":
       return "failed";
 
+    case "reversed":
+      return "refunded";
+
     default:
       return "pending";
   }

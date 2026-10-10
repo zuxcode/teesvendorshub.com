@@ -106,7 +106,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: number;
+    defaultIDType: string;
   };
   fallbackLocale: null;
   globals: {};
@@ -120,12 +120,16 @@ export interface Config {
   jobs: {
     tasks: {
       sendWelcomeEmail: TaskSendWelcomeEmail;
+      verifyPayment: TaskVerifyPayment;
+      deliverProduct: TaskDeliverProduct;
       inline: {
         input: unknown;
         output: unknown;
       };
     };
-    workflows: unknown;
+    workflows: {
+      processPaymentWebhook: WorkflowProcessPaymentWebhook;
+    };
   };
 }
 export interface UserAuthOperations {
@@ -151,13 +155,13 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
+  id: string;
   role?: ('admin' | 'customer') | null;
   /**
    * Customer's full name (used in emails & orders)
    */
   fullName: string;
-  avatar?: (number | null) | Avatar;
+  avatar?: (string | null) | Avatar;
   /**
    * Optional — useful for SMS notifications or Paystack payments (Nigeria)
    */
@@ -190,19 +194,19 @@ export interface User {
  * via the `definition` "avatars".
  */
 export interface Avatar {
-  id: number;
+  id: string;
   /**
    * User this profile photo belongs to.
    */
-  user: number | User;
+  user: string | User;
   /**
    * User who uploaded this profile photo.
    */
-  createdBy: number | User;
+  createdBy: string | User;
   /**
    * User who last updated this profile photo.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -249,15 +253,15 @@ export interface Avatar {
  * via the `definition` "product-library".
  */
 export interface ProductLibrary {
-  id: number;
+  id: string;
   /**
    * User who uploaded this file.
    */
-  createdBy: number | User;
+  createdBy: string | User;
   /**
    * User who last updated this file.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   /**
    * Required for accessibility and SEO. Describe what the image shows.
    */
@@ -308,7 +312,7 @@ export interface ProductLibrary {
  * via the `definition` "products".
  */
 export interface Product {
-  id: number;
+  id: string;
   /**
    * Product name displayed to customers, e.g. UK 🇬🇧 Lebara SIM.
    */
@@ -320,7 +324,7 @@ export interface Product {
   /**
    * Primary image displayed for the product.
    */
-  productImage: number | ProductLibrary;
+  productImage: string | ProductLibrary;
   /**
    * Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.
    */
@@ -352,7 +356,7 @@ export interface Product {
   /**
    * Category this product belongs to.
    */
-  category: number | Category;
+  category: string | Category;
   /**
    * URL-friendly identifier generated from the product name.
    */
@@ -360,11 +364,11 @@ export interface Product {
   /**
    * Admin who created this product.
    */
-  createdBy: number | User;
+  createdBy: string | User;
   /**
    * Admin who last updated this product.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -375,7 +379,7 @@ export interface Product {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: number;
+  id: string;
   /**
    * Human-readable category name.
    */
@@ -387,7 +391,7 @@ export interface Category {
   /**
    * Optional parent category for nested categories.
    */
-  parent?: (number | null) | Category;
+  parent?: (string | null) | Category;
   /**
    * Controls whether the category is available to customers.
    */
@@ -395,11 +399,11 @@ export interface Category {
   /**
    * Admin who created this category.
    */
-  createdBy: number | User;
+  createdBy: string | User;
   /**
    * Admin who last updated this category.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -410,11 +414,11 @@ export interface Category {
  * via the `definition` "inventory".
  */
 export interface Inventory {
-  id: number;
+  id: string;
   /**
    * Product affected by this inventory movement.
    */
-  product: number | Product;
+  product: string | Product;
   /**
    * Business reason for the inventory quantity change.
    */
@@ -442,11 +446,11 @@ export interface Inventory {
   /**
    * Admin or system user responsible for this inventory movement.
    */
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   /**
    * Kept for consistency with the audit model. Inventory records cannot be updated.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -457,7 +461,7 @@ export interface Inventory {
  * via the `definition` "orders".
  */
 export interface Order {
-  id: number;
+  id: string;
   /**
    * Unique customer-facing order number.
    */
@@ -465,15 +469,11 @@ export interface Order {
   /**
    * Customer who placed the order.
    */
-  buyer: number | User;
+  buyer: string | User;
   /**
    * Overall lifecycle status of the order.
    */
-  orderStatus: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
-  /**
-   * Payment status for this order.
-   */
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'partially-refunded' | 'partially-paid';
+  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
   /**
    * Currency used for the order.
    */
@@ -517,11 +517,11 @@ export interface Order {
   /**
    * User responsible for creating the order.
    */
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   /**
    * User responsible for the most recent order update.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -532,15 +532,15 @@ export interface Order {
  * via the `definition` "order-items".
  */
 export interface OrderItem {
-  id: number;
+  id: string;
   /**
    * Order this item belongs to.
    */
-  order: number | Order;
+  order: string | Order;
   /**
    * Original product purchased. Historical snapshot fields remain authoritative for this order item.
    */
-  product: number | Product;
+  product: string | Product;
   /**
    * Product name captured at the time of purchase.
    */
@@ -552,7 +552,7 @@ export interface OrderItem {
   /**
    * Product image associated with the product at purchase time.
    */
-  productImage?: (number | null) | ProductLibrary;
+  productImage?: (string | null) | ProductLibrary;
   /**
    * Unit price captured at the time of purchase.
    */
@@ -568,7 +568,7 @@ export interface OrderItem {
   /**
    * Overall lifecycle status of the order.
    */
-  orderStatus: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
+  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
   /**
    * Additional purchase-specific data required for fulfillment. Do not store inventory state here.
    */
@@ -591,7 +591,7 @@ export interface OrderItem {
  * via the `definition` "transactions".
  */
 export interface Transaction {
-  id: number;
+  id: string;
   /**
    * Unique internal transaction reference.
    */
@@ -599,11 +599,11 @@ export interface Transaction {
   /**
    * Order associated with this financial transaction.
    */
-  order: number | Order;
+  order: string | Order;
   /**
    * Customer associated with the transaction.
    */
-  customer: number | User;
+  customer: string | User;
   /**
    * Financial event represented by this transaction.
    */
@@ -643,7 +643,7 @@ export interface Transaction {
   /**
    * Original transaction associated with a refund or chargeback.
    */
-  parentTransaction?: (number | null) | Transaction;
+  parentTransaction?: (string | null) | Transaction;
   /**
    * Payment provider failure code, if available.
    */
@@ -659,11 +659,11 @@ export interface Transaction {
   /**
    * Admin or system user responsible for creating this transaction.
    */
-  createdBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
   /**
    * Kept for audit consistency. Transactions cannot be updated.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -672,7 +672,7 @@ export interface Transaction {
  * via the `definition` "payments".
  */
 export interface Payment {
-  id: number;
+  id: string;
   /**
    * Unique internal transaction reference.
    */
@@ -690,18 +690,18 @@ export interface Payment {
    */
   providerFee?: number | null;
   totalAmountCharged?: number | null;
-  order: number | Order;
+  order: string | Order;
   /**
    * Customer associated with the transaction.
    */
-  buyer: number | User;
+  buyer: string | User;
   /**
    * Amount in the smallest currency unit (kobo).
    */
   amount: number;
   currency: 'NGN';
   provider: 'transactpay';
-  status: 'pending' | 'successful' | 'failed' | 'partially-paid' | 'refunded' | 'partially-refunded';
+  status: 'pending' | 'successful' | 'failed' | 'refunded';
   paidAt?: string | null;
   refundedAt?: string | null;
   /**
@@ -716,8 +716,8 @@ export interface Payment {
     | number
     | boolean
     | null;
-  createdBy?: (number | null) | User;
-  updatedBy?: (number | null) | User;
+  createdBy?: (string | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -726,8 +726,8 @@ export interface Payment {
  * via the `definition` "notification-channels".
  */
 export interface NotificationChannel {
-  id: number;
-  admin: number | User;
+  id: string;
+  admin: string | User;
   provider: 'telegram';
   destination: string;
   enabled?: boolean | null;
@@ -741,7 +741,7 @@ export interface NotificationChannel {
  * via the `definition` "product-secrets".
  */
 export interface ProductSecret {
-  id: number;
+  id: string;
   /**
    * Sensitive product secret visible only to authorized administrators or the purchasing buyer.
    */
@@ -749,19 +749,19 @@ export interface ProductSecret {
   /**
    * Product associated with this secret.
    */
-  product: number | Product;
+  product: string | Product;
   /**
    * Customer associated with this product purchase.
    */
-  buyer?: (number | null) | User;
+  buyer?: (string | null) | User;
   /**
    * Admin who created this product secret.
    */
-  createdBy: number | User;
+  createdBy: string | User;
   /**
    * Admin who last updated this product secret.
    */
-  updatedBy?: (number | null) | User;
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -770,7 +770,7 @@ export interface ProductSecret {
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: number;
+  id: string;
   key: string;
   data:
     | {
@@ -787,7 +787,7 @@ export interface PayloadKv {
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  id: number;
+  id: string;
   /**
    * Input data provided to the job
    */
@@ -834,7 +834,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'sendWelcomeEmail';
+        taskSlug: 'inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverProduct';
         taskID: string;
         input?:
           | {
@@ -867,10 +867,15 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'sendWelcomeEmail') | null;
+  workflowSlug?: 'processPaymentWebhook' | null;
+  taskSlug?: ('inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverProduct') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  /**
+   * Used for concurrency control. Jobs with the same key are subject to exclusive/supersedes rules.
+   */
+  concurrencyKey?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -879,60 +884,60 @@ export interface PayloadJob {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
+  id: string;
   document?:
     | ({
         relationTo: 'users';
-        value: number | User;
+        value: string | User;
       } | null)
     | ({
         relationTo: 'product-library';
-        value: number | ProductLibrary;
+        value: string | ProductLibrary;
       } | null)
     | ({
         relationTo: 'products';
-        value: number | Product;
+        value: string | Product;
       } | null)
     | ({
         relationTo: 'categories';
-        value: number | Category;
+        value: string | Category;
       } | null)
     | ({
         relationTo: 'inventory';
-        value: number | Inventory;
+        value: string | Inventory;
       } | null)
     | ({
         relationTo: 'orders';
-        value: number | Order;
+        value: string | Order;
       } | null)
     | ({
         relationTo: 'order-items';
-        value: number | OrderItem;
+        value: string | OrderItem;
       } | null)
     | ({
         relationTo: 'transactions';
-        value: number | Transaction;
+        value: string | Transaction;
       } | null)
     | ({
         relationTo: 'payments';
-        value: number | Payment;
+        value: string | Payment;
       } | null)
     | ({
         relationTo: 'avatars';
-        value: number | Avatar;
+        value: string | Avatar;
       } | null)
     | ({
         relationTo: 'notification-channels';
-        value: number | NotificationChannel;
+        value: string | NotificationChannel;
       } | null)
     | ({
         relationTo: 'product-secrets';
-        value: number | ProductSecret;
+        value: string | ProductSecret;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -942,10 +947,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number;
+  id: string;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   key?: string | null;
   value?:
@@ -965,7 +970,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number;
+  id: string;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -1114,8 +1119,7 @@ export interface InventorySelect<T extends boolean = true> {
 export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
   buyer?: T;
-  orderStatus?: T;
-  paymentStatus?: T;
+  status?: T;
   currency?: T;
   subtotal?: T;
   total?: T;
@@ -1152,7 +1156,7 @@ export interface OrderItemsSelect<T extends boolean = true> {
   unitPrice?: T;
   quantity?: T;
   lineTotal?: T;
-  orderStatus?: T;
+  status?: T;
   metadata?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1317,10 +1321,12 @@ export interface PayloadJobsSelect<T extends boolean = true> {
         error?: T;
         id?: T;
       };
+  workflowSlug?: T;
   taskSlug?: T;
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  concurrencyKey?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1387,6 +1393,42 @@ export interface TaskSendWelcomeEmail {
   };
   output: {
     success: boolean;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskVerifyPayment".
+ */
+export interface TaskVerifyPayment {
+  input: {
+    paymentProvider: string;
+    orderReference: string;
+  };
+  output: {
+    success: boolean;
+    payment: string | Payment;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskDeliverProduct".
+ */
+export interface TaskDeliverProduct {
+  input: {
+    payment: string | Payment;
+  };
+  output: {
+    success: boolean;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WorkflowProcessPaymentWebhook".
+ */
+export interface WorkflowProcessPaymentWebhook {
+  input: {
+    paymentProvider: string;
+    orderReference: string;
   };
 }
 /**

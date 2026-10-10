@@ -107,7 +107,7 @@ export const inventoryService: InventoryService = {
         throw new InventoryNotFoundError();
       }
 
-      if (product.stock < item.quantity) {
+      if (product.virtualStock < item.quantity) {
         throw new InsufficientStockError();
       }
     }

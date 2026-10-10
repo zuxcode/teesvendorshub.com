@@ -161,17 +161,10 @@ export const PaymentsCollection: CollectionConfig = {
           label: "Failed",
           value: PAYMENT_STATUS.FAILED,
         },
-        {
-          label: "Partially Paid",
-          value: PAYMENT_STATUS.PARTIALLY_PAID,
-        },
+
         {
           label: "Refunded",
           value: PAYMENT_STATUS.REFUNDED,
-        },
-        {
-          label: "Partially Refunded",
-          value: PAYMENT_STATUS.PARTIALLY_REFUNDED,
         },
       ],
       required: true,

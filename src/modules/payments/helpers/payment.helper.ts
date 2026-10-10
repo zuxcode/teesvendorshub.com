@@ -44,7 +44,6 @@ export async function completePayment({
     if (!currentPayment) {
       throw new PaymentVerificationFailedError();
     }
-
     if (currentPayment.status === PAYMENT_STATUS.SUCCESSFUL) {
       await payload.db.rollbackTransaction(transactionID);
       return;

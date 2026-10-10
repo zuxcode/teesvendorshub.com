@@ -1,8 +1,5 @@
 import type { Currency } from "../order/order.constants";
-import type {
-  PaymentProviderName,
-  PaymentVerificationStatus,
-} from "./payment.constants";
+import type { PaymentProviderName, PaymentStatus } from "./payment.constants";
 
 export interface PaymentAdaptor {
   initialize: (
@@ -22,7 +19,7 @@ export interface HandleWebhookInput {
 export interface PaymentInitializeInput {
   amount: number;
   currency: Currency;
-  customerCountry: string| undefined;
+  customerCountry: string | undefined;
   description: string;
   email: string;
   firstname: string;
@@ -47,6 +44,6 @@ export interface PaymentVerificationResult {
   fee: number;
   orderReference: string;
   paymentReference: string;
-  status: PaymentVerificationStatus;
+  status: PaymentStatus;
   totalAmountCharged: number;
 }

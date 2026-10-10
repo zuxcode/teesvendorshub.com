@@ -40,30 +40,48 @@
 import { captureException } from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
-import { paymentService } from "@/modules/payments/payment.service";
+import { PaymentError } from "@/modules/payments/payment.errors";
+import { webhookManger } from "@/modules/webhook";
 
 export async function POST(request: Request) {
+  let body: unknown;
+
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ received: false }, { status: 400 });
+  }
 
-    await paymentService.handleWebhook({
+  const provider = PAYMENT_PROVIDER_NAME.TRANSACTPAY;
+
+  try {
+    await webhookManger.handle({
       body,
-      provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
+      provider,
     });
-
-    return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
-    console.log(error);
+    if (error instanceof PaymentError) {
+      captureException(error, {
+        tags: {
+          actionName: "POST",
+          flow: "Webhook",
+          provider,
+          type: "payment webhook",
+        },
+      });
+
+      return NextResponse.json({ received: false }, { status: 400 });
+    }
 
     captureException(error, {
       tags: {
         actionName: "POST",
         flow: "Webhook",
-        provider: "TransactPay",
+        provider,
         type: "payment webhook",
       },
     });
 
-    return NextResponse.json({ received: false }, { status: 500 });
+    return NextResponse.json({ received: false }, { status: 500 }); // transient → provider retries
   }
 }

@@ -23,6 +23,25 @@ export class TransactionRepository {
     return found ?? null;
   }
 
+  async findByOrder(
+    orderId: ResourceId,
+    transactionID?: ResourceId
+  ): Promise<Transaction | null> {
+    const { docs } = await this.payload.find({
+      collection: "transactions",
+      depth: 0,
+      limit: 1,
+      req: transactionID ? { transactionID } : undefined,
+      where: {
+        order: {
+          equals: orderId,
+        },
+      },
+    });
+
+    return docs[0] ?? null;
+  }
+
   create(
     transactionData: TransactionInsertData,
     transactionID?: ResourceId
@@ -30,19 +49,6 @@ export class TransactionRepository {
     return this.payload.create({
       collection: "transactions",
       data: transactionData,
-      req: { transactionID },
-    });
-  }
-
-  update(
-    id: ResourceId,
-    updateData: Partial<TransactionInsertData>,
-    transactionID?: ResourceId
-  ): Promise<Transaction> {
-    return this.payload.update({
-      collection: "transactions",
-      data: updateData,
-      id,
       req: { transactionID },
     });
   }

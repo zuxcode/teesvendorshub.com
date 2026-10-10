@@ -26,6 +26,11 @@ import { ProductSecretCollection } from "./modules/products/collections/product-
 import { TransactionsCollection } from "./modules/transaction/transaction-collection";
 import { UsersCollection } from "./modules/users";
 import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
+import {
+  deliverProduct,
+  verifyPayment,
+} from "./modules/webhook/workflow/payment-tasks";
+import { processPaymentWebhook } from "./modules/webhook/workflow/webhook-workflow";
 import { env } from "./shared/utils/env";
 
 // import { DOMAIN } from "./lib/constant/constant";
@@ -86,6 +91,7 @@ export default buildConfig({
   // csrf: [...COR],
 
   db: postgresAdapter({
+    idType: "uuidv7",
     pg,
     pool: {
       connectionString: env.DATABASE_URL,
@@ -103,6 +109,7 @@ export default buildConfig({
   }),
 
   jobs: {
+    enableConcurrencyControl: true,
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
         defaultJobsCollection.admin = {};
@@ -111,7 +118,9 @@ export default buildConfig({
       defaultJobsCollection.admin.hidden = false;
       return defaultJobsCollection;
     },
-    tasks: [sendWelcomeEmailTask],
+    tasks: [sendWelcomeEmailTask, verifyPayment, deliverProduct],
+
+    workflows: [processPaymentWebhook],
   },
 
   plugins: [
@@ -151,6 +160,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
+
   upload: {
     // safeFileNames: true,
   },

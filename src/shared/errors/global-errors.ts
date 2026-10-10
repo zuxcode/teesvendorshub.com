@@ -40,3 +40,12 @@ export class GlobalError extends Error {
     this.code = code;
   }
 }
+
+export class ServerError extends GlobalError {
+  constructor() {
+    super({
+      code: GlobalErrorCode.SERVER_ERROR,
+      message: GlobalErrorMessageMap.SERVER_ERROR,
+    });
+  }
+}

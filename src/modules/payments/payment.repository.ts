@@ -30,6 +30,11 @@ export interface PaymentRepository {
     input: Partial<Payment>,
     transactionID?: ResourceId
   ) => Promise<Payment>;
+  updateByRowLock: (
+    id: ResourceId,
+    input: Partial<Payment>,
+    transactionID?: ResourceId
+  ) => Promise<Payment | null>;
 }
 
 export const paymentRepository: PaymentRepository = {
@@ -89,4 +94,22 @@ export const paymentRepository: PaymentRepository = {
       id,
       req: { transactionID },
     }),
+
+  updateByRowLock: async (id, input, transactionID) => {
+    const { docs } = await payload.update({
+      collection: "payments",
+      data: input,
+      depth: 0,
+      req: { transactionID },
+      where: {
+        id: {
+          equals: id,
+        },
+        status: {
+          equals: "pending",
+        },
+      },
+    });
+    return docs[0] || null;
+  },
 };

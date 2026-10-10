@@ -19,7 +19,7 @@ export const OrderItemsCollection: CollectionConfig = {
       "unitPrice",
       "lineTotal",
       "productType",
-      "orderStatus",
+      "status",
     ],
 
     description:
@@ -143,7 +143,7 @@ export const OrderItemsCollection: CollectionConfig = {
       },
       defaultValue: ORDER_STATUS.PENDING,
       index: true,
-      name: "orderStatus",
+      name: "status",
       options: [
         { label: "Pending", value: ORDER_STATUS.PENDING },
         { label: "Processing", value: ORDER_STATUS.PROCESSING },
@@ -182,12 +182,12 @@ export const OrderItemsCollection: CollectionConfig = {
     },
 
     {
-      fields: ["order", "orderStatus"],
+      fields: ["order", "status"],
       unique: false,
     },
 
     {
-      fields: ["orderStatus"],
+      fields: ["status"],
       unique: false,
     },
   ],

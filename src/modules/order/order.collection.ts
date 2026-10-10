@@ -2,11 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import {
-  CURRENCY,
-  ORDER_PAYMENT_STATUS,
-  ORDER_STATUS,
-} from "./order.constants";
+import { CURRENCY, ORDER_STATUS } from "./order.constants";
 
 export const OrdersCollection: CollectionConfig = {
   access: {
@@ -20,8 +16,7 @@ export const OrdersCollection: CollectionConfig = {
     defaultColumns: [
       "orderNumber",
       "buyer",
-      "orderStatus",
-      "paymentStatus",
+      "status",
       "total",
       "currency",
       "createdAt",
@@ -68,39 +63,13 @@ export const OrdersCollection: CollectionConfig = {
       },
       defaultValue: ORDER_STATUS.PENDING,
       index: true,
-      name: "orderStatus",
+      name: "status",
       options: [
         { label: "Pending", value: ORDER_STATUS.PENDING },
         { label: "Processing", value: ORDER_STATUS.PROCESSING },
         { label: "Completed", value: ORDER_STATUS.COMPLETED },
         { label: "Cancelled", value: ORDER_STATUS.CANCELLED },
         { label: "Refunded", value: ORDER_STATUS.REFUNDED },
-      ],
-      required: true,
-      type: "select",
-    },
-
-    {
-      admin: {
-        description: "Payment status for this order.",
-        position: "sidebar",
-      },
-      defaultValue: ORDER_PAYMENT_STATUS.PENDING,
-      index: true,
-      name: "paymentStatus",
-      options: [
-        { label: "Pending", value: ORDER_PAYMENT_STATUS.PENDING },
-        { label: "Paid", value: ORDER_PAYMENT_STATUS.PAID },
-        { label: "Failed", value: ORDER_PAYMENT_STATUS.FAILED },
-        { label: "Refunded", value: ORDER_PAYMENT_STATUS.REFUNDED },
-        {
-          label: "Partially Refunded",
-          value: ORDER_PAYMENT_STATUS.PARTIALLY_REFUNDED,
-        },
-        {
-          label: "Partially Paid",
-          value: ORDER_PAYMENT_STATUS.PARTIALLY_PAID,
-        },
       ],
       required: true,
       type: "select",
@@ -262,17 +231,12 @@ export const OrdersCollection: CollectionConfig = {
     },
 
     {
-      fields: ["orderStatus", "createdAt"],
+      fields: ["status", "createdAt"],
       unique: false,
     },
 
     {
-      fields: ["paymentStatus", "createdAt"],
-      unique: false,
-    },
-
-    {
-      fields: ["buyer", "orderStatus", "createdAt"],
+      fields: ["buyer", "status", "createdAt"],
       unique: false,
     },
   ],

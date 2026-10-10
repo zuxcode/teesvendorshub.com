@@ -14,14 +14,10 @@ export class TransactionService {
     return this.transactionRepository.findById(id);
   }
 
-  create(transactionData: TransactionInsertData): Promise<Transaction> {
-    return this.transactionRepository.create(transactionData);
-  }
-
-  update(
-    id: ResourceId,
-    updateData: Partial<TransactionInsertData>
+  create(
+    transactionData: TransactionInsertData,
+    transactionID?: ResourceId
   ): Promise<Transaction> {
-    return this.transactionRepository.update(id, updateData);
+    return this.transactionRepository.create(transactionData, transactionID);
   }
 }

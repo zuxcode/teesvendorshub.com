@@ -1,6 +1,7 @@
 export const PaymentErrorCode = {
   PAYMENT_ALREADY_COMPLETED: "PAYMENT_ALREADY_COMPLETED",
   PAYMENT_ALREADY_FAILED: "PAYMENT_ALREADY_FAILED",
+  PAYMENT_ALREADY_PROCESSED: "PAYMENT_ALREADY_PROCESSED",
   PAYMENT_ALREADY_REFUNDED: "PAYMENT_ALREADY_REFUNDED",
   PAYMENT_AMOUNT_MISMATCH: "PAYMENT_AMOUNT_MISMATCH",
   PAYMENT_CAPTURE_FAILED: "PAYMENT_CAPTURE_FAILED",
@@ -21,6 +22,7 @@ export type PaymentErrorCode =
 export const PaymentErrorMessage: Record<PaymentErrorCode, string> = {
   PAYMENT_ALREADY_COMPLETED: "Payment has already been completed.",
   PAYMENT_ALREADY_FAILED: "Payment has already failed.",
+  PAYMENT_ALREADY_PROCESSED: "Payment already processed.",
   PAYMENT_ALREADY_REFUNDED: "Payment has already been refunded.",
   PAYMENT_AMOUNT_MISMATCH: "Payment amount does not match the expected amount.",
   PAYMENT_CAPTURE_FAILED: "Payment could not be captured.",
@@ -48,6 +50,14 @@ export class PaymentError extends Error {
   }
 }
 
+export class PaymentAlreadyProccessed extends PaymentError {
+  constructor() {
+    super(
+      PaymentErrorCode.PAYMENT_ALREADY_PROCESSED,
+      PaymentErrorMessage.PAYMENT_ALREADY_PROCESSED
+    );
+  }
+}
 export class PaymentNotFoundError extends PaymentError {
   constructor() {
     super(

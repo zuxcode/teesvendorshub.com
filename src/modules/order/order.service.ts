@@ -2,7 +2,7 @@ import "server-only";
 
 import type { ResourceId } from "@/shared/types";
 
-import { ORDER_PAYMENT_STATUS, ORDER_STATUS } from "./order.constants";
+import { ORDER_STATUS } from "./order.constants";
 import { OrderStatusInvalidError } from "./order.error";
 import { orderRepository } from "./order.repository";
 
@@ -22,8 +22,9 @@ export const orderService: OrderService = {
     }
 
     if (
-      order.orderStatus !== ORDER_STATUS.PENDING ||
-      order.paymentStatus !== ORDER_PAYMENT_STATUS.PENDING
+      order.orderStatus !== ORDER_STATUS.PENDING
+      // ||
+      // order.paymentStatus !== ORDER_PAYMENT_STATUS.PENDING
     ) {
       throw new OrderStatusInvalidError();
     }
@@ -32,7 +33,6 @@ export const orderService: OrderService = {
       orderId,
       {
         orderStatus: ORDER_STATUS.PROCESSING,
-        paymentStatus: ORDER_PAYMENT_STATUS.PAID,
       },
       transactionID
     );
