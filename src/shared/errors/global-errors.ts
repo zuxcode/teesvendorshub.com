@@ -9,13 +9,13 @@ export const GlobalErrorCode = {
 export type GlobalErrorCode =
   (typeof GlobalErrorCode)[keyof typeof GlobalErrorCode];
 
-export const GlobalErrorMessageMap: Record<GlobalErrorCode, string> = {
+export const GlobalErrorMessageMap = {
   ACCESS_DENIED: "You do not have permission to perform this action.",
-  AUTH_ACCOUNT_REQUIRED: "Authentication is required",
+  AUTH_ACCOUNT_REQUIRED: "Authentication is required.",
   SERVER_ERROR: "Something went wrong on our end.",
   SERVER_TIMEOUT: "The request took too long. Please try again.",
   SERVER_UNAVAILABLE: "Service is temporarily unavailable.",
-};
+} satisfies Record<GlobalErrorCode, string>;
 
 export interface GlobalErrorResponse {
   code: GlobalErrorCode;
@@ -34,18 +34,18 @@ export function globalServerActionError(
 export class GlobalError extends Error {
   readonly code: GlobalErrorCode;
 
-  constructor({ code, message }: { code: GlobalErrorCode; message: string }) {
-    super(message);
-    this.name = "GlobalError";
-    this.code = code;
-  }
-}
+  constructor({
+    code,
+    message = GlobalErrorMessageMap[code],
+    options,
+  }: {
+    code: GlobalErrorCode;
+    message?: string;
+    options?: ErrorOptions;
+  }) {
+    super(message, options);
 
-export class ServerError extends GlobalError {
-  constructor() {
-    super({
-      code: GlobalErrorCode.SERVER_ERROR,
-      message: GlobalErrorMessageMap.SERVER_ERROR,
-    });
+    this.name = new.target.name;
+    this.code = code;
   }
 }

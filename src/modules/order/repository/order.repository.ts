@@ -33,11 +33,24 @@ export class OrderRepository {
       collection: "orders",
       depth: 0,
       id,
-      // overrideAccess: true,
       req: {
         transactionID,
       },
     });
+  }
+
+  async findBuyerOrders(buyerId: string) {
+    const { docs } = await this.payload.find({
+      collection: "orders",
+      depth: 0,
+      where: {
+        buyer: {
+          equals: buyerId,
+        },
+      },
+    });
+
+    return docs;
   }
 
   update(
