@@ -47,10 +47,6 @@ export const TransactionsCollection: CollectionConfig = {
   },
 
   fields: [
-    // -------------------------------------------------------------------------
-    // REFERENCE
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Unique internal transaction reference.",
@@ -64,10 +60,6 @@ export const TransactionsCollection: CollectionConfig = {
       unique: true,
     },
 
-    // -------------------------------------------------------------------------
-    // ORDER
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Order associated with this financial transaction.",
@@ -79,10 +71,6 @@ export const TransactionsCollection: CollectionConfig = {
       required: true,
       type: "relationship",
     },
-
-    // -------------------------------------------------------------------------
-    // CUSTOMER
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -97,10 +85,6 @@ export const TransactionsCollection: CollectionConfig = {
       required: true,
       type: "relationship",
     },
-
-    // -------------------------------------------------------------------------
-    // TRANSACTION TYPE
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -128,10 +112,6 @@ export const TransactionsCollection: CollectionConfig = {
       required: true,
       type: "select",
     },
-
-    // -------------------------------------------------------------------------
-    // STATUS
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -165,9 +145,23 @@ export const TransactionsCollection: CollectionConfig = {
       type: "select",
     },
 
-    // -------------------------------------------------------------------------
-    // AMOUNT
-    // -------------------------------------------------------------------------
+    {
+      index: true,
+      name: "payment",
+      relationTo: "payments",
+      type: "relationship",
+    },
+
+    {
+      admin: {
+        description: "Unique key identifying the financial operation.",
+        readOnly: true,
+      },
+      index: true,
+      name: "idempotencyKey",
+      type: "text",
+      unique: true,
+    },
 
     {
       admin: {
@@ -180,10 +174,6 @@ export const TransactionsCollection: CollectionConfig = {
       required: true,
       type: "number",
     },
-
-    // -------------------------------------------------------------------------
-    // CURRENCY
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -203,10 +193,6 @@ export const TransactionsCollection: CollectionConfig = {
       required: true,
       type: "select",
     },
-
-    // -------------------------------------------------------------------------
-    // PAYMENT PROVIDER
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -232,10 +218,6 @@ export const TransactionsCollection: CollectionConfig = {
       type: "select",
     },
 
-    // -------------------------------------------------------------------------
-    // PROVIDER REFERENCE
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Reference supplied by the payment provider.",
@@ -247,10 +229,6 @@ export const TransactionsCollection: CollectionConfig = {
       type: "text",
     },
 
-    // -------------------------------------------------------------------------
-    // PROVIDER RESPONSE
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description:
@@ -261,10 +239,6 @@ export const TransactionsCollection: CollectionConfig = {
       name: "providerResponse",
       type: "json",
     },
-
-    // -------------------------------------------------------------------------
-    // PARENT TRANSACTION
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -278,10 +252,6 @@ export const TransactionsCollection: CollectionConfig = {
       relationTo: "transactions",
       type: "relationship",
     },
-
-    // -------------------------------------------------------------------------
-    // FAILURE INFORMATION
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -303,10 +273,6 @@ export const TransactionsCollection: CollectionConfig = {
       type: "textarea",
     },
 
-    // -------------------------------------------------------------------------
-    // DESCRIPTION
-    // -------------------------------------------------------------------------
-
     {
       admin: {
         description: "Human-readable explanation of the transaction.",
@@ -315,10 +281,6 @@ export const TransactionsCollection: CollectionConfig = {
       name: "description",
       type: "textarea",
     },
-
-    // -------------------------------------------------------------------------
-    // AUDIT
-    // -------------------------------------------------------------------------
 
     {
       admin: {
@@ -349,17 +311,9 @@ export const TransactionsCollection: CollectionConfig = {
     },
   ],
 
-  // ---------------------------------------------------------------------------
-  // HOOKS
-  // ---------------------------------------------------------------------------
-
   hooks: {
     beforeChange: [createAuditActorHook()],
   },
-
-  // ---------------------------------------------------------------------------
-  // INDEXES
-  // ---------------------------------------------------------------------------
 
   indexes: [
     {

@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
-import { PRODUCT_TYPE } from "../products/product.contants";
-import { ORDER_STATUS } from "./order.constants";
+import { PRODUCT_TYPE } from "../../products/product.constants";
+import { ORDER_FULFILLMENT_STATUS } from "../order.constants";
 
 export const OrderItemsCollection: CollectionConfig = {
   access: {
@@ -19,7 +19,7 @@ export const OrderItemsCollection: CollectionConfig = {
       "unitPrice",
       "lineTotal",
       "productType",
-      "status",
+      "fulfillmentStatus",
     ],
 
     description:
@@ -113,8 +113,7 @@ export const OrderItemsCollection: CollectionConfig = {
 
     {
       admin: {
-        description: "Quantity purchased.",
-        position: "sidebar",
+        description: "Total quantity purchased.",
         readOnly: true,
       },
       defaultValue: 1,
@@ -138,21 +137,38 @@ export const OrderItemsCollection: CollectionConfig = {
 
     {
       admin: {
-        description: "Overall lifecycle status of the order.",
+        description: "Overall lifecycle fulfillmentStatus of the order item.",
         position: "sidebar",
       },
-      defaultValue: ORDER_STATUS.PENDING,
+      defaultValue: ORDER_FULFILLMENT_STATUS.PENDING,
       index: true,
-      name: "status",
+      name: "fulfillmentStatus",
       options: [
-        { label: "Pending", value: ORDER_STATUS.PENDING },
-        { label: "Processing", value: ORDER_STATUS.PROCESSING },
-        { label: "Completed", value: ORDER_STATUS.COMPLETED },
-        { label: "Cancelled", value: ORDER_STATUS.CANCELLED },
-        { label: "Refunded", value: ORDER_STATUS.REFUNDED },
+        { label: "Pending", value: ORDER_FULFILLMENT_STATUS.PENDING },
+        { label: "Partial", value: ORDER_FULFILLMENT_STATUS.PARTIAL },
+        { label: "Completed", value: ORDER_FULFILLMENT_STATUS.COMPLETED },
+        { label: "Cancelled", value: ORDER_FULFILLMENT_STATUS.CANCELLED },
       ],
       required: true,
       type: "select",
+    },
+
+    {
+      admin: {
+        description:
+          "Sensitive product secret visible only to authorized administrators or the purchasing buyer.",
+      },
+      fields: [
+        {
+          label: "Secret",
+          name: "secret",
+          required: true,
+          type: "text",
+        },
+      ],
+      label: "Secrets",
+      name: "secrets",
+      type: "array",
     },
 
     {
@@ -182,12 +198,12 @@ export const OrderItemsCollection: CollectionConfig = {
     },
 
     {
-      fields: ["order", "status"],
+      fields: ["order", "fulfillmentStatus"],
       unique: false,
     },
 
     {
-      fields: ["status"],
+      fields: ["fulfillmentStatus"],
       unique: false,
     },
   ],

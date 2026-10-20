@@ -1,6 +1,6 @@
 import type { Payload } from "payload";
 import type { Transaction } from "@/payload-types";
-import type { ResourceId } from "@/shared/types";
+import type { DatabaseTransactionId } from "@/shared/types";
 import type { TransactionInsertData } from "./types/transactions.type";
 
 export class TransactionRepository {
@@ -11,8 +11,8 @@ export class TransactionRepository {
   }
 
   async findById(
-    id: ResourceId,
-    transactionID?: ResourceId
+    id: string,
+    transactionID?: DatabaseTransactionId
   ): Promise<Transaction | null> {
     const found = await this.payload.findByID({
       collection: "transactions",
@@ -24,8 +24,8 @@ export class TransactionRepository {
   }
 
   async findByOrder(
-    orderId: ResourceId,
-    transactionID?: ResourceId
+    orderId: string,
+    transactionID?: DatabaseTransactionId
   ): Promise<Transaction | null> {
     const { docs } = await this.payload.find({
       collection: "transactions",
@@ -44,7 +44,7 @@ export class TransactionRepository {
 
   create(
     transactionData: TransactionInsertData,
-    transactionID?: ResourceId
+    transactionID?: DatabaseTransactionId
   ): Promise<Transaction> {
     return this.payload.create({
       collection: "transactions",

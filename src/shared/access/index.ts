@@ -37,6 +37,8 @@ export const isAdminOrOwner: Access = ({ req }) => {
 
 export const isAdmin: Access = ({ req }) => req.user?.role === ROLE.ADMIN;
 
+export const disableAccess = () => false;
+
 // FIELD ACCESS
 export const isAdminOnlyFieldAccess: FieldAccess = ({ req }) =>
   req.user?.role === ROLE.ADMIN;

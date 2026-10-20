@@ -1,7 +1,9 @@
 import { captureException } from "@sentry/nextjs";
-import type { OrderRepository } from "@/modules/order/order.repository";
-import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
-import { PaymentError } from "@/modules/payments/payment.errors";
+import type { OrderRepository } from "@/modules/order/repository/order.repository";
+import {
+  PAYMENT_PROVIDER_NAME,
+  PAYMENT_STATUS,
+} from "@/modules/payments/payment.constants";
 import type { PaymentRepository } from "@/modules/payments/payment.repository";
 import type { PaymentService } from "@/modules/payments/payment.service";
 import {
@@ -10,24 +12,23 @@ import {
   ProductOutOfStockError,
 } from "@/modules/products/product.error";
 import type { ProductService } from "@/modules/products/product.service";
-import { TRANSACTION_TYPE } from "@/modules/transaction/constants/constant";
-import type { TransactionRepository } from "@/modules/transaction/transaction.repository";
 import type {
   Order,
   Payment,
   Product,
   ProductLibrary,
-  Transaction,
   User,
 } from "@/payload-types";
 import { PAYMENT_CHECKOUT_REDIRECT_URL } from "@/shared/config/app-config";
-import type { ResourceId } from "@/shared/types";
+import { ServerError } from "@/shared/errors/global-errors";
+import type { DatabaseTransaction } from "@/shared/types";
 import { env } from "@/shared/utils/env";
 import { generateUniqueReference } from "@/shared/utils/generate-unique-ref";
 import { splitFullName } from "@/shared/utils/split-full-name";
-import type { OrderStatus } from "../order/order.constants";
-import type { ProductType } from "../products/product.contants";
-import { CheckoutError } from "./checkout.errors";
+import { ORDER_STATUS } from "../order/order.constants";
+import type { OrderItemRepository } from "../order/repository/order-item.repository";
+import type { ProductType } from "../products/product.constants";
+import { CheckoutError, CheckoutErrorCode } from "./checkout.errors";
 import {
   type CartItemsSchemaValues,
   createPhysicalCheckoutSchema,
@@ -42,9 +43,8 @@ export interface CheckoutResult {
 
 interface CheckoutOrderItem {
   lineTotal: number;
-  orderStatus: OrderStatus;
   product: Product;
-  productImage: number | ProductLibrary;
+  productImage: string | ProductLibrary;
   productName: string;
   productType: ProductType;
   quantity: number;
@@ -54,34 +54,25 @@ interface CheckoutOrderItem {
 export class CheckoutService {
   private readonly productService: ProductService;
   private readonly orderRepository: OrderRepository;
+  private readonly orderItemRepository: OrderItemRepository;
   private readonly paymentRepository: PaymentRepository;
-  private readonly transactionRepository: TransactionRepository;
   private readonly paymentService: PaymentService;
-  private readonly beginTransaction: () => Promise<null | number | string>;
-  private readonly commit: (
-    id: number | Promise<number | string> | string
-  ) => Promise<void>;
-  private readonly rollback: (
-    id: number | Promise<number | string> | string
-  ) => Promise<void>;
+  private readonly databaseTransaction: DatabaseTransaction;
+
   constructor(
     productService: ProductService,
     orderRepository: OrderRepository,
     paymentRepository: PaymentRepository,
-    transactionRepository: TransactionRepository,
     paymentService: PaymentService,
-    beginTransaction: () => Promise<null | number | string>,
-    commit: (id: number | Promise<number | string> | string) => Promise<void>,
-    rollback: (id: number | Promise<number | string> | string) => Promise<void>
+    orderItemRepository: OrderItemRepository,
+    databaseTransaction: DatabaseTransaction
   ) {
     this.productService = productService;
     this.orderRepository = orderRepository;
     this.paymentRepository = paymentRepository;
-    this.transactionRepository = transactionRepository;
     this.paymentService = paymentService;
-    this.beginTransaction = beginTransaction;
-    this.commit = commit;
-    this.rollback = rollback;
+    this.orderItemRepository = orderItemRepository;
+    this.databaseTransaction = databaseTransaction;
   }
 
   async checkout(args: {
@@ -100,7 +91,7 @@ export class CheckoutService {
      */
     const quantities = new Map<string, number>();
     for (const item of args.items) {
-      const id = String(item.productId);
+      const id = item.productId;
       quantities.set(id, (quantities.get(id) ?? 0) + item.quantity);
     }
 
@@ -108,7 +99,7 @@ export class CheckoutService {
       ...quantities.keys(),
     ]);
 
-    const productsById = new Map(products.map((p) => [String(p.id), p]));
+    const productsById = new Map(products.map((p) => [p.id, p]));
 
     const hasPhysical = products.some((p) => p.productType === "physical");
 
@@ -117,15 +108,16 @@ export class CheckoutService {
       : undefined;
 
     const fullName = shipping?.fullName ?? user.fullName;
+    const phoneNumber = shipping?.phone ?? user.phone ?? undefined;
 
     if (!fullName) {
-      throw new CheckoutError("PAYMENT_INIT_FAILED");
+      throw new CheckoutError(CheckoutErrorCode.PAYMENT_INIT_FAILED);
     }
 
     const { firstname, lastname } = splitFullName(fullName);
 
     const orderItems: CheckoutOrderItem[] = [];
-    let subtotal = 0;
+    let total = 0;
 
     for (const [productId, quantity] of quantities) {
       const product = productsById.get(productId);
@@ -143,7 +135,6 @@ export class CheckoutService {
 
       orderItems.push({
         lineTotal,
-        orderStatus: "pending" as const,
         product,
         productImage: product.productImage,
         productName: product.name,
@@ -151,23 +142,21 @@ export class CheckoutService {
         quantity,
         unitPrice: product.price,
       });
-      subtotal += lineTotal;
+      total += lineTotal;
     }
 
-    const total = subtotal;
-    const orderNumber = generateUniqueReference("ORD");
+    const reference = generateUniqueReference("ORD");
 
-    const transactionID = await this.beginTransaction();
+    const transactionID = await this.databaseTransaction.beginTransaction();
     if (!transactionID) {
       captureException(new Error("Failed to begin database transaction"), {
         tags: { layer: "database", operation: "beginTransaction" },
       });
-      throw new CheckoutError("TRANSACTION_FAILED");
+      throw new ServerError();
     }
 
     let order: Order;
     let payment: Payment;
-    let transaction: Transaction;
 
     try {
       order = await this.orderRepository.create(
@@ -176,9 +165,9 @@ export class CheckoutService {
           currency: "NGN",
           deliveryInstructions: shipping?.deliveryInstructions,
           email,
-          orderNumber,
-          orderStatus: "pending",
-          phone: shipping?.phone || user.phone,
+          phone: phoneNumber,
+          reference,
+          status: ORDER_STATUS.PENDING,
           ...(shipping
             ? {
                 shippingAddress: {
@@ -192,7 +181,7 @@ export class CheckoutService {
                 },
               }
             : {}),
-          subtotal,
+          subtotal: total,
           total,
         },
         transactionID
@@ -200,11 +189,11 @@ export class CheckoutService {
 
       for (const item of orderItems) {
         // biome-ignore lint/performance/noAwaitInLoops: <Sequential writes are intentional>
-        await this.orderRepository.createOrderItem(
+        await this.orderItemRepository.create(
           {
+            fulfillmentStatus: ORDER_STATUS.PENDING,
             lineTotal: item.lineTotal,
             order: order.id,
-            orderStatus: item.orderStatus,
             product: item.product.id,
             productImage: item.productImage,
             productName: item.productName,
@@ -222,42 +211,26 @@ export class CheckoutService {
           buyer: user.id,
           currency: "NGN",
           order: order.id,
-          orderReference: orderNumber,
+          orderReference: reference,
           provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
-          status: "pending",
+          status: PAYMENT_STATUS.PENDING,
         },
         transactionID
       );
 
-      transaction = await this.transactionRepository.create(
-        {
-          amount: total,
-          currency: "NGN",
-          customer: user.id,
-          description: "purchase",
-          order: order.id,
-          provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
-          reference: orderNumber,
-          status: "pending",
-          type: TRANSACTION_TYPE.PAYMENT,
-        },
-        transactionID
-      );
-
-      await this.commit(transactionID);
+      await this.databaseTransaction.commitTransaction(transactionID);
     } catch (error) {
-      await this.rollback(transactionID);
+      await this.databaseTransaction.rollbackTransaction(transactionID);
       captureException(error, {
         tags: {
           actionName: "checkOutAction",
           flow: "Create checkout transaction",
         },
       });
-      // biome-ignore lint/style/useErrorCause: <supress cause> --- IGNORE ---
-      throw new CheckoutError("CHECKOUT_PERSIST_FAILED");
+      // biome-ignore lint/style/useErrorCause: <supress cause>
+      throw new ServerError();
     }
 
-    // ── 6. Provider — only after commit ──
     try {
       const result = await this.paymentService.initializePayment({
         input: {
@@ -268,55 +241,22 @@ export class CheckoutService {
           email,
           firstname,
           lastname,
-          phone: shipping?.phone,
+          phone: phoneNumber,
           redirectUrl: new URL(
             PAYMENT_CHECKOUT_REDIRECT_URL,
             env.NEXT_PUBLIC_APP_URL
           ).toString(),
-          reference: orderNumber,
+          reference,
         },
         paymentId: payment.id,
       });
       return { checkoutUrl: result.checkoutUrl, order };
     } catch (error) {
-      if (error instanceof PaymentError) {
-        await this.markFailed(transaction, payment, error); // new tx, both updates atomic
-        throw error;
-      }
       captureException(error, {
         tags: { actionName: "checkOutAction", flow: "Initialize payment" },
       });
-      // biome-ignore lint/style/useErrorCause: <supress cause> --- IGNORE ---
+      // biome-ignore lint/style/useErrorCause: <supress cause>
       throw new CheckoutError("PAYMENT_INIT_FAILED");
-    }
-  }
-
-  private async markFailed(
-    transaction: Transaction,
-    payment: { id: ResourceId },
-    error: PaymentError
-  ): Promise<void> {
-    const id = await this.beginTransaction();
-    if (!id) {
-      return;
-    }
-    try {
-      await this.transactionRepository.update(
-        transaction.id,
-        {
-          failureCode: error.code,
-          failureMessage: error.message,
-          status: "failed",
-        },
-        id
-      );
-      await this.paymentRepository.update(payment.id, { status: "failed" }, id);
-      await this.commit(id);
-    } catch (err) {
-      await this.rollback(id);
-      captureException(err, {
-        tags: { actionName: "checkOutAction", flow: "Mark payment failed" },
-      });
     }
   }
 }

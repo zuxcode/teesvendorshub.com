@@ -24,3 +24,11 @@ export const PRODUCT_BADGE = {
 } as const;
 
 export type ProductBadge = (typeof PRODUCT_BADGE)[keyof typeof PRODUCT_BADGE];
+
+export const PRODUCT_SECRET_STATUS = {
+  AVAILABLE: "available",
+  SOLD: "sold",
+} as const;
+
+export type ProductSecretStatus =
+  (typeof PRODUCT_SECRET_STATUS)[keyof typeof PRODUCT_SECRET_STATUS];

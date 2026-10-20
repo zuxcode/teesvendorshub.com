@@ -77,7 +77,6 @@ export interface Config {
     transactions: Transaction;
     payments: Payment;
     avatars: Avatar;
-    'notification-channels': NotificationChannel;
     'product-secrets': ProductSecret;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -97,7 +96,6 @@ export interface Config {
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     avatars: AvatarsSelect<false> | AvatarsSelect<true>;
-    'notification-channels': NotificationChannelsSelect<false> | NotificationChannelsSelect<true>;
     'product-secrets': ProductSecretsSelect<false> | ProductSecretsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -113,7 +111,6 @@ export interface Config {
   globalsSelect: {};
   locale: null;
   widgets: {
-    'connect-telegram': ConnectTelegramWidget;
     collections: CollectionsWidget;
   };
   user: User;
@@ -121,7 +118,8 @@ export interface Config {
     tasks: {
       sendWelcomeEmail: TaskSendWelcomeEmail;
       verifyPayment: TaskVerifyPayment;
-      deliverProduct: TaskDeliverProduct;
+      deliverOrder: TaskDeliverOrder;
+      validateOrder: TaskValidateOrder;
       inline: {
         input: unknown;
         output: unknown;
@@ -465,7 +463,7 @@ export interface Order {
   /**
    * Unique customer-facing order number.
    */
-  orderNumber: string;
+  reference: string;
   /**
    * Customer who placed the order.
    */
@@ -558,7 +556,7 @@ export interface OrderItem {
    */
   unitPrice: number;
   /**
-   * Quantity purchased.
+   * Total quantity purchased.
    */
   quantity: number;
   /**
@@ -566,9 +564,18 @@ export interface OrderItem {
    */
   lineTotal: number;
   /**
-   * Overall lifecycle status of the order.
+   * Overall lifecycle fulfillmentStatus of the order item.
    */
-  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
+  fulfillmentStatus: 'pending' | 'partial' | 'completed' | 'cancelled';
+  /**
+   * Sensitive product secret visible only to authorized administrators or the purchasing buyer.
+   */
+  secrets?:
+    | {
+        secret: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Additional purchase-specific data required for fulfillment. Do not store inventory state here.
    */
@@ -612,6 +619,11 @@ export interface Transaction {
    * Current processing state of this transaction.
    */
   status: 'pending' | 'successful' | 'failed' | 'cancelled';
+  payment?: (string | null) | Payment;
+  /**
+   * Unique key identifying the financial operation.
+   */
+  idempotencyKey?: string | null;
   /**
    * Transaction amount stored in the smallest currency unit.
    */
@@ -722,20 +734,7 @@ export interface Payment {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notification-channels".
- */
-export interface NotificationChannel {
-  id: string;
-  admin: string | User;
-  provider: 'telegram';
-  destination: string;
-  enabled?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Sensitive secrets for digital products. Only administrators can manage secrets.
+ * Sensitive digital product secrets. Only administrators can manage secrets.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-secrets".
@@ -743,24 +742,16 @@ export interface NotificationChannel {
 export interface ProductSecret {
   id: string;
   /**
-   * Sensitive product secret visible only to authorized administrators or the purchasing buyer.
+   * Sensitive credential or digital delivery value.
    */
   secret: string;
-  /**
-   * Product associated with this secret.
-   */
   product: string | Product;
+  status: 'available' | 'sold';
   /**
-   * Customer associated with this product purchase.
+   * Timestamp when the secret was assigned to an order.
    */
-  buyer?: (string | null) | User;
-  /**
-   * Admin who created this product secret.
-   */
+  soldAt?: string | null;
   createdBy: string | User;
-  /**
-   * Admin who last updated this product secret.
-   */
   updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
@@ -834,7 +825,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverProduct';
+        taskSlug: 'inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverOrder' | 'validateOrder';
         taskID: string;
         input?:
           | {
@@ -868,7 +859,7 @@ export interface PayloadJob {
       }[]
     | null;
   workflowSlug?: 'processPaymentWebhook' | null;
-  taskSlug?: ('inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverProduct') | null;
+  taskSlug?: ('inline' | 'sendWelcomeEmail' | 'verifyPayment' | 'deliverOrder' | 'validateOrder') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -925,10 +916,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'avatars';
         value: string | Avatar;
-      } | null)
-    | ({
-        relationTo: 'notification-channels';
-        value: string | NotificationChannel;
       } | null)
     | ({
         relationTo: 'product-secrets';
@@ -1117,7 +1104,7 @@ export interface InventorySelect<T extends boolean = true> {
  * via the `definition` "orders_select".
  */
 export interface OrdersSelect<T extends boolean = true> {
-  orderNumber?: T;
+  reference?: T;
   buyer?: T;
   status?: T;
   currency?: T;
@@ -1156,7 +1143,13 @@ export interface OrderItemsSelect<T extends boolean = true> {
   unitPrice?: T;
   quantity?: T;
   lineTotal?: T;
-  status?: T;
+  fulfillmentStatus?: T;
+  secrets?:
+    | T
+    | {
+        secret?: T;
+        id?: T;
+      };
   metadata?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1171,6 +1164,8 @@ export interface TransactionsSelect<T extends boolean = true> {
   customer?: T;
   type?: T;
   status?: T;
+  payment?: T;
+  idempotencyKey?: T;
   amount?: T;
   currency?: T;
   provider?: T;
@@ -1266,24 +1261,13 @@ export interface AvatarsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notification-channels_select".
- */
-export interface NotificationChannelsSelect<T extends boolean = true> {
-  admin?: T;
-  provider?: T;
-  destination?: T;
-  enabled?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-secrets_select".
  */
 export interface ProductSecretsSelect<T extends boolean = true> {
   secret?: T;
   product?: T;
-  buyer?: T;
+  status?: T;
+  soldAt?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1364,16 +1348,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "connect-telegram_widget".
- */
-export interface ConnectTelegramWidget {
-  data?: {
-    [k: string]: unknown;
-  };
-  width: 'x-small' | 'small' | 'medium' | 'large' | 'x-large' | 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -1405,20 +1379,36 @@ export interface TaskVerifyPayment {
     orderReference: string;
   };
   output: {
-    success: boolean;
-    payment: string | Payment;
+    status: 'failed' | 'refunded' | 'successful' | 'pending';
+    order: string | Order;
   };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskDeliverProduct".
+ * via the `definition` "TaskDeliverOrder".
  */
-export interface TaskDeliverProduct {
+export interface TaskDeliverOrder {
   input: {
-    payment: string | Payment;
+    status: 'processing' | 'completed' | 'pending' | 'cancelled' | 'refunded';
+    orderId: string;
   };
   output: {
-    success: boolean;
+    status: 'processing' | 'completed' | 'pending' | 'cancelled' | 'refunded';
+    orderId: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskValidateOrder".
+ */
+export interface TaskValidateOrder {
+  input: {
+    status: 'failed' | 'refunded' | 'successful' | 'pending';
+    order: string | Order;
+  };
+  output: {
+    status: 'processing' | 'completed' | 'pending' | 'cancelled' | 'refunded';
+    orderId: string;
   };
 }
 /**

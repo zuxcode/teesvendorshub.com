@@ -1,5 +1,3 @@
-import "server-only";
-
 import { TRANSACTPAY_BASE_URL } from "@/shared/config/app-config";
 import { env } from "@/shared/utils/env";
 

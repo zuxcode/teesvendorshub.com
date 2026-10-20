@@ -1,14 +1,9 @@
 import type { CollectionConfig } from "payload";
 
-import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
+import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
+import { PRODUCT_SECRET_STATUS } from "../product.constants";
 
-/**
- * Stores sensitive digital product secrets.
- *
- * Only administrators can create, update, and delete secrets.
- * A purchasing buyer may read the secret associated with their purchase.
- */
 export const ProductSecretCollection: CollectionConfig = {
   access: {
     create: isAdmin,
@@ -18,31 +13,25 @@ export const ProductSecretCollection: CollectionConfig = {
   },
 
   admin: {
-    defaultColumns: ["product", "buyer", "updatedAt"],
+    defaultColumns: ["product", "status", "soldAt", "updatedAt"],
     description:
-      "Sensitive secrets for digital products. Only administrators can manage secrets.",
+      "Sensitive digital product secrets. Only administrators can manage secrets.",
     group: "Catalog",
     useAsTitle: "product",
   },
 
   fields: [
     {
-      access: {
-        read: isAdminOrBuyerOnlyFieldAccess,
-      },
       admin: {
-        description:
-          "Sensitive product secret visible only to authorized administrators or the purchasing buyer.",
+        description: "Sensitive credential or digital delivery value.",
       },
       label: "Secret",
       name: "secret",
       required: true,
       type: "textarea",
     },
-
     {
       admin: {
-        description: "Product associated with this secret.",
         position: "sidebar",
       },
       index: true,
@@ -51,45 +40,53 @@ export const ProductSecretCollection: CollectionConfig = {
       relationTo: "products",
       required: true,
       type: "relationship",
-      unique: true,
     },
-
     {
-      access: {
-        read: isAdminOrBuyerOnlyFieldAccess,
-      },
       admin: {
-        description: "Customer associated with this product purchase.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      defaultValue: PRODUCT_SECRET_STATUS.AVAILABLE,
+      index: true,
+      label: "Status",
+      name: "status",
+      options: [
+        { label: "Available", value: PRODUCT_SECRET_STATUS.AVAILABLE },
+        { label: "Sold", value: PRODUCT_SECRET_STATUS.SOLD },
+      ],
+      required: true,
+      type: "select",
+    },
+    {
+      admin: {
+        description: "Timestamp when the secret was assigned to an order.",
         position: "sidebar",
         readOnly: true,
       },
       index: true,
-      label: "Buyer",
-      name: "buyer",
-      relationTo: "users",
-      type: "relationship",
+      label: "Date Sold",
+      name: "soldAt",
+      type: "date",
     },
-
     {
       admin: {
-        description: "Admin who created this product secret.",
         position: "sidebar",
         readOnly: true,
       },
       index: true,
+      label: "Created By",
       name: "createdBy",
       relationTo: "users",
       required: true,
       type: "relationship",
     },
-
     {
       admin: {
-        description: "Admin who last updated this product secret.",
         position: "sidebar",
         readOnly: true,
       },
       index: true,
+      label: "Updated By",
       name: "updatedBy",
       relationTo: "users",
       type: "relationship",
@@ -104,7 +101,6 @@ export const ProductSecretCollection: CollectionConfig = {
     plural: "Product Secrets",
     singular: "Product Secret",
   },
-
   slug: "product-secrets",
 
   timestamps: true,

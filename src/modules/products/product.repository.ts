@@ -1,35 +1,30 @@
-import "server-only";
+import type { Payload } from "payload";
+import type { DatabaseTransactionId } from "@/shared/types";
 
-import type { Product } from "@/payload-types";
+export class ProductRepository {
+  private readonly payload: Payload;
 
-import { payload } from "@/shared/payload/utils/payload";
-import type { ResourceId } from "@/shared/types";
+  constructor(payload: Payload) {
+    this.payload = payload;
+  }
 
-export interface ProductRepository {
-  findById: (id: ResourceId, transactionID?: ResourceId) => Promise<Product>;
-  findByIds: (
-    ids: ResourceId[],
-    transactionID?: ResourceId
-  ) => Promise<Product[]>;
-}
-
-export const productRepository: ProductRepository = {
-  findById: (id, transactionID) =>
-    payload.findByID({
+  findById(id: string, transactionID?: DatabaseTransactionId) {
+    return this.payload.findByID({
       collection: "products",
       depth: 0,
       id,
       req: {
         transactionID,
       },
-    }),
+    });
+  }
 
-  findByIds: async (ids, transactionID) => {
+  async findByIds(ids: string[], transactionID?: DatabaseTransactionId) {
     if (ids.length === 0) {
       return [];
     }
 
-    const result = await payload.find({
+    const result = await this.payload.find({
       collection: "products",
       depth: 0,
       limit: ids.length,
@@ -44,5 +39,5 @@ export const productRepository: ProductRepository = {
     });
 
     return result.docs;
-  },
-};
+  }
+}

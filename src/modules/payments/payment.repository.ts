@@ -1,61 +1,40 @@
-import "server-only";
-
+import type { Payload } from "payload";
 import type { Payment } from "@/payload-types";
-import { payload } from "@/shared/payload/utils/payload";
-import type { ResourceId, WithoutPersistenceFields } from "@/shared/types";
+import type {
+  DatabaseTransactionId,
+  WithoutPersistenceFields,
+} from "@/shared/types";
+import { PAYMENT_STATUS, type PaymentStatus } from "./payment.constants";
 
-export interface PaymentRepository {
-  create: (
+export class PaymentRepository {
+  private readonly payload: Payload;
+  constructor(payload: Payload) {
+    this.payload = payload;
+  }
+
+  create(
     input: WithoutPersistenceFields<Payment>,
-    transactionID?: ResourceId
-  ) => Promise<Payment>;
-
-  findById: (
-    id: ResourceId,
-    transactionID?: ResourceId
-  ) => Promise<Payment | null>;
-
-  findByOrderId: (
-    orderId: ResourceId,
-    transactionID?: ResourceId
-  ) => Promise<Payment | null>;
-
-  findByOrderReference: (
-    reference: ResourceId,
-    transactionID?: ResourceId
-  ) => Promise<Payment | null>;
-
-  update: (
-    id: ResourceId,
-    input: Partial<Payment>,
-    transactionID?: ResourceId
-  ) => Promise<Payment>;
-  updateByRowLock: (
-    id: ResourceId,
-    input: Partial<Payment>,
-    transactionID?: ResourceId
-  ) => Promise<Payment | null>;
-}
-
-export const paymentRepository: PaymentRepository = {
-  create: async (input, transactionID) =>
-    payload.create({
+    transactionID?: DatabaseTransactionId
+  ) {
+    return this.payload.create({
       collection: "payments",
       data: input,
       depth: 0,
       req: { transactionID },
-    }),
+    });
+  }
 
-  findById: async (id, transactionID) =>
-    payload.findByID({
+  findById(id: string, transactionID?: DatabaseTransactionId) {
+    return this.payload.findByID({
       collection: "payments",
       depth: 0,
       id,
       req: { transactionID },
-    }),
+    });
+  }
 
-  findByOrderId: async (orderId, transactionID) => {
-    const result = await payload.find({
+  async findByOrderId(orderId: string, transactionID?: DatabaseTransactionId) {
+    const result = await this.payload.find({
       collection: "payments",
       depth: 0,
       limit: 1,
@@ -67,11 +46,14 @@ export const paymentRepository: PaymentRepository = {
       },
     });
 
-    return result.docs[0] ?? null;
-  },
+    return result.docs?.[0] || null;
+  }
 
-  findByOrderReference: async (reference, transactionID) => {
-    const result = await payload.find({
+  async findByOrderReference(
+    reference: string,
+    transactionID?: DatabaseTransactionId
+  ) {
+    const result = await this.payload.find({
       collection: "payments",
       depth: 0,
       limit: 1,
@@ -83,22 +65,23 @@ export const paymentRepository: PaymentRepository = {
       },
     });
 
-    return result.docs[0] ?? null;
-  },
+    return result.docs?.[0] || null;
+  }
 
-  update: async (id, input, transactionID) =>
-    payload.update({
+  private async updateStatus(
+    id: string,
+    expectedStatus: PaymentStatus,
+    nextStatus: PaymentStatus,
+    transactionID?: DatabaseTransactionId
+  ) {
+    const result = await this.payload.update({
       collection: "payments",
-      data: input,
-      depth: 0,
-      id,
-      req: { transactionID },
-    }),
-
-  updateByRowLock: async (id, input, transactionID) => {
-    const { docs } = await payload.update({
-      collection: "payments",
-      data: input,
+      data: {
+        ...(nextStatus === PAYMENT_STATUS.SUCCESSFUL
+          ? { paidAt: new Date().toISOString() }
+          : {}),
+        status: nextStatus,
+      },
       depth: 0,
       req: { transactionID },
       where: {
@@ -106,10 +89,51 @@ export const paymentRepository: PaymentRepository = {
           equals: id,
         },
         status: {
-          equals: "pending",
+          equals: expectedStatus,
         },
       },
     });
-    return docs[0] || null;
-  },
-};
+    return result.docs?.[0] || null;
+  }
+
+  markAsFailed(id: string, transactionID?: DatabaseTransactionId) {
+    return this.updateStatus(
+      id,
+      PAYMENT_STATUS.PENDING,
+      PAYMENT_STATUS.FAILED,
+      transactionID
+    );
+  }
+
+  markAsSuccessful(id: string, transactionID?: DatabaseTransactionId) {
+    return this.updateStatus(
+      id,
+      PAYMENT_STATUS.PENDING,
+      PAYMENT_STATUS.SUCCESSFUL,
+      transactionID
+    );
+  }
+
+  markAsRefunded(id: string, transactionID?: DatabaseTransactionId) {
+    return this.updateStatus(
+      id,
+      PAYMENT_STATUS.SUCCESSFUL,
+      PAYMENT_STATUS.REFUNDED,
+      transactionID
+    );
+  }
+
+  update(
+    id: string,
+    input: Partial<Payment>,
+    transactionID?: DatabaseTransactionId
+  ) {
+    return this.payload.update({
+      collection: "payments",
+      data: input,
+      depth: 0,
+      id,
+      req: { transactionID },
+    });
+  }
+}

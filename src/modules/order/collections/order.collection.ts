@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { CURRENCY, ORDER_STATUS } from "./order.constants";
+import { CURRENCY, ORDER_STATUS } from "../order.constants";
 
 export const OrdersCollection: CollectionConfig = {
   access: {
@@ -14,7 +14,7 @@ export const OrdersCollection: CollectionConfig = {
 
   admin: {
     defaultColumns: [
-      "orderNumber",
+      "reference",
       "buyer",
       "status",
       "total",
@@ -26,7 +26,7 @@ export const OrdersCollection: CollectionConfig = {
 
     group: "Ecommerce",
 
-    useAsTitle: "orderNumber",
+    useAsTitle: "reference",
   },
 
   fields: [
@@ -37,7 +37,7 @@ export const OrdersCollection: CollectionConfig = {
         readOnly: true,
       },
       index: true,
-      name: "orderNumber",
+      name: "reference",
       required: true,
       type: "text",
       unique: true,

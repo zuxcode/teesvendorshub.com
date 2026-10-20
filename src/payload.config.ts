@@ -17,20 +17,18 @@ import { CategoriesCollection } from "./modules/category/category-collection";
 import { InventoryCollection } from "./modules/inventory/inventory.collection";
 import { AvatarCollection } from "./modules/media/avatar-collection";
 import { ProductLibraryCollection } from "./modules/media/product-library";
-import { NotificationChannelCollection } from "./modules/notifications/notification.collection";
-import { OrdersCollection } from "./modules/order/order.collection";
-import { OrderItemsCollection } from "./modules/order/order-item.collection";
+import { OrdersCollection } from "./modules/order/collections/order.collection";
+import { OrderItemsCollection } from "./modules/order/collections/order-item.collection";
 import { PaymentsCollection } from "./modules/payments/payment.collection";
+import {
+  paymentTasks,
+  processPaymentWebhook,
+} from "./modules/payments/workflow/payment-tasks";
 import { ProductsCollection } from "./modules/products/collections/product.collection";
 import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
 import { TransactionsCollection } from "./modules/transaction/transaction-collection";
 import { UsersCollection } from "./modules/users";
 import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
-import {
-  deliverProduct,
-  verifyPayment,
-} from "./modules/webhook/workflow/payment-tasks";
-import { processPaymentWebhook } from "./modules/webhook/workflow/webhook-workflow";
 import { env } from "./shared/utils/env";
 
 // import { DOMAIN } from "./lib/constant/constant";
@@ -49,20 +47,20 @@ const _COR = IS_DEVELOPMENT ? [...COR_PROD, COR_DEV, COR_PREVIEW] : COR_PROD;
 export default buildConfig({
   admin: {
     autoRefresh: true,
-    dashboard: {
-      widgets: [
-        {
-          Component: {
-            exportName: "ConnectTelegramButton",
-            path: "./modules/notifications/ui/connect-telegram-button.tsx",
-          },
-          label: "Connect telegram",
-          maxWidth: "full",
-          minWidth: "x-small",
-          slug: "connect-telegram",
-        },
-      ],
-    },
+    // dashboard: {
+    //   widgets: [
+    //     {
+    //       Component: {
+    //         exportName: "ConnectTelegramButton",
+    //         path: "./modules/notifications/ui/connect-telegram-button.tsx",
+    //       },
+    //       label: "Connect telegram",
+    //       maxWidth: "full",
+    //       minWidth: "x-small",
+    //       slug: "connect-telegram",
+    //     },
+    //   ],
+    // },
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -79,7 +77,6 @@ export default buildConfig({
     TransactionsCollection,
     PaymentsCollection,
     AvatarCollection,
-    NotificationChannelCollection,
     ProductSecretCollection,
   ],
   cookiePrefix: "tvh",
@@ -109,6 +106,8 @@ export default buildConfig({
   }),
 
   jobs: {
+    autoRun: [{ allQueues: true }],
+    deleteJobOnComplete: false,
     enableConcurrencyControl: true,
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
@@ -118,7 +117,7 @@ export default buildConfig({
       defaultJobsCollection.admin.hidden = false;
       return defaultJobsCollection;
     },
-    tasks: [sendWelcomeEmailTask, verifyPayment, deliverProduct],
+    tasks: [sendWelcomeEmailTask, ...paymentTasks],
 
     workflows: [processPaymentWebhook],
   },

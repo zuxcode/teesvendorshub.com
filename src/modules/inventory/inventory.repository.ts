@@ -1,26 +1,43 @@
-import "server-only";
-
+import type { Payload } from "payload";
 import type { Inventory } from "@/payload-types";
+import type {
+  DatabaseTransactionId,
+  WithoutPersistenceFields,
+} from "@/shared/types";
+import { INVENTORY_MOVEMENT } from "./inventory.constants";
 
-import { payload } from "@/shared/payload/utils/payload";
-import type { ResourceId, WithoutPersistenceFields } from "@/shared/types";
+export class InventoryRepository {
+  private readonly payload: Payload;
 
-export interface InventoryRepository {
-  createMovement: (
+  constructor(payload: Payload) {
+    this.payload = payload;
+  }
+
+  create(
     input: WithoutPersistenceFields<Inventory>,
-    transactionID?: ResourceId
-  ) => Promise<Inventory>;
-}
-
-export const inventoryRepository: InventoryRepository = {
-  createMovement: async (input, transactionID) =>
-    payload.create({
+    transactionId?: DatabaseTransactionId
+  ) {
+    return this.payload.create({
       collection: "inventory",
       data: input,
       depth: 0,
       overrideAccess: true,
       req: {
-        transactionID,
+        transactionID: transactionId,
       },
-    }),
-};
+    });
+  }
+
+  createSaleMovement(
+    input: Omit<WithoutPersistenceFields<Inventory>, "type">,
+    transactionId?: DatabaseTransactionId
+  ) {
+    return this.create(
+      {
+        ...input,
+        type: INVENTORY_MOVEMENT.SALE,
+      },
+      transactionId
+    );
+  }
+}

@@ -1,7 +1,9 @@
 import type { Product } from "@/payload-types";
-
+import { payload } from "@/shared/payload/utils/payload";
 import { ProductNotFoundError } from "./product.error";
-import { productRepository } from "./product.repository";
+import { ProductRepository } from "./product.repository";
+
+export const productRepository = new ProductRepository(payload);
 
 export interface ProductService {
   findByIds: (ids: string[]) => Promise<Product[]>;
@@ -15,7 +17,7 @@ export const productService: ProductService = {
 
     const products = await productRepository.findByIds(ids);
 
-    const foundIds = new Set(products.map((product) => String(product.id)));
+    const foundIds = new Set(products.map((product) => product.id));
 
     if (ids.some((id) => !foundIds.has(id))) {
       throw new ProductNotFoundError();

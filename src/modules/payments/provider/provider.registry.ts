@@ -1,5 +1,3 @@
-import "server-only";
-
 import {
   PAYMENT_PROVIDER_NAME,
   type PaymentProviderName,
@@ -8,9 +6,6 @@ import { PaymentProviderUnsupportedError } from "../payment.errors";
 import type {
   HandleWebhookInput,
   PaymentInitializeInput,
-  PaymentInitializeResult,
-  PaymentVerificationResult,
-  PaymentWebhookData,
 } from "../payment.type";
 import { transactPayAdaptor } from "./transactpay/transactpay";
 
@@ -18,17 +13,8 @@ export interface InitializeParam extends PaymentInitializeInput {
   provider: PaymentProviderName;
 }
 
-export interface PaymentRegistry {
-  initialize: (input: InitializeParam) => Promise<PaymentInitializeResult>;
-  parseWebhook: (input: HandleWebhookInput) => PaymentWebhookData;
-  verifyPayment: (
-    provider: PaymentProviderName,
-    reference: string
-  ) => Promise<PaymentVerificationResult>;
-}
-
-export const paymentRegistry: PaymentRegistry = {
-  initialize({ provider, ...input }) {
+export const paymentRegistry = {
+  initialize({ provider, ...input }: InitializeParam) {
     if (provider === PAYMENT_PROVIDER_NAME.TRANSACTPAY) {
       return transactPayAdaptor.initialize(input);
     }
@@ -36,7 +22,7 @@ export const paymentRegistry: PaymentRegistry = {
     throw new PaymentProviderUnsupportedError();
   },
 
-  parseWebhook({ provider, body }) {
+  parseWebhookInput({ provider, body }: HandleWebhookInput) {
     if (provider === PAYMENT_PROVIDER_NAME.TRANSACTPAY) {
       return transactPayAdaptor.parseWebhook(body);
     }
@@ -44,7 +30,7 @@ export const paymentRegistry: PaymentRegistry = {
     throw new PaymentProviderUnsupportedError();
   },
 
-  verifyPayment(provider, reference) {
+  verifyPayment(provider: PaymentProviderName, reference: string) {
     if (provider === PAYMENT_PROVIDER_NAME.TRANSACTPAY) {
       return transactPayAdaptor.verifyPayment(reference);
     }

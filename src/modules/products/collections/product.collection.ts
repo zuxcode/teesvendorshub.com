@@ -8,7 +8,7 @@ import {
   PRODUCT_BADGE,
   PRODUCT_STATUS,
   PRODUCT_TYPE,
-} from "../product.contants";
+} from "../product.constants";
 
 export const ProductsCollection: CollectionConfig = {
   access: {

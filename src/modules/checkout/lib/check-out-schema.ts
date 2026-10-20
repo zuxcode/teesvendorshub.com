@@ -8,7 +8,7 @@ const checkoutBaseSchema = z.object({
 export const cartItemsSchema = z
   .array(
     z.object({
-      productId: z.union([z.string(), z.number()]),
+      productId: z.string(),
       quantity: z.number().int().positive(),
     }),
     { error: "Cart is empty" }
