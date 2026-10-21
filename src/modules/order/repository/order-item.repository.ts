@@ -88,4 +88,18 @@ export class OrderItemRepository {
 
     return result.docs;
   }
+
+  async findBuyerOrderItems(buyerId: string): Promise<OrderItem[]> {
+    const { docs } = await this.payload.find({
+      collection: "order-items",
+      depth: 0,
+      where: {
+        "order.buyer": {
+          equals: buyerId,
+        },
+      },
+    });
+
+    return docs;
+  }
 }

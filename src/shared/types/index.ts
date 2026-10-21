@@ -1,8 +1,10 @@
 import type { BaseDatabaseAdapter } from "payload";
 
+/**
+ * @deprecated
+ */
 export type ResourceId = string;
 
-// export type ResourceId = string | number;
 export type DatabaseTransactionId = NonNullable<
   Awaited<ReturnType<DatabaseTransaction["beginTransaction"]>>
 >;
@@ -18,3 +20,9 @@ export type DatabaseTransaction = Pick<
   BaseDatabaseAdapter,
   "beginTransaction" | "commitTransaction" | "rollbackTransaction"
 >;
+
+export interface AppErrorConstruct<T extends string> {
+  code: T;
+  message?: string;
+  options?: ErrorOptions;
+}

@@ -67,10 +67,17 @@ export const useOrderStore = createWithEqualityFn<CartStore>()(
   shallow
 );
 
-export const useOrderById = (id: string) =>
-  useOrderStore((state) => state.orders[id] ?? null);
+export const useOrderById = (id: string | null) =>
+  useOrderStore((state) => (id && state.orders[id]) || null);
+
 export const useOrderItemById = (id: string) =>
-  useOrderStore((state) => state.orderItems[id] ?? null);
+  useOrderStore((state) => state.orderItems[id] || null);
+
+export const useOrders = () =>
+  useOrderStore((state) => Object.values(state.orders) ?? []);
+
+export const useOrderItems = () =>
+  useOrderStore((state) => Object.values(state.orderItems) ?? []);
 
 export const useOrderItemsByOrderId = (orderId: string) =>
   useOrderStore(
@@ -79,4 +86,33 @@ export const useOrderItemsByOrderId = (orderId: string) =>
         (item) => getRelationshipId(item.order) === orderId
       ),
     shallow
+  );
+
+export const useOrderActions = () => useOrderStore((state) => state.actions);
+
+export const usePendingOrder = () =>
+  useOrderStore(
+    (state) =>
+      Object.values(state.orders)?.filter((o) => o.status === "pending") ?? []
+  );
+
+export const useCompletedOrder = () =>
+  useOrderStore(
+    (state) =>
+      Object.values(state.orders)?.filter((o) => o.status === "completed") ?? []
+  );
+
+export const useProcessingOrder = () =>
+  useOrderStore(
+    (state) =>
+      Object.values(state.orders)?.filter((o) => o.status === "processing") ??
+      []
+  );
+
+export const useCancelledOrRefundedOrder = () =>
+  useOrderStore(
+    (state) =>
+      Object.values(state.orders)?.filter(
+        (o) => o.status === "cancelled" || o.status === "refunded"
+      ) ?? []
   );

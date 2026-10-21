@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { createSafeActionClient } from "next-safe-action";
+import { AuthErrorMessageMap } from "@/modules/authentication/libs/auth-errors";
 import {
   GlobalErrorCode,
   GlobalErrorMessageMap,
@@ -32,9 +33,9 @@ export const authenticatedActionClient = publicActionClient.use(
 
     if (!user) {
       throw Object.assign(
-        new Error(GlobalErrorMessageMap.AUTH_ACCOUNT_REQUIRED),
+        new Error(AuthErrorMessageMap.AUTH_ACCOUNT_REQUIRED),
         {
-          code: GlobalErrorCode.AUTH_ACCOUNT_REQUIRED,
+          code: AuthErrorMessageMap.AUTH_ACCOUNT_REQUIRED,
         }
       );
     }

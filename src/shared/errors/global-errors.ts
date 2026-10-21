@@ -1,6 +1,5 @@
 export const GlobalErrorCode = {
   ACCESS_DENIED: "ACCESS_DENIED",
-  AUTH_ACCOUNT_REQUIRED: "AUTH_ACCOUNT_REQUIRED",
   SERVER_ERROR: "SERVER_ERROR",
   SERVER_TIMEOUT: "SERVER_TIMEOUT",
   SERVER_UNAVAILABLE: "SERVER_UNAVAILABLE",
@@ -11,7 +10,6 @@ export type GlobalErrorCode =
 
 export const GlobalErrorMessageMap = {
   ACCESS_DENIED: "You do not have permission to perform this action.",
-  AUTH_ACCOUNT_REQUIRED: "Authentication is required.",
   SERVER_ERROR: "Something went wrong on our end.",
   SERVER_TIMEOUT: "The request took too long. Please try again.",
   SERVER_UNAVAILABLE: "Service is temporarily unavailable.",
@@ -47,5 +45,12 @@ export class GlobalError extends Error {
 
     this.name = new.target.name;
     this.code = code;
+  }
+}
+export class ServerError extends GlobalError {
+  constructor() {
+    super({
+      code: "SERVER_ERROR",
+    });
   }
 }

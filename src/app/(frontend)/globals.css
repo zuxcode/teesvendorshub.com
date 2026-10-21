@@ -179,3 +179,26 @@
     @apply font-heading;
   }
 }
+
+@utility product-order-primary {
+  @apply bg-primary/10 text-primary;
+}
+
+@utility product-order-pending {
+  @apply bg-amber-500/10 text-amber-500;
+}
+
+@utility product-order-completed {
+  @apply bg-emerald-500/10 text-emerald-500;
+}
+
+@utility product-order-cancelled {
+  @apply bg-destructive/10 text-destructive;
+}
+@utility product-order-partial {
+  @apply bg-violet-500/10 text-violet-500;
+}
+
+@utility product-order-processing {
+  @apply bg-cyan-500/10 text-cyan-600 dark:text-cyan-400;
+}

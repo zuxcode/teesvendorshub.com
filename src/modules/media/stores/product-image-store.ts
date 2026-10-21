@@ -3,21 +3,20 @@ import { immer } from "zustand/middleware/immer";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 import type { ProductLibrary } from "@/payload-types";
-import type { ResourceId } from "@/shared/types";
 
 export interface ProductImageStoreState {
-  images: Record<ResourceId, ProductLibrary>;
-  selectedImageId: ResourceId | null;
+  images: Record<string, ProductLibrary>;
+  selectedImageId: string | null;
 }
 
 export interface ProductImageStoreActions {
   addImage: (image: ProductLibrary) => void;
   clearImages: () => void;
-  getImageById: (id: ResourceId) => ProductLibrary | undefined;
-  removeImage: (id: ResourceId) => void;
+  getImageById: (id: string) => ProductLibrary | undefined;
+  removeImage: (id: string) => void;
   setImages: (images: ProductLibrary[]) => void;
-  setSelectedImageId: (id: ResourceId | null) => void;
-  updateImage: (id: ResourceId, updates: Partial<ProductLibrary>) => void;
+  setSelectedImageId: (id: string | null) => void;
+  updateImage: (id: string, updates: Partial<ProductLibrary>) => void;
 }
 
 export interface ProductImageStore extends ProductImageStoreState {
@@ -92,7 +91,7 @@ export const useProductImageStore = createWithEqualityFn<ProductImageStore>()(
   shallow
 );
 
-export const useProductImage = (id: ResourceId | null | undefined) =>
+export const useProductImage = (id: string | null | undefined) =>
   useProductImageStore((state) => (id ? state.images[id] : undefined));
 
 export const useProductImageIds = () =>

@@ -1,20 +1,11 @@
-import {
-  ArrowRight,
-  CheckCircle2,
-  Clock3,
-  PackageCheck,
-  ShoppingBag,
-  ShoppingCart,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, PackageCheck, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { OrderHeaderCard } from "./order-header-card";
 
 export function OrderHeader() {
   return (
-    <section aria-labelledby="orders-heading" className="space-y-5">
+    <section aria-labelledby="orders-heading">
       <header className="relative isolate overflow-hidden rounded-2xl border bg-card px-5 py-7 sm:px-8 sm:py-9">
         <div
           aria-hidden="true"
@@ -44,14 +35,13 @@ export function OrderHeader() {
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Button
-                className="gap-2"
-                render={<Link href="/dashboard/products" />}
-              >
-                <ShoppingBag aria-hidden="true" className="size-4" />
-                Continue shopping
-                <ArrowRight aria-hidden="true" className="size-4" />
-              </Button>
+              <Link href="/dashboard/products">
+                <Button className="cursor-pointer gap-2">
+                  <ShoppingBag aria-hidden="true" className="size-4" />
+                  Continue shopping
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </Button>
+              </Link>
 
               <span className="text-muted-foreground text-xs">
                 Your next favorite find is waiting.
@@ -67,36 +57,6 @@ export function OrderHeader() {
           </div>
         </div>
       </header>
-
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <OrderHeaderCard
-          className="bg-primary/10 text-primary"
-          Icon={ShoppingCart}
-          label="Total orders"
-          value="128"
-        />
-
-        <OrderHeaderCard
-          className="bg-amber-500/10 text-amber-500"
-          Icon={Clock3}
-          label="Pending"
-          value="12"
-        />
-
-        <OrderHeaderCard
-          className="bg-emerald-500/10 text-emerald-500"
-          Icon={CheckCircle2}
-          label="Completed"
-          value="104"
-        />
-
-        <OrderHeaderCard
-          className="bg-destructive/10 text-destructive"
-          Icon={XCircle}
-          label="Cancelled / Failed"
-          value="12"
-        />
-      </div>
     </section>
   );
 }

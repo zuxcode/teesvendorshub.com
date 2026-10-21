@@ -7,15 +7,10 @@ interface Props {
   className?: string;
   Icon: LucideIcon;
   label: string;
-  value?: string;
+  value?: number;
 }
 
-export function OrderHeaderCard({
-  Icon,
-  label,
-  className,
-  value = "-",
-}: Props) {
+export function OrderHeaderCard({ Icon, label, className, value = 0 }: Props) {
   return (
     <Card className="shadow-none transition-colors hover:bg-muted/30">
       <CardContent className="flex items-center justify-between gap-4 p-4 sm:p-5">
@@ -29,19 +24,17 @@ export function OrderHeaderCard({
           </p>
         </div>
 
-        <Card
+        <div
           className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-lg ring-0",
+            "flex size-10 shrink-0 items-center justify-center rounded-lg",
             className
           )}
         >
-          <CardContent>
-            <Icon
-              aria-hidden="true"
-              className="size-5 transition-transform duration-300 group-hover:scale-110"
-            />
-          </CardContent>
-        </Card>
+          <Icon
+            aria-hidden="true"
+            className="size-5 transition-transform duration-300 group-hover:scale-110"
+          />
+        </div>
       </CardContent>
     </Card>
   );

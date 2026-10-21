@@ -5,11 +5,10 @@ import { useCartItemQuantity } from "@/modules/checkout/store/cart-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { getLineTotal } from "@/modules/products/libs/inventory";
 import { useProduct } from "@/modules/products/stores/product-store";
-import type { ResourceId } from "@/shared/types";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
-export function CheckoutItem({ productId }: { productId: ResourceId }) {
+export function CheckoutItem({ productId }: { productId: string }) {
   const product = useProduct(productId);
   const quantity = useCartItemQuantity(productId);
 
