@@ -1,4 +1,7 @@
-/** biome-ignore-all lint/performance/noJsxPropsBind: <Surpress> */
+/**
+ * biome-ignore-all lint/performance/noJsxPropsBind: JSX prop binding has no meaningful optimization benefit for these small event handlers.
+ */
+
 "use client";
 
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -6,41 +9,35 @@ import Image from "next/image";
 import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Button } from "@/components/ui/button";
 import {
+  type CartItemIdentifier,
   useCartActions,
   useCartItemQuantity,
-} from "@/modules/checkout/store/cart-store";
-import { useProductImageActions } from "@/modules/media/stores/product-image-store";
-import { useProduct } from "@/modules/products/stores/product-store";
-import { getRelationshipId } from "@/shared/utils/get-relationship-id";
+} from "@/modules/cart/store/cart-store";
+import { useProductImage } from "@/modules/media/stores/product-image-store";
+import { useLinkedItem } from "../hooks/use-link-item";
 
-interface CartItemProps {
-  productId: string;
-}
-
-export function CartItem({ productId }: CartItemProps) {
-  const product = useProduct(productId);
-  const quantity = useCartItemQuantity(productId);
-  const { getImageById } = useProductImageActions();
-
-  const imageId = getRelationshipId(product?.productImage);
+export function CartItem(identifier: CartItemIdentifier) {
+  const { linkedItem } = useLinkedItem(identifier);
+  const quantity = useCartItemQuantity(identifier);
+  const image = useProductImage(linkedItem?.imageId);
 
   const { incrementItem, decrementItem, removeItem } = useCartActions();
 
-  if (!product || quantity <= 0) {
+  const imageUrl = image?.sizes?.card?.url;
+
+  if (!linkedItem) {
     return null;
   }
-
-  const image = imageId ? getImageById(imageId) : undefined;
 
   return (
     <div className="flex gap-4 border-b py-4">
       <div className="relative size-20 shrink-0 overflow-hidden rounded-md bg-muted">
-        {image?.sizes?.card?.url ? (
+        {imageUrl ? (
           <Image
-            alt={image.alt ?? product.name}
+            alt={image.alt ?? linkedItem.name}
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
             fill
-            src={image?.sizes?.card?.url}
+            src={imageUrl}
           />
         ) : (
           <ImagePlaceholder />
@@ -48,20 +45,13 @@ export function CartItem({ productId }: CartItemProps) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="truncate font-medium">{product.name}</h3>
-
-        {product.country ? (
-          <p className="mt-1 text-muted-foreground text-sm">
-            {product.country}
-          </p>
-        ) : null}
+        <h3 className="truncate font-medium">{linkedItem.name}</h3>
 
         <div className="mt-3 flex items-center justify-between gap-3">
-          {/* Quantity */}
           <div className="flex h-8 items-center overflow-hidden rounded-md border">
             <Button
               className="size-8 rounded-none"
-              onClick={() => decrementItem(productId)}
+              onClick={() => decrementItem(identifier)}
               size="icon"
               type="button"
               variant="ghost"
@@ -76,7 +66,7 @@ export function CartItem({ productId }: CartItemProps) {
 
             <Button
               className="size-8 rounded-none"
-              onClick={() => incrementItem(productId)}
+              onClick={() => incrementItem(identifier)}
               size="icon"
               type="button"
               variant="ghost"
@@ -89,13 +79,13 @@ export function CartItem({ productId }: CartItemProps) {
           {/* Remove */}
           <Button
             className="size-8 text-muted-foreground hover:text-destructive"
-            onClick={() => removeItem(productId)}
+            onClick={() => removeItem(identifier)}
             size="icon"
             type="button"
             variant="destructive"
           >
             <Trash2 className="size-4" />
-            <span className="sr-only">Remove {product.name}</span>
+            <span className="sr-only">Remove {linkedItem.name}</span>
           </Button>
         </div>
       </div>

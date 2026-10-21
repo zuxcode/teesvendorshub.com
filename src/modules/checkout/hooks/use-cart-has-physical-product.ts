@@ -1,5 +1,5 @@
 import { useProductActions } from "@/modules/products/stores/product-store";
-import { useCartItemIds } from "../store/cart-store";
+import { useCartItems } from "../../cart/store/cart-store";
 
 /**
  * Physical products require a shipping address.
@@ -9,7 +9,7 @@ import { useCartItemIds } from "../store/cart-store";
  * otherwise the provider email address is used.
  */
 export function useCartHasPhysicalProduct() {
-  const productIds = useCartItemIds();
+  const productIds = useCartItems();
 
   const { getProductById } = useProductActions();
 

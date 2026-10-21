@@ -1,4 +1,6 @@
-/** biome-ignore-all lint/performance/noJsxPropsBind: <Soft> */
+/**
+ * biome-ignore-all lint/performance/noJsxPropsBind: JSX prop binding has no meaningful optimization benefit for these small event handlers.
+ */
 
 "use client";
 
@@ -6,53 +8,28 @@ import { Minus, Plus, ShoppingCart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
+  type CartItemIdentifier,
   useCartActions,
   useCartItemQuantity,
-} from "@/modules/checkout/store/cart-store";
+} from "@/modules/cart/store/cart-store";
 
-interface AddToCartButtonProps {
+interface AddToCartButtonProps extends CartItemIdentifier {
   disabled?: boolean;
-  productId: string;
 }
 
 export function AddToCartButton({
-  productId,
   disabled = false,
+  ...item
 }: AddToCartButtonProps) {
-  const quantity = useCartItemQuantity(productId);
-
+  const quantity = useCartItemQuantity(item);
   const { addItem, incrementItem, decrementItem } = useCartActions();
-
-  const handleAdd = () => {
-    if (disabled) {
-      return;
-    }
-
-    addItem(productId);
-  };
-
-  const handleIncrement = () => {
-    if (disabled) {
-      return;
-    }
-
-    incrementItem(productId);
-  };
-
-  const handleDecrement = () => {
-    if (disabled) {
-      return;
-    }
-
-    decrementItem(productId);
-  };
 
   if (quantity === 0) {
     return (
       <Button
         className="gap-2"
         disabled={disabled}
-        onClick={handleAdd}
+        onClick={() => addItem(item)}
         size="sm"
         type="button"
       >
@@ -63,17 +40,15 @@ export function AddToCartButton({
   }
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: <Accessibility>
-    <div
+    <fieldset
       aria-label="Cart quantity"
       className="flex h-9 items-center overflow-hidden rounded-md border"
-      role="group"
     >
       <Button
         aria-label="Decrease quantity"
         className="size-9 rounded-none"
         disabled={disabled}
-        onClick={handleDecrement}
+        onClick={() => decrementItem(item)}
         size="icon"
         type="button"
         variant="ghost"
@@ -81,11 +56,7 @@ export function AddToCartButton({
         <Minus className="size-4" />
       </Button>
 
-      <span
-        aria-atomic="true"
-        aria-live="polite"
-        className="flex min-w-9 items-center justify-center px-2 font-medium text-sm"
-      >
+      <span className="flex min-w-9 items-center justify-center px-2 font-medium text-sm">
         {quantity}
       </span>
 
@@ -93,13 +64,13 @@ export function AddToCartButton({
         aria-label="Increase quantity"
         className="size-9 rounded-none"
         disabled={disabled}
-        onClick={handleIncrement}
+        onClick={() => incrementItem(item)}
         size="icon"
         type="button"
         variant="ghost"
       >
         <Plus className="size-4" />
       </Button>
-    </div>
+    </fieldset>
   );
 }

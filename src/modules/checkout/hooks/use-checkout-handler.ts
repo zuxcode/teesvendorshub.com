@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   useCartActions,
-  useCartItemValues,
-} from "@/modules/checkout/store/cart-store";
+  useCartItems,
+} from "@/modules/cart/store/cart-store";
 import { useAuthUser } from "@/modules/users/stores/user-store";
 import { checkOutAction } from "../actions/checkout.action";
 import {
@@ -19,7 +19,7 @@ import { useCartHasPhysicalProduct } from "./use-cart-has-physical-product";
 const CHECK_OUT_TOAST_ID = "CHECK_OUT_TOAST_ID";
 
 export function useCheckoutHandler() {
-  const cartItems = useCartItemValues();
+  const cartItems = useCartItems();
   const { clearCart } = useCartActions();
   const user = useAuthUser();
   const { cartHasPhysicalProduct } = useCartHasPhysicalProduct();
@@ -96,7 +96,7 @@ export function useCheckoutHandler() {
     execute({
       ...values,
       items: cartItems.map((item) => ({
-        productId: item.productId,
+        productId: item.id,
         quantity: item.quantity,
       })),
     });

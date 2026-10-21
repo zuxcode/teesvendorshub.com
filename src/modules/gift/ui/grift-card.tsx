@@ -6,11 +6,9 @@ import Image from "next/image";
 
 import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
-// import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { AddToCartButton } from "@/modules/cart/add-to-cart";
-// import { AddToCartButton } from "@/modules/cart/add-to-cart";
+import { AddToCartButton } from "@/modules/cart/ui/add-to-cart";
 import { useCategory } from "@/modules/category/stores/category-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
@@ -136,7 +134,8 @@ export function GiftCard({ id }: GiftCardProps) {
 
           <AddToCartButton
             disabled={giftRecord.status !== "active" || isOutOfStock}
-            productId={giftRecord.id}
+            id={giftRecord.id}
+            relationTo="gift"
           />
         </div>
       </CardFooter>

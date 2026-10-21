@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AddToCartButton } from "@/modules/cart/add-to-cart";
+import { AddToCartButton } from "@/modules/cart/ui/add-to-cart";
 import { useCategory } from "@/modules/category/stores/category-store";
 import { useProductImageActions } from "@/modules/media/stores/product-image-store";
 import { getProductInventoryState } from "@/modules/products/libs/inventory";
@@ -185,7 +185,8 @@ export function ProductDetailDialog() {
 
               <AddToCartButton
                 disabled={inventoryState.isOutOfStock}
-                productId={selectedProduct.id}
+                id={selectedProduct.id}
+                relationTo="product"
               />
             </div>
           </div>

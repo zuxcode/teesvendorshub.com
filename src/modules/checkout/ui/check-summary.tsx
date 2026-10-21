@@ -5,21 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-  useCartActions,
-  useCartItemIds,
-} from "@/modules/checkout/store/cart-store";
+  useCartItemQuantity,
+  useCartItems,
+} from "@/modules/cart/store/cart-store";
 import { useProductActions } from "@/modules/products/stores/product-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { CheckoutItem } from "./checkout-item";
 
 export function OrderSummary() {
-  const productIds = useCartItemIds();
+  const productIds = useCartItems();
   const { getProductById } = useProductActions();
-  const { getItemQuantity } = useCartActions();
+  const quantity = useCartItemQuantity(productIds);
 
   const subtotal = productIds.reduce((total, productId) => {
     const product = getProductById(productId);
-    const quantity = getItemQuantity(productId);
+    // const quantity = getItemQuantity(productId);
 
     if (!product || quantity <= 0) {
       return total;

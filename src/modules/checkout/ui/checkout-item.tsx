@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCartItemQuantity } from "@/modules/checkout/store/cart-store";
+import { useCartItemQuantity } from "@/modules/cart/store/cart-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { getLineTotal } from "@/modules/products/libs/inventory";
 import { useProduct } from "@/modules/products/stores/product-store";

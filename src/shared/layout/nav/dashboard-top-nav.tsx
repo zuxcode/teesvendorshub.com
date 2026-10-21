@@ -2,7 +2,7 @@ import { TeesLogo } from "@/components/tees-ui/logo";
 import { ThemeToggle } from "@/components/tees-ui/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { CartSheet } from "@/modules/cart";
+import { CartSheet } from "@/modules/cart/ui";
 import { DashboardBreadcrumb } from "./dashboard-breadcrumb";
 
 export function DashboardTopNav() {

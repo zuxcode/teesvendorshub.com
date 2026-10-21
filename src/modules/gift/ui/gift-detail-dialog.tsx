@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AddToCartButton } from "@/modules/cart/add-to-cart";
+import { AddToCartButton } from "@/modules/cart/ui/add-to-cart";
 import { useCategory } from "@/modules/category/stores/category-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
@@ -133,7 +133,8 @@ export function GiftDetailDialog() {
 
               <AddToCartButton
                 disabled={isOutOfStock}
-                productId={selectedGift.id}
+                id={selectedGift.id}
+                relationTo="gift"
               />
             </div>
           </div>

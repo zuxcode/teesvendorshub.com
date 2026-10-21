@@ -1,6 +1,6 @@
 "use client";
 
-import { useHasCartItems } from "@/modules/checkout/store/cart-store";
+import { useHasCartItems } from "@/modules/cart/store/cart-store";
 
 import { useCartHasPhysicalProduct } from "../hooks/use-cart-has-physical-product";
 import { EmptyCheckout } from "./checkout-empty";

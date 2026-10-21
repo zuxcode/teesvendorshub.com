@@ -8,7 +8,7 @@ import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { AddToCartButton } from "@/modules/cart/add-to-cart";
+import { AddToCartButton } from "@/modules/cart/ui/add-to-cart";
 import { useCategory } from "@/modules/category/stores/category-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { getProductInventoryState } from "@/modules/products/libs/inventory";
@@ -158,7 +158,8 @@ export function ProductCard({ id }: ProductCardProps) {
 
           <AddToCartButton
             disabled={inventoryState.isOutOfStock}
-            productId={product.id}
+            id={product.id}
+            relationTo="product"
           />
         </div>
       </CardFooter>
