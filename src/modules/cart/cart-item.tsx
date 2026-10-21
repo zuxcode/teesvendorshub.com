@@ -11,11 +11,10 @@ import {
 } from "@/modules/checkout/store/cart-store";
 import { useProductImageActions } from "@/modules/media/stores/product-image-store";
 import { useProduct } from "@/modules/products/stores/product-store";
-import type { ResourceId } from "@/shared/types";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
 interface CartItemProps {
-  productId: ResourceId;
+  productId: string;
 }
 
 export function CartItem({ productId }: CartItemProps) {

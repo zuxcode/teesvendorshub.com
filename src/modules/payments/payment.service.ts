@@ -1,5 +1,4 @@
 import { payload } from "@/shared/payload/utils/payload";
-import type { ResourceId } from "@/shared/types";
 import { PaymentNotFoundError } from "./payment.errors";
 import { PaymentRepository } from "./payment.repository";
 import type {
@@ -10,7 +9,7 @@ import { paymentRegistry } from "./provider/provider.registry";
 
 export interface InitializeParam {
   input: PaymentInitializeInput;
-  paymentId: ResourceId;
+  paymentId: string;
 }
 
 export interface PaymentService {

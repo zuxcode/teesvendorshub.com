@@ -78,6 +78,7 @@ export interface Config {
     payments: Payment;
     avatars: Avatar;
     'product-secrets': ProductSecret;
+    gifts: Gift;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -97,6 +98,7 @@ export interface Config {
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     avatars: AvatarsSelect<false> | AvatarsSelect<true>;
     'product-secrets': ProductSecretsSelect<false> | ProductSecretsSelect<true>;
+    gifts: GiftsSelect<false> | GiftsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -327,6 +329,10 @@ export interface Product {
    * Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.
    */
   productType: 'physical' | 'digital';
+  /**
+   * Currency used for this product.
+   */
+  currency: 'NGN';
   /**
    * Product lifecycle status. Inventory availability is determined from stock.
    */
@@ -757,6 +763,61 @@ export interface ProductSecret {
   createdAt: string;
 }
 /**
+ * Gifts available for purchase. Stock represents the authoritative inventory quantity.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gifts".
+ */
+export interface Gift {
+  id: string;
+  /**
+   * Gift name displayed to customers
+   */
+  name: string;
+  /**
+   * Customer-facing description of the gift and its included features.
+   */
+  description: string;
+  /**
+   * Primary image displayed for the gift.
+   */
+  giftImage: string | ProductLibrary;
+  /**
+   * Controls the gift lifecycle
+   */
+  status: 'active' | 'draft' | 'inactive' | 'archived';
+  /**
+   * Authoritative inventory quantity
+   */
+  stock: number;
+  /**
+   * Current selling price of the gift in Nigerian naira. Monetary precision must be enforced consistently by the pricing and payment services.
+   */
+  price: number;
+  /**
+   * Category this gift belongs to.
+   */
+  category: string | Category;
+  /**
+   * Currency used for this gift.
+   */
+  currency: 'NGN';
+  /**
+   * Unique URL-friendly identifier generated from the gift name.
+   */
+  slug: string;
+  /**
+   * Admin who created this gift.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this gift.
+   */
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -920,6 +981,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'product-secrets';
         value: string | ProductSecret;
+      } | null)
+    | ({
+        relationTo: 'gifts';
+        value: string | Gift;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1055,6 +1120,7 @@ export interface ProductsSelect<T extends boolean = true> {
   description?: T;
   productImage?: T;
   productType?: T;
+  currency?: T;
   status?: T;
   stock?: T;
   virtualStock?: T;
@@ -1268,6 +1334,25 @@ export interface ProductSecretsSelect<T extends boolean = true> {
   product?: T;
   status?: T;
   soldAt?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gifts_select".
+ */
+export interface GiftsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  giftImage?: T;
+  status?: T;
+  stock?: T;
+  price?: T;
+  category?: T;
+  currency?: T;
+  slug?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;

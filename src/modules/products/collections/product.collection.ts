@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload";
-
+import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
-
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
 import {
@@ -90,6 +89,25 @@ export const ProductsCollection: CollectionConfig = {
         {
           label: "Digital",
           value: PRODUCT_TYPE.DIGITAL,
+        },
+      ],
+      required: true,
+      type: "select",
+    },
+
+    {
+      admin: {
+        description: "Currency used for this product.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      defaultValue: CURRENCY.NGN,
+      index: true,
+      name: "currency",
+      options: [
+        {
+          label: "NGN",
+          value: CURRENCY.NGN,
         },
       ],
       required: true,

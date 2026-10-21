@@ -9,11 +9,10 @@ import {
   useCartActions,
   useCartItemQuantity,
 } from "@/modules/checkout/store/cart-store";
-import type { ResourceId } from "@/shared/types";
 
 interface AddToCartButtonProps {
   disabled?: boolean;
-  productId: ResourceId;
+  productId: string;
 }
 
 export function AddToCartButton({

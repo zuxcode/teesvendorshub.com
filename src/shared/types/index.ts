@@ -1,10 +1,5 @@
 import type { BaseDatabaseAdapter } from "payload";
 
-/**
- * @deprecated
- */
-export type ResourceId = string;
-
 export type DatabaseTransactionId = NonNullable<
   Awaited<ReturnType<DatabaseTransaction["beginTransaction"]>>
 >;

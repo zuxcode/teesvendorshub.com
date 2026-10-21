@@ -4,25 +4,25 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 import type { Product } from "@/payload-types";
-import type { ResourceId, StoreStatus } from "@/shared/types";
+import type { StoreStatus } from "@/shared/types";
 
 export interface ProductStoreState {
   error: string | null;
-  products: Record<ResourceId, Product>;
-  selectedProductId: ResourceId | null;
+  products: Record<string, Product>;
+  selectedProductId: string | null;
   status: StoreStatus;
 }
 
 export interface ProductStoreActions {
   addProduct: (product: Product) => void;
   clearProducts: () => void;
-  getProductById: (id: ResourceId) => Product | undefined;
-  removeProduct: (id: ResourceId) => void;
+  getProductById: (id: string) => Product | undefined;
+  removeProduct: (id: string) => void;
   setError: (error: string | null) => void;
   setProducts: (products: Product[]) => void;
-  setSelectedProductId: (id: ResourceId | null) => void;
+  setSelectedProductId: (id: string | null) => void;
   setStatus: (status: StoreStatus) => void;
-  updateProduct: (id: ResourceId, updates: Partial<Product>) => void;
+  updateProduct: (id: string, updates: Partial<Product>) => void;
 }
 
 export interface ProductStore extends ProductStoreState {
@@ -121,7 +121,7 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
   shallow
 );
 
-export const useProduct = (id: ResourceId | null | undefined) =>
+export const useProduct = (id: string | null | undefined) =>
   useProductStore((state) => (id ? state.products[id] : undefined));
 
 export const useProducts = () => useProductStore((state) => state.products);

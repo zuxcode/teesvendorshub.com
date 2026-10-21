@@ -3,21 +3,20 @@ import { immer } from "zustand/middleware/immer";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 import type { Category } from "@/payload-types";
-import type { ResourceId } from "@/shared/types";
 
 export interface CategoryStoreState {
-  categories: Record<ResourceId, Category>;
-  selectedCategoryId: ResourceId | null;
+  categories: Record<string, Category>;
+  selectedCategoryId: string | null;
 }
 
 export interface CategoryStoreActions {
   addCategory: (category: Category) => void;
   clearCategories: () => void;
-  getCategoryById: (id: ResourceId) => Category | undefined;
-  removeCategory: (id: ResourceId) => void;
+  getCategoryById: (id: string) => Category | undefined;
+  removeCategory: (id: string) => void;
   setCategories: (categories: Category[]) => void;
-  setSelectedCategoryId: (id: ResourceId | null) => void;
-  updateCategory: (id: ResourceId, updates: Partial<Category>) => void;
+  setSelectedCategoryId: (id: string | null) => void;
+  updateCategory: (id: string, updates: Partial<Category>) => void;
 }
 
 export interface CategoryStore extends CategoryStoreState {
@@ -93,7 +92,7 @@ export const useCategoryStore = createWithEqualityFn<CategoryStore>()(
   shallow
 );
 
-export const useCategory = (id: ResourceId | null | undefined) =>
+export const useCategory = (id: string | null | undefined) =>
   useCategoryStore((state) => (id ? state.categories[id] : undefined));
 
 export const useCategoryIds = () =>

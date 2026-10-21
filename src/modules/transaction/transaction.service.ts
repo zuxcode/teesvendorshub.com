@@ -1,5 +1,4 @@
 import type { Transaction } from "@/payload-types";
-import type { ResourceId } from "@/shared/types";
 import type { TransactionRepository } from "./transaction.repository";
 import type { TransactionInsertData } from "./types/transactions.type";
 
@@ -10,13 +9,13 @@ export class TransactionService {
     this.transactionRepository = transactionRepository;
   }
 
-  findById(id: ResourceId): Promise<Transaction | null> {
+  findById(id: string): Promise<Transaction | null> {
     return this.transactionRepository.findById(id);
   }
 
   create(
     transactionData: TransactionInsertData,
-    transactionID?: ResourceId
+    transactionID?: string
   ): Promise<Transaction> {
     return this.transactionRepository.create(transactionData, transactionID);
   }

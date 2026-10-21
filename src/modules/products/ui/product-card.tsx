@@ -17,12 +17,11 @@ import {
   useProductActions,
   useSelectedProductId,
 } from "@/modules/products/stores/product-store";
-import type { ResourceId } from "@/shared/types";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
 interface ProductCardProps {
-  id: ResourceId;
+  id: string;
 }
 
 export function ProductCard({ id }: ProductCardProps) {

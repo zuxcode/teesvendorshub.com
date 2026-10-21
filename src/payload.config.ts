@@ -14,6 +14,7 @@ import sharp from "sharp";
 
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
 import { CategoriesCollection } from "./modules/category/category-collection";
+import { GiftsCollection } from "./modules/gift/collection/gift-collection";
 import { InventoryCollection } from "./modules/inventory/inventory.collection";
 import { AvatarCollection } from "./modules/media/avatar-collection";
 import { ProductLibraryCollection } from "./modules/media/product-library";
@@ -78,6 +79,7 @@ export default buildConfig({
     PaymentsCollection,
     AvatarCollection,
     ProductSecretCollection,
+    GiftsCollection,
   ],
   cookiePrefix: "tvh",
 

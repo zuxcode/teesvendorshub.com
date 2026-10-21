@@ -1,4 +1,4 @@
-import { PackageOpen } from "lucide-react";
+import { ArrowRight, PackageOpen, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 export function OrderedItemsEmpty() {
@@ -18,10 +18,12 @@ export function OrderedItemsEmpty() {
       </p>
 
       <Link
-        className="mt-5 inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 font-medium text-primary-foreground text-sm transition-opacity hover:opacity-90"
-        href="/orders"
+        className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 font-medium text-primary-foreground text-sm transition-opacity hover:opacity-90"
+        href="/dashboard/products"
       >
-        Back to orders
+        <ShoppingBag aria-hidden="true" className="size-4" />
+        Continue shopping
+        <ArrowRight aria-hidden="true" className="size-4" />
       </Link>
     </div>
   );

@@ -2,11 +2,10 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
-import type { ResourceId } from "@/shared/types";
 
 export interface CartItem {
-  id: ResourceId;
-  productId: ResourceId;
+  id: string;
+  productId: string;
   quantity: number;
 }
 
@@ -16,15 +15,15 @@ export interface CartStoreState {
 }
 
 export interface CartStoreActions {
-  addItem: (productId: ResourceId, quantity?: number) => void;
+  addItem: (productId: string, quantity?: number) => void;
   clearCart: () => void;
-  decrementItem: (productId: ResourceId) => void;
-  getItem: (productId: ResourceId) => CartItem | undefined;
-  getItemQuantity: (productId: ResourceId) => number;
-  incrementItem: (productId: ResourceId) => void;
-  removeItem: (productId: ResourceId) => void;
+  decrementItem: (productId: string) => void;
+  getItem: (productId: string) => CartItem | undefined;
+  getItemQuantity: (productId: string) => number;
+  incrementItem: (productId: string) => void;
+  removeItem: (productId: string) => void;
   setIsOpen: (isOpen: boolean) => void;
-  setItemQuantity: (productId: ResourceId, quantity: number) => void;
+  setItemQuantity: (productId: string, quantity: number) => void;
 }
 
 export interface CartStore extends CartStoreState {
@@ -146,10 +145,10 @@ export const useCartItemIds = () =>
 export const useCartItemValues = () =>
   useCartStore((state) => Object.values(state.items));
 
-export const useCartItem = (productId: ResourceId) =>
+export const useCartItem = (productId: string) =>
   useCartStore((state) => state.items[productId]);
 
-export const useCartItemQuantity = (productId: ResourceId) =>
+export const useCartItemQuantity = (productId: string) =>
   useCartStore((state) => state.items[productId]?.quantity ?? 0);
 
 export const useCartItemCount = () =>

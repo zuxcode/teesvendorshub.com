@@ -2,6 +2,7 @@
 import {
   BarChart3,
   CardSim,
+  GiftIcon,
   HelpCircle,
   LayoutDashboard,
   Package,
@@ -48,13 +49,18 @@ const navigation = {
       url: "/dashboard/products",
     },
     {
+      icon: GiftIcon,
+      title: "Gift Store",
+      url: "/dashboard/gifts",
+    },
+    {
       badge: "12",
       icon: ShoppingCart,
       title: "Orders",
       url: "/dashboard/orders",
     },
     {
-      badge: "12",
+      // badge: "12",
       icon: CardSim,
       title: "Physical / eSIM",
       url: "/dashboard/sim",
@@ -70,7 +76,7 @@ const navigation = {
       url: "/dashboard/discounts",
     },
     {
-      badge: "4",
+      // badge: "4",
       icon: Star,
       title: "Reviews",
       url: "/dashboard/reviews",
