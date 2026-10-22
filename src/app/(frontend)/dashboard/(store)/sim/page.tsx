@@ -7,7 +7,7 @@ import { Simserver } from "@/modules/sim/ui/sim-server";
 
 export default async function ProductsPage() {
   return (
-    <div className="space-y-5">
+    <div>
       <SimStoreHeader />
       <div className="page-container">
         <SimFilterPanelWrapper />

@@ -86,9 +86,6 @@ export const useGiftById = (id: string | null) =>
 export const useGifts = () =>
   useGiftStore((state) => Object.values(state.gifts), shallow);
 
-export const useGiftIds = () =>
-  useGiftStore((state) => Object.keys(state.gifts), shallow);
-
 export const useGiftActions = () => useGiftStore((state) => state.actions);
 
 export const useSelectedGiftId = () =>

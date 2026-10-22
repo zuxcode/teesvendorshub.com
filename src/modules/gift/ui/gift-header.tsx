@@ -3,7 +3,7 @@ import { Gift, Heart } from "lucide-react";
 export function GiftStoreHeader() {
   return (
     <section aria-labelledby="gift-store-heading">
-      <header className="relative isolate overflow-hidden rounded-2xl border bg-card px-5 py-7 sm:px-8 sm:py-9">
+      <header className="relative isolate overflow-hidden bg-card px-5 py-7 sm:px-8 sm:py-9">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-16 -right-12 -z-10 size-56 rounded-full bg-primary/5 blur-3xl sm:size-72"

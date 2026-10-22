@@ -1,28 +1,24 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { useGiftIds } from "../store/gift-store";
-import { GiftCard } from "./grift-card";
+import type { Gift } from "@/payload-types";
+import { ProductGrid } from "@/shared/ui/product/product-grid";
+import {
+  useGiftActions,
+  useGifts,
+  useSelectedGiftId,
+} from "../store/gift-store";
 
 export function GiftGrid() {
-  const giftIds = useGiftIds();
+  const giffs = useGifts();
+  const selectedGiftId = useSelectedGiftId();
+  const { setSelectedGiftId } = useGiftActions();
 
   return (
-    <div className="grids gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-      <section>
-        <div
-          className={cn(
-            "grid gap-4",
-            "grid-cols-2",
-            "md:grid-cols-3",
-            "xl:grid-cols-4"
-          )}
-        >
-          {giftIds.map((id) => (
-            <GiftCard id={id} key={id} />
-          ))}
-        </div>
-      </section>
-    </div>
+    <ProductGrid<Gift>
+      dataList={giffs}
+      relationTo="gift"
+      selectedId={selectedGiftId}
+      setSelectedId={setSelectedGiftId}
+    />
   );
 }

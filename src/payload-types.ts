@@ -795,9 +795,9 @@ export interface Gift {
    */
   stock: number;
   /**
-   * Current selling price of the gift in Nigerian naira. Monetary precision must be enforced consistently by the pricing and payment services.
+   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
    */
-  price: number;
+  priceKobo: number;
   /**
    * Category this gift belongs to.
    */
@@ -1459,7 +1459,7 @@ export interface GiftsSelect<T extends boolean = true> {
   productImage?: T;
   status?: T;
   stock?: T;
-  price?: T;
+  priceKobo?: T;
   category?: T;
   currency?: T;
   slug?: T;

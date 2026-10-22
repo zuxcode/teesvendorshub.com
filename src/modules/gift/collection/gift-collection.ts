@@ -3,7 +3,12 @@ import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
 import { PRODUCT_STATUS } from "@/shared/constant";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
+import {
+  koboToNaira,
+  nairaToKobo,
+} from "@/shared/payload/hooks/current-converter";
 import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
+import { validateNonNegativeInteger } from "@/shared/payload/hooks/validate-non-negativate-integer";
 
 export const GiftsCollection: CollectionConfig = {
   access: {
@@ -18,7 +23,7 @@ export const GiftsCollection: CollectionConfig = {
       "name",
       "status",
       "stock",
-      "price",
+      "priceKobo",
       "category",
       "updatedAt",
     ],
@@ -105,18 +110,24 @@ export const GiftsCollection: CollectionConfig = {
       name: "stock",
       required: true,
       type: "number",
+      validate: validateNonNegativeInteger("Stock"),
     },
 
     {
       admin: {
         description:
-          "Current selling price of the gift in Nigerian naira. Monetary precision must be enforced consistently by the pricing and payment services.",
+          "Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).",
       },
-      label: "Price (₦ NGN)",
+      hooks: {
+        afterRead: [koboToNaira],
+        beforeValidate: [nairaToKobo],
+      },
+      label: "Price (kobo)",
       min: 0,
-      name: "price",
+      name: "priceKobo",
       required: true,
       type: "number",
+      validate: validateNonNegativeInteger("Price"),
     },
 
     {
@@ -205,7 +216,7 @@ export const GiftsCollection: CollectionConfig = {
       unique: false,
     },
     {
-      fields: ["status", "price"],
+      fields: ["status", "priceKobo"],
       unique: false,
     },
     {
