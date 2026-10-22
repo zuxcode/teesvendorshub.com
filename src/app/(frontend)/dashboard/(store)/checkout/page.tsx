@@ -3,7 +3,7 @@ import { CheckoutReturnToPreviousPage } from "@/modules/checkout/ui/checkout-bac
 
 export default async function CheckoutPage() {
   return (
-    <>
+    <div className="page-container">
       <div className="mb-8">
         <CheckoutReturnToPreviousPage />
 
@@ -15,6 +15,6 @@ export default async function CheckoutPage() {
       </div>
 
       <CheckOutContent />
-    </>
+    </div>
   );
 }

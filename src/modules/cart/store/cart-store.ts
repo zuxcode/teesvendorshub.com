@@ -37,7 +37,7 @@ export interface CartStore extends CartStoreState {
   actions: CartStoreActions;
 }
 
-const getCartItemKey = ({ id, relationTo }: CartItemIdentifier) =>
+export const getCartItemKey = ({ id, relationTo }: CartItemIdentifier) =>
   JSON.stringify([relationTo, id]);
 
 const isValidQuantity = (quantity: number) =>

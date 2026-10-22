@@ -108,3 +108,5 @@ export const useSimActions = () => useSimStore((state) => state.actions);
 
 export const useSims = () =>
   useSimStore((state) => Object.values(state.sims), shallow);
+
+export const useSimsById = () => useSimStore((state) => state.sims, shallow);

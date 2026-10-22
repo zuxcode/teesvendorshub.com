@@ -80,11 +80,13 @@ export const useGiftStore = createWithEqualityFn<GiftStore>()(
   shallow
 );
 
-export const useGiftById = (id: string | null) =>
+export const useGift = (id: string | null) =>
   useGiftStore((state) => (id ? (state.gifts[id] ?? null) : null));
 
 export const useGifts = () =>
   useGiftStore((state) => Object.values(state.gifts), shallow);
+
+export const useGiftById = () => useGiftStore((state) => state.gifts, shallow);
 
 export const useGiftActions = () => useGiftStore((state) => state.actions);
 

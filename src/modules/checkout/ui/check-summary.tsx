@@ -4,29 +4,15 @@ import { LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  useCartItemQuantity,
-  useCartItems,
-} from "@/modules/cart/store/cart-store";
-import { useProductActions } from "@/modules/products/store/product-store";
+import { useTotalPrice } from "@/modules/cart/hooks/use-total-price";
+import { useCartItems } from "@/modules/cart/store/cart-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { CheckoutItem } from "./checkout-item";
 
 export function OrderSummary() {
-  const productIds = useCartItems();
-  const { getProductById } = useProductActions();
-  const quantity = useCartItemQuantity(productIds);
+  const cartItems = useCartItems();
 
-  const subtotal = productIds.reduce((total, productId) => {
-    const product = getProductById(productId);
-    // const quantity = getItemQuantity(productId);
-
-    if (!product || quantity <= 0) {
-      return total;
-    }
-
-    return total + product.price * quantity;
-  }, 0);
+  const { total } = useTotalPrice();
 
   return (
     <Card className="lg:sticky lg:top-6">
@@ -36,8 +22,8 @@ export function OrderSummary() {
 
       <CardContent className="space-y-5">
         <div className="space-y-4">
-          {productIds.map((productId) => (
-            <CheckoutItem key={productId} productId={productId} />
+          {cartItems.map((item) => (
+            <CheckoutItem key={item.id} {...item} />
           ))}
         </div>
 
@@ -46,7 +32,7 @@ export function OrderSummary() {
         <div className="space-y-3 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">Subtotal</span>
-            <span>{formatCurrency(subtotal)}</span>
+            <span>{formatCurrency(total)}</span>
           </div>
 
           <div className="flex items-center justify-between">
@@ -58,12 +44,12 @@ export function OrderSummary() {
 
           <div className="flex items-center justify-between font-semibold text-base">
             <span>Total</span>
-            <span>{formatCurrency(subtotal)}</span>
+            <span>{formatCurrency(total)}</span>
           </div>
         </div>
 
         <Button className="w-full" size="lg" type="submit">
-          Place order · {formatCurrency(subtotal)}
+          Place order · {formatCurrency(total)}
         </Button>
 
         <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs">

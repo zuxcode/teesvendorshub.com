@@ -4,7 +4,7 @@ import { type BasePayload, JobCancelledError, type TaskHandler } from "payload";
 import { DatabaseTransactionBase } from "@/modules/database/database-transaction-basemodel";
 import { InventoryRepository } from "@/modules/inventory/inventory.repository";
 import { ProductRepository } from "@/modules/products/product.repository";
-import { ProductSecretRepository } from "@/modules/products/product-secret.repository";
+import { ProductSecretRepository } from "@/modules/products/repository/product-secret.repository";
 import type {
   OrderItem,
   Product,

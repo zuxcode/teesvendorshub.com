@@ -1,45 +1,54 @@
 "use client";
 
 import Image from "next/image";
-import { useCartItemQuantity } from "@/modules/cart/store/cart-store";
+import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
+import { useLinkedItem } from "@/modules/cart/hooks/use-link-item";
+import {
+  type CartItemIdentifier,
+  useCartItemQuantity,
+} from "@/modules/cart/store/cart-store";
+import { useCategory } from "@/modules/category/stores/category-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { getLineTotal } from "@/modules/products/libs/inventory";
-import { useProduct } from "@/modules/products/store/product-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 
-export function CheckoutItem({ productId }: { productId: string }) {
-  const product = useProduct(productId);
-  const quantity = useCartItemQuantity(productId);
+export function CheckoutItem(identifier: CartItemIdentifier) {
+  const { linkedItem } = useLinkedItem(identifier);
+  const quantity = useCartItemQuantity(identifier);
 
-  const imageId = getRelationshipId(product?.productImage);
-  const image = useProductImage(imageId);
+  const image = useProductImage(getRelationshipId(linkedItem?.productImage));
+  const category = useCategory(getRelationshipId(linkedItem?.category));
 
-  if (!product || quantity <= 0) {
+  if (!linkedItem || quantity <= 0) {
     return null;
   }
 
-  const lineTotal = getLineTotal(product.price, quantity);
+  const lineTotal = getLineTotal(linkedItem.priceKobo, quantity);
+  const imageUrl = image?.sizes?.card?.url;
 
   return (
     <div className="flex gap-4">
       <div className="relative size-16 shrink-0 overflow-hidden rounded-md bg-muted">
-        {image?.sizes?.card?.url ? (
+        {imageUrl ? (
           <Image
-            alt={image.alt ?? product.name}
+            alt={image.alt ?? linkedItem.name}
             className="object-cover"
             fill
             sizes="64px"
-            src={image.sizes.card.url}
+            src={imageUrl}
           />
-        ) : null}
+        ) : (
+          <ImagePlaceholder />
+        )}
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="line-clamp-1 font-medium text-sm">{product.name}</h3>
+        <h3 className="line-clamp-1 font-medium text-sm">{linkedItem.name}</h3>
 
         <p className="mt-1 text-muted-foreground text-xs">
-          {product.country} · Qty {quantity}
+          {category?.name ? `${category.name} · ` : ""}
+          Qty {quantity}
         </p>
       </div>
 
@@ -48,7 +57,7 @@ export function CheckoutItem({ productId }: { productId: string }) {
 
         {quantity > 1 && (
           <p className="mt-1 text-muted-foreground text-xs">
-            {formatCurrency(product.price)} each
+            {formatCurrency(linkedItem.priceKobo)} each
           </p>
         )}
       </div>

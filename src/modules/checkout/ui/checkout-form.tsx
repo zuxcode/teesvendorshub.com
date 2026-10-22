@@ -1,8 +1,8 @@
 "use client";
 
 import { FormProvider } from "react-hook-form";
-import { useCartHasPhysicalProduct } from "../hooks/use-cart-has-physical-product";
 import { useCheckoutHandler } from "../hooks/use-checkout-handler";
+import { useShippingAddressVisibility } from "../hooks/use-shipping-address-visibility";
 import { OrderSummary } from "./check-summary";
 import { ContactInformation } from "./contact-information";
 import { CustomerInformation } from "./customer-infomation";
@@ -11,7 +11,7 @@ import { ShippingAddress } from "./shipping-address";
 
 export function CheckoutForm() {
   const { execute, form } = useCheckoutHandler();
-  const { cartHasPhysicalProduct } = useCartHasPhysicalProduct();
+  const { requiresShippingAddress } = useShippingAddressVisibility();
 
   return (
     <FormProvider {...form}>
@@ -20,7 +20,7 @@ export function CheckoutForm() {
           <div className="space-y-6">
             <ContactInformation />
 
-            {cartHasPhysicalProduct ? (
+            {requiresShippingAddress ? (
               <>
                 <CustomerInformation />
                 <ShippingAddress />

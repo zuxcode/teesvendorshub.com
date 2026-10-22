@@ -1,4 +1,4 @@
-import { useGiftById } from "@/modules/gift/store/gift-store";
+import { useGift } from "@/modules/gift/store/gift-store";
 import { useProduct } from "@/modules/products/store/product-store";
 import { useSim } from "@/modules/sim/store/sim-store";
 import { type CartItemIdentifier, useCartItem } from "../store/cart-store";
@@ -6,7 +6,7 @@ import { type CartItemIdentifier, useCartItem } from "../store/cart-store";
 export const useLinkedItem = (identifier: CartItemIdentifier) => {
   const item = useCartItem(identifier);
 
-  const gift = useGiftById(item?.id);
+  const gift = useGift(item?.id);
   const product = useProduct(item?.id);
   const sim = useSim(item?.id);
 

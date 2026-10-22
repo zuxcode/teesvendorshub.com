@@ -94,6 +94,8 @@ export const useProduct = (id: string | null | undefined) =>
 export const useProducts = () =>
   useProductStore((state) => Object.values(state.products));
 
+export const useProductById = () => useProductStore((state) => state.products);
+
 export const useSelectedProductId = () =>
   useProductStore((state) => state.selectedProductId);
 
