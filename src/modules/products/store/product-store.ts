@@ -4,13 +4,10 @@ import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
 import type { Product } from "@/payload-types";
-import type { StoreStatus } from "@/shared/types";
 
 export interface ProductStoreState {
-  error: string | null;
   products: Record<string, Product>;
   selectedProductId: string | null;
-  status: StoreStatus;
 }
 
 export interface ProductStoreActions {
@@ -18,10 +15,8 @@ export interface ProductStoreActions {
   clearProducts: () => void;
   getProductById: (id: string) => Product | undefined;
   removeProduct: (id: string) => void;
-  setError: (error: string | null) => void;
   setProducts: (products: Product[]) => void;
   setSelectedProductId: (id: string | null) => void;
-  setStatus: (status: StoreStatus) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
 }
 
@@ -36,16 +31,12 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
         addProduct: (product) => {
           set((state) => {
             state.products[product.id] = product;
-            state.status = "ready";
-            state.error = null;
           });
         },
 
         clearProducts: () => {
           set((state) => {
             state.products = {};
-            state.status = "ready";
-            state.error = null;
           });
         },
 
@@ -54,15 +45,6 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
         removeProduct: (id) => {
           set((state) => {
             delete state.products[id];
-            state.status = "ready";
-            state.error = null;
-          });
-        },
-
-        setError: (error) => {
-          set((state) => {
-            state.error = error;
-            state.status = "error";
           });
         },
 
@@ -71,25 +53,12 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
             state.products = Object.fromEntries(
               products.map((product) => [product.id, product])
             );
-
-            state.status = "ready";
-            state.error = null;
           });
         },
 
         setSelectedProductId: (id) => {
           set((state) => {
             state.selectedProductId = id;
-          });
-        },
-
-        setStatus: (status) => {
-          set((state) => {
-            state.status = status;
-
-            if (status !== "error") {
-              state.error = null;
-            }
           });
         },
 
@@ -105,10 +74,8 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
           });
         },
       },
-      error: null,
       products: {},
       selectedProductId: null,
-      status: "idle",
     })),
     {
       name: "tvh_products",
@@ -135,20 +102,6 @@ export const useSelectedProduct = () =>
     const { selectedProductId, products } = state;
     return selectedProductId ? products[selectedProductId] : undefined;
   });
-
-export const useHasSelectedProduct = () =>
-  useProductStore((state) => state.selectedProductId !== null);
-
-export const useProductIds = () =>
-  useProductStore((state) => Object.keys(state.products));
-
-export const useProductStatus = () => useProductStore((state) => state.status);
-
-export const useProductError = () => useProductStore((state) => state.error);
-
-export const useHasProducts = () =>
-  useProductStore((state) => Object.keys(state.products).length > 0);
-
 
 export const useProductActions = () =>
   useProductStore((state) => state.actions);

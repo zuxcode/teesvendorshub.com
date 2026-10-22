@@ -9,8 +9,6 @@ export type WithoutPersistenceFields<T> = Omit<
   "id" | "createdAt" | "updatedAt"
 >;
 
-export type StoreStatus = "idle" | "loading" | "ready" | "error";
-
 export type DatabaseTransaction = Pick<
   BaseDatabaseAdapter,
   "beginTransaction" | "commitTransaction" | "rollbackTransaction"
