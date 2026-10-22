@@ -13,7 +13,7 @@ import type { SimCountryOption } from "./sim-filter.types";
 interface Props {
   countries: SimCountryOption[];
   onChange: (value: string | null) => void;
-  value: string;
+  value: string | null;
 }
 
 export function SimCountryFilter({ value, countries, onChange }: Props) {

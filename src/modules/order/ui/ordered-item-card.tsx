@@ -12,7 +12,7 @@ export function OrderedItemCard(item: OrderItem) {
   const orderImage = useProductImage(getRelationshipId(item.productImage));
   const product = useProduct(getRelationshipId(item.product));
   const secrets = item.secrets ?? [];
-  const hasSecrets = product?.productType !== "physical" && secrets.length > 0;
+  const hasSecrets = item.productType !== "gift" && secrets.length > 0;
 
   const FULFILLMENT_STATUS_STYLES = {
     cancelled: "product-order-cancelled",

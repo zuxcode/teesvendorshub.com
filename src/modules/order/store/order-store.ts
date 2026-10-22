@@ -13,8 +13,8 @@ export interface CartStoreState {
 export interface CartStoreActions {
   addOrder: (order: Order) => void;
   addOrderItem: (item: OrderItem) => void;
-  addOrderItems: (items: OrderItem[]) => void;
-  addOrders: (orders: Order[]) => void;
+  setOrderItems: (items: OrderItem[]) => void;
+  setOrders: (orders: Order[]) => void;
 }
 
 export interface CartStore extends CartStoreState {
@@ -37,19 +37,19 @@ export const useOrderStore = createWithEqualityFn<CartStore>()(
           });
         },
 
-        addOrderItems: (items) => {
+        setOrderItems: (items) => {
           set((state) => {
-            for (const item of items) {
-              state.orderItems[item.id] = item;
-            }
+            state.orderItems = Object.fromEntries(
+              items.map((item) => [item.id, item])
+            );
           });
         },
 
-        addOrders: (orders) => {
+        setOrders: (orders) => {
           set((state) => {
-            for (const order of orders) {
-              state.orders[order.id] = order;
-            }
+            state.orders = Object.fromEntries(
+              orders.map((order) => [order.id, order])
+            );
           });
         },
       },

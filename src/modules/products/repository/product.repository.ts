@@ -50,6 +50,9 @@ export class ProductRepository {
         id: {
           in: ids,
         },
+        status: {
+          equals: PRODUCT_STATUS.ACTIVE,
+        },
       },
     });
 

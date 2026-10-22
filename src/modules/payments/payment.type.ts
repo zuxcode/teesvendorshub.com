@@ -1,4 +1,4 @@
-import type { Currency } from "../order/order.constants";
+import type { Currency } from "@/shared/constant";
 import type { PaymentProviderName, PaymentStatus } from "./payment.constants";
 
 export interface PaymentAdaptor {

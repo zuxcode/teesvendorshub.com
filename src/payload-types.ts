@@ -526,7 +526,7 @@ export interface Order {
   createdAt: string;
 }
 /**
- * Immutable snapshots of products purchased as part of an order.
+ * Purchase-time snapshots of individual products, gifts, or SIMs in an order.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "order-items".
@@ -538,15 +538,31 @@ export interface OrderItem {
    */
   order: string | Order;
   /**
-   * Original product purchased. Historical snapshot fields remain authoritative for this order item.
+   * Original product purchased. Only one item relationship may be set.
    */
-  product: string | Product;
+  product?: (string | null) | Product;
   /**
-   * Product name captured at the time of purchase.
+   * Original gift purchased. Only one item relationship may be set.
+   */
+  gift?: (string | null) | Gift;
+  /**
+   * Original SIM purchased. Only one item relationship may be set.
+   */
+  sim?: (string | null) | Sim;
+  /**
+   * Type of purchasable item captured at purchase time.
+   */
+  productType: 'product' | 'gift' | 'sim';
+  /**
+   * SIM type captured at the time of purchase.
+   */
+  simType?: ('esim' | 'physical') | null;
+  /**
+   * Item name captured at the time of purchase.
    */
   productName: string;
   /**
-   * Product image associated with the product at purchase time.
+   * Item image captured at the time of purchase.
    */
   productImage?: (string | null) | ProductLibrary;
   /**
@@ -558,15 +574,15 @@ export interface OrderItem {
    */
   quantity: number;
   /**
-   * Final amount charged for this order item.
+   * Total amount charged for this order item.
    */
   lineTotal: number;
   /**
-   * Overall lifecycle fulfillmentStatus of the order item.
+   * Current fulfillment status of this order item.
    */
   fulfillmentStatus: 'pending' | 'partial' | 'completed' | 'cancelled';
   /**
-   * Sensitive product secret visible only to authorized administrators or the purchasing buyer.
+   * Purchase-specific secrets used for fulfillment. Restrict access to these values independently of collection access.
    */
   secrets?:
     | {
@@ -586,6 +602,159 @@ export interface OrderItem {
     | number
     | boolean
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Gifts available for purchase. Stock represents the authoritative inventory quantity.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gifts".
+ */
+export interface Gift {
+  id: string;
+  /**
+   * Gift name displayed to customers
+   */
+  name: string;
+  /**
+   * Customer-facing description of the gift and its included features.
+   */
+  description: string;
+  /**
+   * Primary image displayed for the gift.
+   */
+  productImage: string | ProductLibrary;
+  /**
+   * Controls the gift lifecycle
+   */
+  status: 'active' | 'draft' | 'inactive' | 'archived';
+  /**
+   * Authoritative inventory quantity
+   */
+  stock: number;
+  /**
+   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
+   */
+  priceKobo: number;
+  /**
+   * Category this gift belongs to.
+   */
+  category: string | Category;
+  /**
+   * Currency used for this gift.
+   */
+  currency: 'NGN';
+  /**
+   * Unique URL-friendly identifier generated from the gift name.
+   */
+  slug: string;
+  /**
+   * Admin who created this gift.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this gift.
+   */
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * SIM products available for purchase. Stock is the authoritative inventory quantity.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sims".
+ */
+export interface Sim {
+  id: string;
+  /**
+   * SIM product name displayed to customers.
+   */
+  name: string;
+  /**
+   * Customer-facing description of the SIM and its included features.
+   */
+  description: string;
+  /**
+   * Primary image displayed for the SIM product.
+   */
+  productImage: string | ProductLibrary;
+  /**
+   * Controls the SIM type.
+   */
+  simType: 'esim' | 'physical';
+  /**
+   * Controls the SIM product lifecycle.
+   */
+  status: 'active' | 'draft' | 'inactive' | 'archived';
+  /**
+   * Marketing badges displayed on the SIM product.
+   */
+  badges?: ('best_seller' | 'featured' | 'new' | 'trending')[] | null;
+  /**
+   * Authoritative inventory quantity used by inventory and fulfillment services.
+   */
+  stock: number;
+  /**
+   * Customer-facing inventory quantity for storefront display. This does not represent actual inventory available for fulfillment.
+   */
+  virtualStock: number;
+  /**
+   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
+   */
+  priceKobo: number;
+  /**
+   * Category this SIM product belongs to.
+   */
+  category?: (string | null) | Category;
+  /**
+   * Country this SIM product belongs to.
+   */
+  country: string | Country;
+  /**
+   * Currency used for this SIM product. Always NGN.
+   */
+  currency: 'NGN';
+  /**
+   * Unique URL-friendly identifier generated from the name.
+   */
+  slug: string;
+  /**
+   * Admin who created this SIM product.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this SIM product.
+   */
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Countries available for products in the TVH catalog.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries".
+ */
+export interface Country {
+  id: string;
+  /**
+   * Country name.
+   */
+  name: string;
+  /**
+   * URL-friendly identifier generated from the country name.
+   */
+  slug: string;
+  /**
+   * Admin who created this country.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this country.
+   */
+  updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -750,159 +919,6 @@ export interface ProductSecret {
    */
   soldAt?: string | null;
   createdBy: string | User;
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Gifts available for purchase. Stock represents the authoritative inventory quantity.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "gifts".
- */
-export interface Gift {
-  id: string;
-  /**
-   * Gift name displayed to customers
-   */
-  name: string;
-  /**
-   * Customer-facing description of the gift and its included features.
-   */
-  description: string;
-  /**
-   * Primary image displayed for the gift.
-   */
-  productImage: string | ProductLibrary;
-  /**
-   * Controls the gift lifecycle
-   */
-  status: 'active' | 'draft' | 'inactive' | 'archived';
-  /**
-   * Authoritative inventory quantity
-   */
-  stock: number;
-  /**
-   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
-   */
-  priceKobo: number;
-  /**
-   * Category this gift belongs to.
-   */
-  category: string | Category;
-  /**
-   * Currency used for this gift.
-   */
-  currency: 'NGN';
-  /**
-   * Unique URL-friendly identifier generated from the gift name.
-   */
-  slug: string;
-  /**
-   * Admin who created this gift.
-   */
-  createdBy: string | User;
-  /**
-   * Admin who last updated this gift.
-   */
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * SIM products available for purchase. Stock is the authoritative inventory quantity.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sims".
- */
-export interface Sim {
-  id: string;
-  /**
-   * SIM product name displayed to customers.
-   */
-  name: string;
-  /**
-   * Customer-facing description of the SIM and its included features.
-   */
-  description: string;
-  /**
-   * Primary image displayed for the SIM product.
-   */
-  productImage: string | ProductLibrary;
-  /**
-   * Controls the SIM type.
-   */
-  simType: 'esim' | 'physical';
-  /**
-   * Controls the SIM product lifecycle.
-   */
-  status: 'active' | 'draft' | 'inactive' | 'archived';
-  /**
-   * Marketing badges displayed on the SIM product.
-   */
-  badges?: ('best_seller' | 'featured' | 'new' | 'trending')[] | null;
-  /**
-   * Authoritative inventory quantity used by inventory and fulfillment services.
-   */
-  stock: number;
-  /**
-   * Customer-facing inventory quantity for storefront display. This does not represent actual inventory available for fulfillment.
-   */
-  virtualStock: number;
-  /**
-   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
-   */
-  priceKobo: number;
-  /**
-   * Category this SIM product belongs to.
-   */
-  category?: (string | null) | Category;
-  /**
-   * Country this SIM product belongs to.
-   */
-  country: string | Country;
-  /**
-   * Currency used for this SIM product. Always NGN.
-   */
-  currency: 'NGN';
-  /**
-   * Unique URL-friendly identifier generated from the name.
-   */
-  slug: string;
-  /**
-   * Admin who created this SIM product.
-   */
-  createdBy: string | User;
-  /**
-   * Admin who last updated this SIM product.
-   */
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Countries available for products in the TVH catalog.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "countries".
- */
-export interface Country {
-  id: string;
-  /**
-   * Country name.
-   */
-  name: string;
-  /**
-   * URL-friendly identifier generated from the country name.
-   */
-  slug: string;
-  /**
-   * Admin who created this country.
-   */
-  createdBy: string | User;
-  /**
-   * Admin who last updated this country.
-   */
   updatedBy?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
@@ -1299,6 +1315,10 @@ export interface OrdersSelect<T extends boolean = true> {
 export interface OrderItemsSelect<T extends boolean = true> {
   order?: T;
   product?: T;
+  gift?: T;
+  sim?: T;
+  productType?: T;
+  simType?: T;
   productName?: T;
   productImage?: T;
   unitPrice?: T;

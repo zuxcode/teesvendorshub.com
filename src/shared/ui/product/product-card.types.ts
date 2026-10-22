@@ -1,3 +1,5 @@
+import type { RelationTo } from "@/shared/constant";
+
 export interface ProductCardData {
   badges?: string[] | null;
   category?: unknown;
@@ -10,8 +12,6 @@ export interface ProductCardData {
   status: string;
   stock: number;
 }
-
-export type RelationTo = "sim" | "gift" | "product";
 
 export interface ProductCardProps<T extends ProductCardData> {
   data: T;

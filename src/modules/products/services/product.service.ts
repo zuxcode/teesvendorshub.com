@@ -1,7 +1,7 @@
 import type { Product } from "@/payload-types";
 import { payload } from "@/shared/payload/utils/payload";
-import { ProductNotFoundError } from "./product.error";
-import { ProductRepository } from "./product.repository";
+import { ProductNotFoundError } from "../product.error";
+import { ProductRepository } from "../repository/product.repository";
 
 export const productRepository = new ProductRepository(payload);
 

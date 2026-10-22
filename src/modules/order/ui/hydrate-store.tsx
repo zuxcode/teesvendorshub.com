@@ -10,12 +10,12 @@ interface Props {
 }
 
 export function HydrateOrderStore({ items, orders }: Props) {
-  const { addOrders, addOrderItems } = useOrderActions();
+  const { setOrders, setOrderItems } = useOrderActions();
 
   useEffect(() => {
-    addOrderItems(items);
-    addOrders(orders);
-  }, [items, orders, addOrderItems, addOrders]);
+    setOrderItems(items);
+    setOrders(orders);
+  }, [items, orders, setOrderItems, setOrders]);
 
   return null;
 }

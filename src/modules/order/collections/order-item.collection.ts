@@ -1,7 +1,14 @@
 import type { CollectionConfig } from "payload";
-
+import { SIM_TYPE } from "@/modules/sim/constant";
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
+import { RELATION_TO } from "@/shared/constant";
+import {
+  koboToNaira,
+  nairaToKobo,
+} from "@/shared/payload/hooks/current-converter";
+import { validateNonNegativeInteger } from "@/shared/payload/hooks/validate-non-negativate-integer";
 import { ORDER_FULFILLMENT_STATUS } from "../order.constants";
+import { ValidateRelationToLinkage } from "../validate/validate-relation-to-linkage";
 
 export const OrderItemsCollection: CollectionConfig = {
   access: {
@@ -14,18 +21,16 @@ export const OrderItemsCollection: CollectionConfig = {
   admin: {
     defaultColumns: [
       "productName",
+      "productType",
+      "simType",
       "quantity",
       "unitPrice",
       "lineTotal",
-      "productType",
       "fulfillmentStatus",
     ],
-
     description:
-      "Immutable snapshots of products purchased as part of an order.",
-
+      "Purchase-time snapshots of individual products, gifts, or SIMs in an order.",
     group: "Ecommerce",
-
     useAsTitle: "productName",
   },
 
@@ -42,62 +47,90 @@ export const OrderItemsCollection: CollectionConfig = {
       required: true,
       type: "relationship",
     },
-
     {
       admin: {
         description:
-          "Original product purchased. Historical snapshot fields remain authoritative for this order item.",
+          "Original product purchased. Only one item relationship may be set.",
         position: "sidebar",
         readOnly: true,
       },
       index: true,
       name: "product",
       relationTo: "products",
-      required: true,
       type: "relationship",
+    },
+    {
+      admin: {
+        description:
+          "Original gift purchased. Only one item relationship may be set.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "gift",
+      relationTo: "gifts",
+      type: "relationship",
+    },
+    {
+      admin: {
+        description:
+          "Original SIM purchased. Only one item relationship may be set.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "sim",
+      relationTo: "sims",
+      type: "relationship",
+    },
+    {
+      admin: {
+        description: "Type of purchasable item captured at purchase time.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      name: "productType",
+      options: [
+        { label: "Product", value: RELATION_TO.PRODUCT },
+        { label: "Gift", value: RELATION_TO.GIFT },
+        { label: "SIM", value: RELATION_TO.SIM },
+      ],
+      required: true,
+      type: "select",
     },
 
     {
       admin: {
-        description: "Product name captured at the time of purchase.",
+        condition: (data) => data?.productType === RELATION_TO.SIM,
+        description: "SIM type captured at the time of purchase.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      name: "simType",
+      options: [
+        { label: "eSIM", value: SIM_TYPE.ESIM },
+        { label: "Physical SIM", value: SIM_TYPE.PHYSICAL },
+      ],
+      type: "select",
+    },
+    {
+      admin: {
+        description: "Item name captured at the time of purchase.",
         readOnly: true,
       },
       name: "productName",
       required: true,
       type: "text",
     },
-
-    // {
-    //   admin: {
-    //     description: "Product type captured at the time of purchase.",
-    //     readOnly: true,
-    //   },
-    //   name: "productType",
-    //   options: [
-    //     {
-    //       label: "Physical",
-    //       value: PRODUCT_TYPE.PHYSICAL,
-    //     },
-    //     {
-    //       label: "Digital",
-    //       value: PRODUCT_TYPE.DIGITAL,
-    //     },
-    //   ],
-    //   required: true,
-    //   type: "select",
-    // },
-
     {
       admin: {
-        description:
-          "Product image associated with the product at purchase time.",
+        description: "Item image captured at the time of purchase.",
         readOnly: true,
       },
       name: "productImage",
       relationTo: "product-library",
       type: "relationship",
     },
-
     {
       admin: {
         description: "Unit price captured at the time of purchase.",
@@ -109,7 +142,6 @@ export const OrderItemsCollection: CollectionConfig = {
       required: true,
       type: "number",
     },
-
     {
       admin: {
         description: "Total quantity purchased.",
@@ -120,23 +152,26 @@ export const OrderItemsCollection: CollectionConfig = {
       name: "quantity",
       required: true,
       type: "number",
+      validate: validateNonNegativeInteger("quantity"),
     },
-
     {
       admin: {
-        description: "Final amount charged for this order item.",
+        description: "Total amount charged for this order item.",
         position: "sidebar",
         readOnly: true,
+      },
+      hooks: {
+        afterRead: [koboToNaira],
+        beforeValidate: [nairaToKobo],
       },
       min: 0,
       name: "lineTotal",
       required: true,
       type: "number",
     },
-
     {
       admin: {
-        description: "Overall lifecycle fulfillmentStatus of the order item.",
+        description: "Current fulfillment status of this order item.",
         position: "sidebar",
       },
       defaultValue: ORDER_FULFILLMENT_STATUS.PENDING,
@@ -151,14 +186,26 @@ export const OrderItemsCollection: CollectionConfig = {
       required: true,
       type: "select",
     },
-
     {
       admin: {
+        condition: (data) => {
+          if (data?.productType === RELATION_TO.GIFT) {
+            return false;
+          }
+
+          return (
+            data?.productType === RELATION_TO.SIM &&
+            data?.simType === SIM_TYPE.ESIM
+          );
+        },
         description:
-          "Sensitive product secret visible only to authorized administrators or the purchasing buyer.",
+          "Purchase-specific secrets used for fulfillment. Restrict access to these values independently of collection access.",
       },
       fields: [
         {
+          access: {
+            read: isAdminOrBuyerOnlyFieldAccess,
+          },
           label: "Secret",
           name: "secret",
           required: true,
@@ -169,7 +216,6 @@ export const OrderItemsCollection: CollectionConfig = {
       name: "secrets",
       type: "array",
     },
-
     {
       admin: {
         description:
@@ -180,30 +226,37 @@ export const OrderItemsCollection: CollectionConfig = {
     },
   ],
 
+  hooks: {
+    beforeValidate: [ValidateRelationToLinkage],
+  },
+
   indexes: [
     {
       fields: ["order"],
-      unique: false,
     },
-
     {
       fields: ["product"],
-      unique: false,
     },
-
+    {
+      fields: ["gift"],
+    },
+    {
+      fields: ["sim"],
+    },
     {
       fields: ["order", "product"],
-      unique: false,
     },
-
+    {
+      fields: ["order", "gift"],
+    },
+    {
+      fields: ["order", "sim"],
+    },
     {
       fields: ["order", "fulfillmentStatus"],
-      unique: false,
     },
-
     {
       fields: ["fulfillmentStatus"],
-      unique: false,
     },
   ],
 

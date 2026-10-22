@@ -1,5 +1,6 @@
 import z from "zod";
 import type { User } from "@/payload-types";
+import { RELATION_TO_VALUES } from "@/shared/constant";
 
 const checkoutBaseSchema = z.object({
   email: z.email("Enter a valid email address").trim(),
@@ -8,8 +9,9 @@ const checkoutBaseSchema = z.object({
 export const cartItemsSchema = z
   .array(
     z.object({
-      productId: z.string(),
+      id: z.string(),
       quantity: z.number().int().positive(),
+      relationTo: z.enum(RELATION_TO_VALUES),
     }),
     { error: "Cart is empty" }
   )

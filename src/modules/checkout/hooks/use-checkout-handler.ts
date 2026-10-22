@@ -93,10 +93,7 @@ export function useCheckoutHandler() {
   const onCheckoutHandler = (values: CheckoutDigitalSchemaValues) => {
     execute({
       ...values,
-      items: cartItems.map((item) => ({
-        productId: item.id,
-        quantity: item.quantity,
-      })),
+      items: cartItems.map((item) => item),
     });
   };
 

@@ -9,8 +9,8 @@ import { SimTypeFilter } from "./sim-type-filter";
 
 interface Props extends SimFilterState {
   countries: SimCountryOption[];
-  onCountryChange: (value: string) => void;
-  onSearchChange: (value: string) => void;
+  onCountryChange: (value: string | null) => void;
+  onSearchChange: (value: string | null) => void;
   onSimTypeChange: SimFilterState["simType"] extends infer T
     ? (value: T) => void
     : never;

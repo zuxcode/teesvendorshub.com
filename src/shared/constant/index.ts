@@ -22,3 +22,13 @@ export const CURRENCY = {
 } as const;
 
 export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY];
+
+export const RELATION_TO = {
+  GIFT: "gift",
+  PRODUCT: "product",
+  SIM: "sim",
+} as const;
+
+export const RELATION_TO_VALUES = Object.values(RELATION_TO);
+
+export type RelationTo = (typeof RELATION_TO)[keyof typeof RELATION_TO];

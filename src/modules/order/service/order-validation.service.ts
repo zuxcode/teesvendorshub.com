@@ -1,9 +1,7 @@
-
-
 import { type BasePayload, JobCancelledError, type TaskHandler } from "payload";
 
 import { PAYMENT_STATUS } from "@/modules/payments/payment.constants";
-import { ProductRepository } from "@/modules/products/product.repository";
+import { ProductRepository } from "@/modules/products/repository/product.repository";
 import type { OrderItem, Product, TaskValidateOrder } from "@/payload-types";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 import { ORDER_STATUS } from "../order.constants";

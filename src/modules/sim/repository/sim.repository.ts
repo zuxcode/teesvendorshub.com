@@ -30,4 +30,26 @@ export class SimRepository {
 
     return docs;
   }
+
+  async findByIds(ids: string[]) {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const result = await this.payload.find({
+      collection: "sims",
+      depth: 0,
+      limit: ids.length,
+      where: {
+        id: {
+          in: ids,
+        },
+        status: {
+          equals: PRODUCT_STATUS.ACTIVE,
+        },
+      },
+    });
+
+    return result.docs;
+  }
 }
