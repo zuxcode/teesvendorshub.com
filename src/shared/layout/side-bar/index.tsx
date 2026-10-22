@@ -53,18 +53,19 @@ const navigation = {
       title: "Gift Store",
       url: "/dashboard/gifts",
     },
+
     {
-      badge: "12",
-      icon: ShoppingCart,
-      title: "Orders",
-      url: "/dashboard/orders",
-    },
-    {
-      // badge: "12",
       icon: CardSim,
       title: "Physical / eSIM",
       url: "/dashboard/sim",
     },
+
+    {
+      icon: ShoppingCart,
+      title: "Orders",
+      url: "/dashboard/orders",
+    },
+
     {
       icon: Users,
       title: "Customers",

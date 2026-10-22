@@ -14,12 +14,13 @@ import {
   useCartItemQuantity,
 } from "@/modules/cart/store/cart-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
+import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 import { useLinkedItem } from "../hooks/use-link-item";
 
 export function CartItem(identifier: CartItemIdentifier) {
   const { linkedItem } = useLinkedItem(identifier);
   const quantity = useCartItemQuantity(identifier);
-  const image = useProductImage(linkedItem?.imageId);
+  const image = useProductImage(getRelationshipId(linkedItem?.productImage));
 
   const { incrementItem, decrementItem, removeItem } = useCartActions();
 

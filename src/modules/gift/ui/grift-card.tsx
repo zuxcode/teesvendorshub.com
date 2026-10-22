@@ -30,7 +30,9 @@ export function GiftCard({ id }: GiftCardProps) {
 
   const isSelected = selectedGiftId === id;
 
-  const giftImage = useProductImage(getRelationshipId(giftRecord?.giftImage));
+  const productImage = useProductImage(
+    getRelationshipId(giftRecord?.productImage)
+  );
   const category = useCategory(getRelationshipId(giftRecord?.category));
 
   if (!giftRecord) {
@@ -41,7 +43,7 @@ export function GiftCard({ id }: GiftCardProps) {
     setSelectedGiftId(isSelected ? null : id);
   };
 
-  const giftImageUrl = giftImage?.sizes?.card?.url;
+  const giftImageUrl = productImage?.sizes?.card?.url;
   const isOutOfStock = giftRecord.stock <= 0;
   const isLowStock = giftRecord.stock <= 10;
 
@@ -62,7 +64,7 @@ export function GiftCard({ id }: GiftCardProps) {
         <div className="relative aspect-square overflow-hidden bg-muted">
           {giftImageUrl ? (
             <Image
-              alt={giftImage?.alt || giftRecord.name}
+              alt={productImage?.alt || giftRecord.name}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               fill
               loading="eager"

@@ -79,6 +79,8 @@ export interface Config {
     avatars: Avatar;
     'product-secrets': ProductSecret;
     gifts: Gift;
+    sims: Sim;
+    countries: Country;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -99,6 +101,8 @@ export interface Config {
     avatars: AvatarsSelect<false> | AvatarsSelect<true>;
     'product-secrets': ProductSecretsSelect<false> | ProductSecretsSelect<true>;
     gifts: GiftsSelect<false> | GiftsSelect<true>;
+    sims: SimsSelect<false> | SimsSelect<true>;
+    countries: CountriesSelect<false> | CountriesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -781,7 +785,7 @@ export interface Gift {
   /**
    * Primary image displayed for the gift.
    */
-  giftImage: string | ProductLibrary;
+  productImage: string | ProductLibrary;
   /**
    * Controls the gift lifecycle
    */
@@ -812,6 +816,104 @@ export interface Gift {
   createdBy: string | User;
   /**
    * Admin who last updated this gift.
+   */
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * SIM products available for purchase. Stock is the authoritative inventory quantity.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sims".
+ */
+export interface Sim {
+  id: string;
+  /**
+   * SIM product name displayed to customers.
+   */
+  name: string;
+  /**
+   * Customer-facing description of the SIM and its included features.
+   */
+  description: string;
+  /**
+   * Primary image displayed for the SIM product.
+   */
+  productImage: string | ProductLibrary;
+  /**
+   * Controls the SIM type.
+   */
+  simType: 'esim' | 'physical';
+  /**
+   * Controls the SIM product lifecycle.
+   */
+  status: 'active' | 'draft' | 'inactive' | 'archived';
+  /**
+   * Marketing badges displayed on the SIM product.
+   */
+  badges?: ('best_seller' | 'featured' | 'new' | 'trending')[] | null;
+  /**
+   * Authoritative inventory quantity used by inventory and fulfillment services.
+   */
+  stock: number;
+  /**
+   * Customer-facing inventory quantity for storefront display. This does not represent actual inventory available for fulfillment.
+   */
+  virtualStock: number;
+  /**
+   * Enter the selling price in naira. The database store integer kobo (100 kobo = ₦1).
+   */
+  priceKobo: number;
+  /**
+   * Category this SIM product belongs to.
+   */
+  category?: (string | null) | Category;
+  /**
+   * Country this SIM product belongs to.
+   */
+  country: string | Country;
+  /**
+   * Currency used for this SIM product. Always NGN.
+   */
+  currency: 'NGN';
+  /**
+   * Unique URL-friendly identifier generated from the name.
+   */
+  slug: string;
+  /**
+   * Admin who created this SIM product.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this SIM product.
+   */
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Countries available for products in the TVH catalog.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries".
+ */
+export interface Country {
+  id: string;
+  /**
+   * Country name.
+   */
+  name: string;
+  /**
+   * URL-friendly identifier generated from the country name.
+   */
+  slug: string;
+  /**
+   * Admin who created this country.
+   */
+  createdBy: string | User;
+  /**
+   * Admin who last updated this country.
    */
   updatedBy?: (string | null) | User;
   updatedAt: string;
@@ -985,6 +1087,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'gifts';
         value: string | Gift;
+      } | null)
+    | ({
+        relationTo: 'sims';
+        value: string | Sim;
+      } | null)
+    | ({
+        relationTo: 'countries';
+        value: string | Country;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1346,12 +1456,47 @@ export interface ProductSecretsSelect<T extends boolean = true> {
 export interface GiftsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
-  giftImage?: T;
+  productImage?: T;
   status?: T;
   stock?: T;
   price?: T;
   category?: T;
   currency?: T;
+  slug?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sims_select".
+ */
+export interface SimsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  productImage?: T;
+  simType?: T;
+  status?: T;
+  badges?: T;
+  stock?: T;
+  virtualStock?: T;
+  priceKobo?: T;
+  category?: T;
+  country?: T;
+  currency?: T;
+  slug?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries_select".
+ */
+export interface CountriesSelect<T extends boolean = true> {
+  name?: T;
   slug?: T;
   createdBy?: T;
   updatedBy?: T;

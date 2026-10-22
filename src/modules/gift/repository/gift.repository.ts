@@ -1,4 +1,5 @@
 import type { BasePayload } from "payload";
+import { PRODUCT_STATUS } from "@/shared/constant";
 
 export class GiftRepository {
   private readonly payload: BasePayload;
@@ -7,8 +8,16 @@ export class GiftRepository {
     this.payload = payload;
   }
 
-  async find() {
-    const { docs } = await this.payload.find({ collection: "gifts", depth: 0 });
+  async findAllActive() {
+    const { docs } = await this.payload.find({
+      collection: "gifts",
+      depth: 0,
+      where: {
+        status: {
+          equals: PRODUCT_STATUS.ACTIVE,
+        },
+      },
+    });
 
     return docs;
   }

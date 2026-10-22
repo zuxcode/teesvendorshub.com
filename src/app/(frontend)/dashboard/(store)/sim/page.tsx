@@ -1,13 +1,22 @@
 import { Suspense } from "react";
-import { ProductDetailDialog } from "@/modules/products/ui/product-detail-dialog";
-import { ProductGridSkeleton } from "@/modules/products/ui/product-grid-skeleton";
-import { ProductsContent } from "@/modules/products/ui/products-content";
+import { SimFilterPanelWrapper } from "@/modules/sim/ui/filters/sim-filter-panel-wrapper";
+import { SimDetailsDialog } from "@/modules/sim/ui/sim-details-dialog";
+import { SimGrid } from "@/modules/sim/ui/sim-grid";
+import { SimStoreHeader } from "@/modules/sim/ui/sim-header";
+import { Simserver } from "@/modules/sim/ui/sim-server";
 
 export default async function ProductsPage() {
   return (
-    <Suspense fallback={<ProductGridSkeleton />}>
-      <ProductsContent />
-      <ProductDetailDialog />
-    </Suspense>
+    <div className="space-y-5">
+      <SimStoreHeader />
+      <div className="page-container">
+        <SimFilterPanelWrapper />
+        <SimGrid />
+      </div>
+      <SimDetailsDialog />
+      <Suspense fallback={null}>
+        <Simserver />
+      </Suspense>
+    </div>
   );
 }

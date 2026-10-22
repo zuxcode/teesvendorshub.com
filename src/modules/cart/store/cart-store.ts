@@ -2,8 +2,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
-
-type RelationTo = "gift" | "sim" | "product" | (string & {});
+import type { RelationTo } from "@/shared/ui/product/product-card.types";
 
 interface AddItemProps {
   id: string;

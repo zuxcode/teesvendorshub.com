@@ -25,10 +25,7 @@ export default async function DashboardLayout({
       <SidebarInset>
         <DashboardTopNav />
         <div
-          className={cn(
-            "mx-auto flex w-full max-w-[1600px] flex-1 flex-col",
-            "container mx-auto px-4 py-8 lg:py-8" // Layout
-          )}
+          className={cn("mx-auto flex w-full max-w-[1600px] flex-1 flex-col")}
         >
           {children}
         </div>

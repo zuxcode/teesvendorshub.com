@@ -25,7 +25,9 @@ export function GiftDetailDialog() {
   const { setSelectedGiftId } = useGiftActions();
 
   const category = useCategory(getRelationshipId(selectedGift?.category));
-  const giftImage = useProductImage(getRelationshipId(selectedGift?.giftImage));
+  const productImage = useProductImage(
+    getRelationshipId(selectedGift?.productImage)
+  );
 
   const handleCloseDialog = useCallback(
     (open: boolean) => {
@@ -41,7 +43,7 @@ export function GiftDetailDialog() {
   }
 
   const categoryName = category?.name ?? "Uncategorized";
-  const giftImageUrl = giftImage?.sizes?.card?.url;
+  const giftImageUrl = productImage?.sizes?.card?.url;
   const isOutOfStock = selectedGift.stock <= 0;
   const isLowStock = selectedGift.stock <= 10;
 
@@ -60,7 +62,7 @@ export function GiftDetailDialog() {
           <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
             {giftImageUrl ? (
               <Image
-                alt={giftImage.alt || selectedGift.name}
+                alt={productImage.alt || selectedGift.name}
                 className="object-cover"
                 fill
                 sizes="220px"

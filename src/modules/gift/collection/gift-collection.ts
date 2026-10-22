@@ -1,9 +1,9 @@
 import type { CollectionConfig } from "payload";
 import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
+import { PRODUCT_STATUS } from "@/shared/constant";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
-import { GIFT_STATUS } from "../utils/gift-constant";
 
 export const GiftsCollection: CollectionConfig = {
   access: {
@@ -57,7 +57,7 @@ export const GiftsCollection: CollectionConfig = {
         description: "Primary image displayed for the gift.",
       },
       label: "Gift Image",
-      name: "giftImage",
+      name: "productImage",
       relationTo: "product-library",
       required: true,
       type: "relationship",
@@ -68,26 +68,26 @@ export const GiftsCollection: CollectionConfig = {
         description: "Controls the gift lifecycle",
         position: "sidebar",
       },
-      defaultValue: GIFT_STATUS.ACTIVE,
+      defaultValue: PRODUCT_STATUS.ACTIVE,
       index: true,
       label: "Status",
       name: "status",
       options: [
         {
           label: "Active",
-          value: GIFT_STATUS.ACTIVE,
+          value: PRODUCT_STATUS.ACTIVE,
         },
         {
           label: "Draft",
-          value: GIFT_STATUS.DRAFT,
+          value: PRODUCT_STATUS.DRAFT,
         },
         {
           label: "Inactive",
-          value: GIFT_STATUS.INACTIVE,
+          value: PRODUCT_STATUS.INACTIVE,
         },
         {
           label: "Archived",
-          value: GIFT_STATUS.ARCHIVED,
+          value: PRODUCT_STATUS.ARCHIVED,
         },
       ],
       required: true,
