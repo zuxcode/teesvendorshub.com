@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { PRODUCT_SECRET_STATUS } from "../product.constants";
+import { PRODUCT_SECRET_STATUS } from "../constant/product.constants";
 
 export const ProductSecretCollection: CollectionConfig = {
   access: {

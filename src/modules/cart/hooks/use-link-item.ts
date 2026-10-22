@@ -1,5 +1,5 @@
 import { useGiftById } from "@/modules/gift/store/gift-store";
-import { useProduct } from "@/modules/products/stores/product-store";
+import { useProduct } from "@/modules/products/store/product-store";
 import { useSim } from "@/modules/sim/store/sim-store";
 import { type CartItemIdentifier, useCartItem } from "../store/cart-store";
 

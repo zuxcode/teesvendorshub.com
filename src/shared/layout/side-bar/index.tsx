@@ -1,6 +1,5 @@
 "use client";
 import {
-  BarChart3,
   CardSim,
   GiftIcon,
   HelpCircle,
@@ -8,9 +7,6 @@ import {
   Package,
   Settings,
   ShoppingCart,
-  Star,
-  Tag,
-  Users,
 } from "lucide-react";
 import { TeesLogo } from "@/components/tees-ui/logo";
 import {
@@ -27,16 +23,7 @@ import {
 import { NavigationItem } from "./nav-item";
 import { AppSidebarFooter } from "./side-bar-footer";
 
-const _BASE_PATH = "/dashboard";
-
 const navigation = {
-  insights: [
-    {
-      icon: BarChart3,
-      title: "Analytics",
-      url: "/dashboard/analytics",
-    },
-  ],
   store: [
     {
       icon: LayoutDashboard,
@@ -64,23 +51,6 @@ const navigation = {
       icon: ShoppingCart,
       title: "Orders",
       url: "/dashboard/orders",
-    },
-
-    {
-      icon: Users,
-      title: "Customers",
-      url: "/dashboard/customers",
-    },
-    {
-      icon: Tag,
-      title: "Discounts",
-      url: "/dashboard/discounts",
-    },
-    {
-      // badge: "4",
-      icon: Star,
-      title: "Reviews",
-      url: "/dashboard/reviews",
     },
   ],
 
@@ -122,21 +92,6 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="gap-0.5">
               {navigation.store.map((item) => (
-                <NavigationItem {...item} key={item.title} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Insights */}
-        <SidebarGroup className="mt-6 p-0">
-          <SidebarGroupLabel className="h-7 px-2 font-medium text-[10px] text-muted-foreground/70 uppercase tracking-wider">
-            Insights
-          </SidebarGroupLabel>
-
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-0.5">
-              {navigation.insights.map((item) => (
                 <NavigationItem {...item} key={item.title} />
               ))}
             </SidebarMenu>

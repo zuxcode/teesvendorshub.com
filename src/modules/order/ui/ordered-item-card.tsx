@@ -3,7 +3,7 @@ import { ImagePlaceholder } from "@/components/tees-ui/image-placeholder";
 import { cn } from "@/lib/utils";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import type { OrderFulfillmentStatus } from "@/modules/order/order.constants";
-import { useProduct } from "@/modules/products/stores/product-store";
+import { useProduct } from "@/modules/products/store/product-store";
 import type { OrderItem } from "@/payload-types";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 import { OrderedItemSecrets } from "./ordered-item-secrets";

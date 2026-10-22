@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
-import { PRODUCT_TYPE } from "../../products/product.constants";
 import { ORDER_FULFILLMENT_STATUS } from "../order.constants";
 
 export const OrderItemsCollection: CollectionConfig = {
@@ -68,25 +67,25 @@ export const OrderItemsCollection: CollectionConfig = {
       type: "text",
     },
 
-    {
-      admin: {
-        description: "Product type captured at the time of purchase.",
-        readOnly: true,
-      },
-      name: "productType",
-      options: [
-        {
-          label: "Physical",
-          value: PRODUCT_TYPE.PHYSICAL,
-        },
-        {
-          label: "Digital",
-          value: PRODUCT_TYPE.DIGITAL,
-        },
-      ],
-      required: true,
-      type: "select",
-    },
+    // {
+    //   admin: {
+    //     description: "Product type captured at the time of purchase.",
+    //     readOnly: true,
+    //   },
+    //   name: "productType",
+    //   options: [
+    //     {
+    //       label: "Physical",
+    //       value: PRODUCT_TYPE.PHYSICAL,
+    //     },
+    //     {
+    //       label: "Digital",
+    //       value: PRODUCT_TYPE.DIGITAL,
+    //     },
+    //   ],
+    //   required: true,
+    //   type: "select",
+    // },
 
     {
       admin: {

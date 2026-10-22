@@ -1,4 +1,4 @@
-import { useProductActions } from "@/modules/products/stores/product-store";
+import { useProductActions } from "@/modules/products/store/product-store";
 import { useCartItems } from "../../cart/store/cart-store";
 
 /**

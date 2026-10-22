@@ -1,6 +1,5 @@
 export const PRODUCT_BADGE = {
   BEST_SELLER: "best_seller",
-  COMING_SOON: "coming_soon",
   FEATURED: "featured",
   NEW: "new",
   TRENDING: "trending",
@@ -17,3 +16,9 @@ export const PRODUCT_STATUS = {
 
 export type ProductStatus =
   (typeof PRODUCT_STATUS)[keyof typeof PRODUCT_STATUS];
+
+export const CURRENCY = {
+  NGN: "NGN",
+} as const;
+
+export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY];

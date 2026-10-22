@@ -4,16 +4,16 @@ import { useEffect } from "react";
 import { useProductImageActions } from "@/modules/media/stores/product-image-store";
 import type { ProductLibrary } from "@/payload-types";
 
-interface ProductImagesHydratorProps {
-  images: ProductLibrary[];
+interface Props {
+  media: ProductLibrary[];
 }
 
-export function ProductImagesHydrator({ images }: ProductImagesHydratorProps) {
+export function HydrateMediaStore({ media }: Props) {
   const { setImages } = useProductImageActions();
 
   useEffect(() => {
-    setImages(images);
-  }, [images, setImages]);
+    setImages(media);
+  }, [media, setImages]);
 
   return null;
 }

@@ -1,8 +1,7 @@
 import type { CollectionConfig } from "payload";
 
-import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
-import { PRODUCT_BADGE, PRODUCT_STATUS } from "@/shared/constant";
+import { CURRENCY, PRODUCT_BADGE, PRODUCT_STATUS } from "@/shared/constant";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import {
   koboToNaira,
@@ -144,7 +143,6 @@ export const SimCollection: CollectionConfig = {
           "Customer-facing inventory quantity for storefront display. This does not represent actual inventory available for fulfillment.",
         position: "sidebar",
         readOnly: true,
-
       },
       defaultValue: 0,
       index: true,

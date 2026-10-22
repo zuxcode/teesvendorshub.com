@@ -124,7 +124,9 @@ export const useProductStore = createWithEqualityFn<ProductStore>()(
 export const useProduct = (id: string | null | undefined) =>
   useProductStore((state) => (id ? state.products[id] : undefined));
 
-export const useProducts = () => useProductStore((state) => state.products);
+export const useProducts = () =>
+  useProductStore((state) => Object.values(state.products));
+
 export const useSelectedProductId = () =>
   useProductStore((state) => state.selectedProductId);
 
@@ -147,14 +149,6 @@ export const useProductError = () => useProductStore((state) => state.error);
 export const useHasProducts = () =>
   useProductStore((state) => Object.keys(state.products).length > 0);
 
-export const useProductCount = () =>
-  useProductStore((state) => Object.keys(state.products).length);
 
 export const useProductActions = () =>
   useProductStore((state) => state.actions);
-
-export const useProductEntries = () =>
-  useProductStore((state) => Object.entries(state.products));
-
-export const useProductValues = () =>
-  useProductStore((state) => Object.values(state.products), shallow);

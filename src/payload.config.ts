@@ -13,7 +13,7 @@ import pg from "pg";
 import sharp from "sharp";
 
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
-import { CategoriesCollection } from "./modules/category/category-collection";
+import { CategoriesCollection } from "./modules/category/collection/category-collection";
 import { GiftsCollection } from "./modules/gift/collection/gift-collection";
 import { InventoryCollection } from "./modules/inventory/inventory.collection";
 import { AvatarCollection } from "./modules/media/avatar-collection";

@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload";
-import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
-import { PRODUCT_STATUS } from "@/shared/constant";
+import { CURRENCY, PRODUCT_STATUS } from "@/shared/constant";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import {
   koboToNaira,

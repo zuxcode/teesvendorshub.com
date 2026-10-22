@@ -8,7 +8,7 @@ import {
   useCartItemQuantity,
   useCartItems,
 } from "@/modules/cart/store/cart-store";
-import { useProductActions } from "@/modules/products/stores/product-store";
+import { useProductActions } from "@/modules/products/store/product-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { CheckoutItem } from "./checkout-item";
 

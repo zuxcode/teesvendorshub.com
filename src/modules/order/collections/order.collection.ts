@@ -2,7 +2,8 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { CURRENCY, ORDER_STATUS } from "../order.constants";
+import {  ORDER_STATUS } from "../order.constants";
+import { CURRENCY } from "@/shared/constant";
 
 export const OrdersCollection: CollectionConfig = {
   access: {

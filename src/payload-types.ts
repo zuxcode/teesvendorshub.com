@@ -310,7 +310,7 @@ export interface ProductLibrary {
   };
 }
 /**
- * Products available for purchase. Product type determines fulfillment, while product kind identifies the product category.
+ * Products available for purchase. Product type determines fulfillment, while category organizes products in the catalog.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
@@ -330,37 +330,25 @@ export interface Product {
    */
   productImage: string | ProductLibrary;
   /**
-   * Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.
-   */
-  productType: 'physical' | 'digital';
-  /**
-   * Currency used for this product.
-   */
-  currency: 'NGN';
-  /**
-   * Product lifecycle status. Inventory availability is determined from stock.
+   * Product lifecycle status. Storefront availability is determined separately.
    */
   status: 'active' | 'draft' | 'inactive' | 'archived';
   /**
-   * Actual inventory quantity available for fulfillment. This is the authoritative stock value and is updated through inventory movements.
+   * Marketing badges displayed on the product.
+   */
+  badges?: ('best_seller' | 'featured' | 'new' | 'trending')[] | null;
+  /**
+   * Authoritative inventory quantity available for fulfillment. Updated through inventory movements.
    */
   stock: number;
   /**
-   * Customer-facing inventory quantity used for marketing and storefront display. This does not represent the actual inventory available for fulfillment.
+   * Customer-facing inventory quantity used for storefront display. Does not replace authoritative stock validation.
    */
   virtualStock: number;
   /**
-   * Marketing badges displayed on the product.
+   * Enter the selling price in naira. Stored as integer kobo (100 kobo = ₦1).
    */
-  badges?: ('best_seller' | 'coming_soon' | 'featured' | 'new' | 'trending')[] | null;
-  /**
-   * Current selling price of the product in Nigerian Naira.
-   */
-  price: number;
-  /**
-   * Country associated with the product or service.
-   */
-  country?: string | null;
+  priceKobo: number;
   /**
    * Category this product belongs to.
    */
@@ -369,6 +357,10 @@ export interface Product {
    * URL-friendly identifier generated from the product name.
    */
   slug: string;
+  /**
+   * Currency used for this product.
+   */
+  currency: 'NGN';
   /**
    * Admin who created this product.
    */
@@ -553,10 +545,6 @@ export interface OrderItem {
    * Product name captured at the time of purchase.
    */
   productName: string;
-  /**
-   * Product type captured at the time of purchase.
-   */
-  productType: 'physical' | 'digital';
   /**
    * Product image associated with the product at purchase time.
    */
@@ -1229,16 +1217,14 @@ export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   productImage?: T;
-  productType?: T;
-  currency?: T;
   status?: T;
+  badges?: T;
   stock?: T;
   virtualStock?: T;
-  badges?: T;
-  price?: T;
-  country?: T;
+  priceKobo?: T;
   category?: T;
   slug?: T;
+  currency?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -1314,7 +1300,6 @@ export interface OrderItemsSelect<T extends boolean = true> {
   order?: T;
   product?: T;
   productName?: T;
-  productType?: T;
   productImage?: T;
   unitPrice?: T;
   quantity?: T;

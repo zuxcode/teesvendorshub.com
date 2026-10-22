@@ -27,7 +27,7 @@ import { generateUniqueReference } from "@/shared/utils/generate-unique-ref";
 import { splitFullName } from "@/shared/utils/split-full-name";
 import { ORDER_STATUS } from "../order/order.constants";
 import type { OrderItemRepository } from "../order/repository/order-item.repository";
-import type { ProductType } from "../products/product.constants";
+import type { ProductType } from "../products/constant/product.constants";
 import { CheckoutError, CheckoutErrorCode } from "./checkout.errors";
 import {
   type CartItemsSchemaValues,

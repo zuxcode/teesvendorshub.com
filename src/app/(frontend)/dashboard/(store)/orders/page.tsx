@@ -6,13 +6,15 @@ import { OrderedItems } from "@/modules/order/ui/ordered-items";
 
 export default function OrdersPage() {
   return (
-    <div className="space-y-5">
+    <div>
       <Suspense>
         <OrderServer />
       </Suspense>
       <OrderHeader />
-      <OrderCardsHighlight />
-      <OrderedItems />
+      <div className="page-container">
+        <OrderCardsHighlight />
+        <OrderedItems />
+      </div>
     </div>
   );
 }

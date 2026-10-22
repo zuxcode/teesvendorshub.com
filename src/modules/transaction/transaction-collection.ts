@@ -1,9 +1,9 @@
 import type { CollectionConfig } from "payload";
-import { CURRENCY } from "@/modules/order/order.constants";
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
 import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { TRANSACTION_STATUS, TRANSACTION_TYPE } from "./constants/constant";
+import { CURRENCY } from "@/shared/constant";
 
 export const TransactionsCollection: CollectionConfig = {
   access: {

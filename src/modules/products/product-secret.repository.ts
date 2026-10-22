@@ -1,6 +1,6 @@
 import type { Payload } from "payload";
 import type { DatabaseTransactionId } from "@/shared/types";
-import { PRODUCT_SECRET_STATUS } from "./product.constants";
+import { PRODUCT_SECRET_STATUS } from "./constant/product.constants";
 
 interface UpdateAvailableSecretData {
   productId: string;

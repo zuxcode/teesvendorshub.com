@@ -1,9 +1,3 @@
-export const CURRENCY = {
-  NGN: "NGN",
-} as const;
-
-export type Currency = (typeof CURRENCY)[keyof typeof CURRENCY];
-
 export const ORDER_STATUS = {
   CANCELLED: "cancelled",
   COMPLETED: "completed",

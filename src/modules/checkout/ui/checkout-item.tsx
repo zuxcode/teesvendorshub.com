@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCartItemQuantity } from "@/modules/cart/store/cart-store";
 import { useProductImage } from "@/modules/media/stores/product-image-store";
 import { getLineTotal } from "@/modules/products/libs/inventory";
-import { useProduct } from "@/modules/products/stores/product-store";
+import { useProduct } from "@/modules/products/store/product-store";
 import { formatCurrency } from "@/shared/utils/format-currency";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 

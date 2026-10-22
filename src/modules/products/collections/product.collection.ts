@@ -1,13 +1,13 @@
 import type { CollectionConfig } from "payload";
-import { CURRENCY } from "@/modules/order/order.constants";
 import { isAdmin, isPublicAccess } from "@/shared/access";
+import { CURRENCY, PRODUCT_BADGE, PRODUCT_STATUS } from "@/shared/constant";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
 import {
-  PRODUCT_BADGE,
-  PRODUCT_STATUS,
-  PRODUCT_TYPE,
-} from "../product.constants";
+  koboToNaira,
+  nairaToKobo,
+} from "@/shared/payload/hooks/current-converter";
+import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
+import { validateNonNegativeInteger } from "@/shared/payload/hooks/validate-non-negativate-integer";
 
 export const ProductsCollection: CollectionConfig = {
   access: {
@@ -24,13 +24,12 @@ export const ProductsCollection: CollectionConfig = {
       "status",
       "virtualStock",
       "stock",
-      "price",
-      "country",
+      "priceKobo",
       "category",
       "updatedAt",
     ],
     description:
-      "Products available for purchase. Product type determines fulfillment, while product kind identifies the product category.",
+      "Products available for purchase. Product type determines fulfillment, while category organizes products in the catalog.",
     group: "Catalog",
     groupBy: true,
     useAsTitle: "name",
@@ -63,7 +62,6 @@ export const ProductsCollection: CollectionConfig = {
       admin: {
         description: "Primary image displayed for the product.",
       },
-      index: true,
       label: "Product Image",
       name: "productImage",
       relationTo: "product-library",
@@ -74,50 +72,7 @@ export const ProductsCollection: CollectionConfig = {
     {
       admin: {
         description:
-          "Determines how the product is fulfilled. Physical products require physical delivery; digital products are delivered electronically.",
-        position: "sidebar",
-      },
-      defaultValue: PRODUCT_TYPE.PHYSICAL,
-      index: true,
-      label: "Product Type",
-      name: "productType",
-      options: [
-        {
-          label: "Physical",
-          value: PRODUCT_TYPE.PHYSICAL,
-        },
-        {
-          label: "Digital",
-          value: PRODUCT_TYPE.DIGITAL,
-        },
-      ],
-      required: true,
-      type: "select",
-    },
-
-    {
-      admin: {
-        description: "Currency used for this product.",
-        position: "sidebar",
-        readOnly: true,
-      },
-      defaultValue: CURRENCY.NGN,
-      index: true,
-      name: "currency",
-      options: [
-        {
-          label: "NGN",
-          value: CURRENCY.NGN,
-        },
-      ],
-      required: true,
-      type: "select",
-    },
-
-    {
-      admin: {
-        description:
-          "Product lifecycle status. Inventory availability is determined from stock.",
+          "Product lifecycle status. Storefront availability is determined separately.",
         position: "sidebar",
       },
       defaultValue: PRODUCT_STATUS.ACTIVE,
@@ -148,37 +103,6 @@ export const ProductsCollection: CollectionConfig = {
 
     {
       admin: {
-        description:
-          "Actual inventory quantity available for fulfillment. This is the authoritative stock value and is updated through inventory movements.",
-        position: "sidebar",
-        readOnly: true,
-      },
-      defaultValue: 0,
-      index: true,
-      label: "Stock",
-      min: 0,
-      name: "stock",
-      required: true,
-      type: "number",
-    },
-
-    {
-      admin: {
-        description:
-          "Customer-facing inventory quantity used for marketing and storefront display. This does not represent the actual inventory available for fulfillment.",
-        position: "sidebar",
-      },
-      defaultValue: 0,
-      index: true,
-      label: "Virtual Stock",
-      min: 0,
-      name: "virtualStock",
-      required: true,
-      type: "number",
-    },
-
-    {
-      admin: {
         description: "Marketing badges displayed on the product.",
         position: "sidebar",
       },
@@ -189,10 +113,6 @@ export const ProductsCollection: CollectionConfig = {
         {
           label: "Best Seller",
           value: PRODUCT_BADGE.BEST_SELLER,
-        },
-        {
-          label: "Coming Soon",
-          value: PRODUCT_BADGE.COMING_SOON,
         },
         {
           label: "Featured",
@@ -212,25 +132,52 @@ export const ProductsCollection: CollectionConfig = {
 
     {
       admin: {
-        description: "Current selling price of the product in Nigerian Naira.",
+        description:
+          "Authoritative inventory quantity available for fulfillment. Updated through inventory movements.",
+        position: "sidebar",
       },
+      defaultValue: 0,
       index: true,
-      label: "Price (₦ NGN)",
+      label: "Stock",
       min: 0,
-      name: "price",
+      name: "stock",
       required: true,
       type: "number",
+      validate: validateNonNegativeInteger("Stock"),
     },
 
     {
       admin: {
-        description: "Country associated with the product or service.",
+        description:
+          "Customer-facing inventory quantity used for storefront display. Does not replace authoritative stock validation.",
         position: "sidebar",
+        readOnly: true,
       },
+      defaultValue: 0,
       index: true,
-      label: "Country",
-      name: "country",
-      type: "text",
+      label: "Virtual Stock",
+      min: 0,
+      name: "virtualStock",
+      required: true,
+      type: "number",
+      validate: validateNonNegativeInteger("Virtual stock"),
+    },
+
+    {
+      admin: {
+        description:
+          "Enter the selling price in naira. Stored as integer kobo (100 kobo = ₦1).",
+      },
+      hooks: {
+        afterRead: [koboToNaira],
+        beforeValidate: [nairaToKobo],
+      },
+      label: "Price (NGN)",
+      min: 0,
+      name: "priceKobo",
+      required: true,
+      type: "number",
+      validate: validateNonNegativeInteger("Price"),
     },
 
     {
@@ -267,6 +214,28 @@ export const ProductsCollection: CollectionConfig = {
 
     {
       admin: {
+        description: "Currency used for this product.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      defaultValue: CURRENCY.NGN,
+      index: true,
+      name: "currency",
+      options: [
+        {
+          label: "NGN",
+          value: CURRENCY.NGN,
+        },
+      ],
+      required: true,
+      type: "select",
+    },
+
+    {
+      access: {
+        update: () => false,
+      },
+      admin: {
         description: "Admin who created this product.",
         position: "sidebar",
         readOnly: true,
@@ -279,6 +248,9 @@ export const ProductsCollection: CollectionConfig = {
     },
 
     {
+      access: {
+        update: () => false,
+      },
       admin: {
         description: "Admin who last updated this product.",
         position: "sidebar",
@@ -297,28 +269,13 @@ export const ProductsCollection: CollectionConfig = {
 
   indexes: [
     {
-      fields: ["status", "productType"],
-      unique: false,
+      fields: ["status", "priceKobo"],
     },
-
-    {
-      fields: ["status", "country", "price"],
-      unique: false,
-    },
-
     {
       fields: ["category", "status"],
-      unique: false,
     },
-
-    {
-      fields: ["virtualStock"],
-      unique: false,
-    },
-
     {
       fields: ["createdBy", "createdAt"],
-      unique: false,
     },
   ],
 

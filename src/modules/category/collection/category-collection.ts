@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload";
 import { isAdmin, isPublicAccess } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 import { updateSlugHook } from "@/shared/payload/hooks/update-slug";
-import { CATEGORY_STATUS } from "./constants/constant";
-import { preventCategoryCycle } from "./helpers/prevent-category-cycle";
-import { preventCategoryDelete } from "./helpers/prevent-category-delete";
+import { CATEGORY_STATUS } from "../constants/constant";
+import { preventCategoryCycle } from "../helpers/prevent-category-cycle";
+import { preventCategoryDelete } from "../helpers/prevent-category-delete";
 
 export const CategoriesCollection: CollectionConfig = {
   access: {
