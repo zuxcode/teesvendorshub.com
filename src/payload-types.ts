@@ -71,7 +71,6 @@ export interface Config {
     'product-library': ProductLibrary;
     products: Product;
     categories: Category;
-    inventory: Inventory;
     orders: Order;
     'order-items': OrderItem;
     transactions: Transaction;
@@ -94,7 +93,6 @@ export interface Config {
     'product-library': ProductLibrarySelect<false> | ProductLibrarySelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    inventory: InventorySelect<false> | InventorySelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
     'order-items': OrderItemsSelect<false> | OrderItemsSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
@@ -404,53 +402,6 @@ export interface Category {
   createdBy: string | User;
   /**
    * Admin who last updated this category.
-   */
-  updatedBy?: (string | null) | User;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Immutable inventory movement history. Current stock is maintained on the product.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inventory".
- */
-export interface Inventory {
-  id: string;
-  /**
-   * Product affected by this inventory movement.
-   */
-  product: string | Product;
-  /**
-   * Business reason for the inventory quantity change.
-   */
-  type: 'newstock' | 'restock' | 'sale' | 'return' | 'adjustment' | 'damaged' | 'expired';
-  /**
-   * Quantity changed by this movement. Positive values increase stock; negative values decrease stock.
-   */
-  quantity: number;
-  /**
-   * Product stock immediately before this movement.
-   */
-  quantityBefore: number;
-  /**
-   * Product stock immediately after this movement.
-   */
-  quantityAfter: number;
-  /**
-   * Optional order, payment, shipment, transaction, or external reference.
-   */
-  reference?: string | null;
-  /**
-   * Additional information explaining this inventory movement.
-   */
-  notes?: string | null;
-  /**
-   * Admin or system user responsible for this inventory movement.
-   */
-  createdBy?: (string | null) | User;
-  /**
-   * Kept for consistency with the audit model. Inventory records cannot be updated.
    */
   updatedBy?: (string | null) | User;
   updatedAt: string;
@@ -1086,10 +1037,6 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
-        relationTo: 'inventory';
-        value: string | Inventory;
-      } | null)
-    | ({
         relationTo: 'orders';
         value: string | Order;
       } | null)
@@ -1284,23 +1231,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   slug?: T;
   parent?: T;
   status?: T;
-  createdBy?: T;
-  updatedBy?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inventory_select".
- */
-export interface InventorySelect<T extends boolean = true> {
-  product?: T;
-  type?: T;
-  quantity?: T;
-  quantityBefore?: T;
-  quantityAfter?: T;
-  reference?: T;
-  notes?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;
