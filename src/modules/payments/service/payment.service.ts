@@ -1,11 +1,11 @@
 import { payload } from "@/shared/payload/utils/payload";
-import { PaymentNotFoundError } from "./payment.errors";
-import { PaymentRepository } from "./payment.repository";
+import { PaymentNotFoundError } from "../payment.errors";
 import type {
   PaymentInitializeInput,
   PaymentInitializeResult,
-} from "./payment.type";
-import { paymentRegistry } from "./provider/provider.registry";
+} from "../payment.type";
+import { paymentRegistry } from "../provider/provider.registry";
+import { PaymentRepository } from "../repository/payment.repository";
 
 export interface InitializeParam {
   input: PaymentInitializeInput;

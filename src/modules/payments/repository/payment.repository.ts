@@ -4,7 +4,7 @@ import type {
   DatabaseTransactionId,
   WithoutPersistenceFields,
 } from "@/shared/types";
-import { PAYMENT_STATUS, type PaymentStatus } from "./payment.constants";
+import { PAYMENT_STATUS, type PaymentStatus } from "../payment.constants";
 
 export class PaymentRepository {
   private readonly payload: Payload;

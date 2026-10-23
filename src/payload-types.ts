@@ -81,6 +81,7 @@ export interface Config {
     gifts: Gift;
     sims: Sim;
     countries: Country;
+    'sim-secrets': SimSecret;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -103,6 +104,7 @@ export interface Config {
     gifts: GiftsSelect<false> | GiftsSelect<true>;
     sims: SimsSelect<false> | SimsSelect<true>;
     countries: CountriesSelect<false> | CountriesSelect<true>;
+    'sim-secrets': SimSecretsSelect<false> | SimSecretsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -924,6 +926,29 @@ export interface ProductSecret {
   createdAt: string;
 }
 /**
+ * Sensitive SIM credentials and delivery secrets. Only administrators can manage secrets.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sim-secrets".
+ */
+export interface SimSecret {
+  id: string;
+  /**
+   * Sensitive SIM credential or delivery value.
+   */
+  secret: string;
+  sim: string | Sim;
+  status: 'available' | 'sold';
+  /**
+   * Timestamp when the secret was assigned to an order.
+   */
+  soldAt?: string | null;
+  createdBy: string | User;
+  updatedBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1099,6 +1124,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'countries';
         value: string | Country;
+      } | null)
+    | ({
+        relationTo: 'sim-secrets';
+        value: string | SimSecret;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1503,6 +1532,20 @@ export interface SimsSelect<T extends boolean = true> {
 export interface CountriesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sim-secrets_select".
+ */
+export interface SimSecretsSelect<T extends boolean = true> {
+  secret?: T;
+  sim?: T;
+  status?: T;
+  soldAt?: T;
   createdBy?: T;
   updatedBy?: T;
   updatedAt?: T;

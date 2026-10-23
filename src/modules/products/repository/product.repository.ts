@@ -9,6 +9,34 @@ export class ProductRepository {
     this.payload = payload;
   }
 
+  async updateQuantity(
+    newQuantity: number,
+    id: string,
+    transactionId?: DatabaseTransactionId
+  ) {
+    const { docs } = await this.payload.update({
+      collection: "products",
+      data: {
+        stock: newQuantity,
+      },
+      depth: 0,
+      overrideAccess: true,
+      req: {
+        transactionID: transactionId,
+      },
+      where: {
+        id: {
+          equals: id,
+        },
+        status: {
+          equals: PRODUCT_STATUS.ACTIVE,
+        },
+      },
+    });
+
+    return docs;
+  }
+
   async findAllActive() {
     const { docs } = await this.payload.find({
       collection: "products",

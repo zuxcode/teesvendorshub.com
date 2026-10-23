@@ -14,8 +14,8 @@ import {
   PAYMENT_STATUS,
   type PaymentProviderName,
 } from "@/modules/payments/payment.constants";
-import type { PaymentRepository } from "@/modules/payments/payment.repository";
-import type { PaymentService } from "@/modules/payments/payment.service";
+import type { PaymentRepository } from "@/modules/payments/repository/payment.repository";
+import type { PaymentService } from "@/modules/payments/service/payment.service";
 import {
   InsufficientStockError,
   ProductNotFoundError,

@@ -2,8 +2,8 @@ import { DatabaseTransactionBase } from "@/modules/database/database-transaction
 import { GiftRepository } from "@/modules/gift/repository/gift.repository";
 import { OrderRepository } from "@/modules/order/repository/order.repository";
 import { OrderItemRepository } from "@/modules/order/repository/order-item.repository";
-import { PaymentRepository } from "@/modules/payments/payment.repository";
-import { paymentService } from "@/modules/payments/payment.service";
+import { PaymentRepository } from "@/modules/payments/repository/payment.repository";
+import { paymentService } from "@/modules/payments/service/payment.service";
 import { ProductRepository } from "@/modules/products/repository/product.repository";
 import { SimRepository } from "@/modules/sim/repository/sim.repository";
 import { payload } from "@/shared/payload/utils/payload";

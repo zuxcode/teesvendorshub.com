@@ -1,8 +1,8 @@
 import type { Payload } from "payload";
 import type { DatabaseTransactionId } from "@/shared/types";
-import { PRODUCT_SECRET_STATUS } from "../constant/product.constants";
+import { SECRET_STATUS } from "../constant/product.constants";
 
-interface UpdateAvailableSecretData {
+export interface UpdateAvailableSecretData {
   productId: string;
   quantity: number;
 }
@@ -32,7 +32,7 @@ export class ProductSecretRepository {
           },
           {
             status: {
-              equals: PRODUCT_SECRET_STATUS.AVAILABLE,
+              equals: SECRET_STATUS.AVAILABLE,
             },
           },
         ],
@@ -42,7 +42,7 @@ export class ProductSecretRepository {
     return result.docs;
   }
 
-  async updateAvailableSecret(
+  async markAvailableSecretAsSold(
     { productId, quantity }: UpdateAvailableSecretData,
     transactionId: DatabaseTransactionId
   ) {
@@ -54,7 +54,7 @@ export class ProductSecretRepository {
       collection: "product-secrets",
       data: {
         soldAt: new Date().toISOString(),
-        status: PRODUCT_SECRET_STATUS.SOLD,
+        status: SECRET_STATUS.SOLD,
       },
       depth: 0,
       limit: quantity,
@@ -68,7 +68,7 @@ export class ProductSecretRepository {
           },
           {
             status: {
-              equals: PRODUCT_SECRET_STATUS.AVAILABLE,
+              equals: SECRET_STATUS.AVAILABLE,
             },
           },
         ],
@@ -76,35 +76,5 @@ export class ProductSecretRepository {
     });
 
     return result.docs;
-  }
-
-  async claimAvailableSecret(productId: string) {
-    const result = await this.payload.db.drizzle.execute(`
-      WITH candidate AS (
-        SELECT id
-        FROM product_secrets
-        WHERE product_id = ${productId}
-          AND status = ${PRODUCT_SECRET_STATUS.AVAILABLE}
-        ORDER BY id
-        FOR UPDATE SKIP LOCKED
-        LIMIT 1
-      )
-      UPDATE product_secrets AS secret
-      SET
-        status = ${PRODUCT_SECRET_STATUS.SOLD},
-        sold_at = NOW(),
-        updated_at = NOW()
-      FROM candidate
-      WHERE secret.id = candidate.id
-        AND secret.status = ${PRODUCT_SECRET_STATUS.AVAILABLE}
-      RETURNING
-        secret.id,
-        secret.product_id AS "productId",
-        secret.secret,
-        secret.status,
-        secret.sold_at AS "soldAt"
-    `);
-
-    return result.rows[0] ?? null;
   }
 }

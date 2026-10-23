@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { PRODUCT_SECRET_STATUS } from "../constant/product.constants";
+import { SECRET_STATUS } from "../constant/product.constants";
 
 export const ProductSecretCollection: CollectionConfig = {
   access: {
@@ -46,13 +46,13 @@ export const ProductSecretCollection: CollectionConfig = {
         position: "sidebar",
         readOnly: true,
       },
-      defaultValue: PRODUCT_SECRET_STATUS.AVAILABLE,
+      defaultValue: SECRET_STATUS.AVAILABLE,
       index: true,
       label: "Status",
       name: "status",
       options: [
-        { label: "Available", value: PRODUCT_SECRET_STATUS.AVAILABLE },
-        { label: "Sold", value: PRODUCT_SECRET_STATUS.SOLD },
+        { label: "Available", value: SECRET_STATUS.AVAILABLE },
+        { label: "Sold", value: SECRET_STATUS.SOLD },
       ],
       required: true,
       type: "select",

@@ -1,7 +1,6 @@
-export const PRODUCT_SECRET_STATUS = {
+export const SECRET_STATUS = {
   AVAILABLE: "available",
   SOLD: "sold",
 } as const;
 
-export type ProductSecretStatus =
-  (typeof PRODUCT_SECRET_STATUS)[keyof typeof PRODUCT_SECRET_STATUS];
+export type SecretStatus = (typeof SECRET_STATUS)[keyof typeof SECRET_STATUS];

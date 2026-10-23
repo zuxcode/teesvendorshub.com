@@ -1,9 +1,9 @@
 import type { BasePayload } from "payload";
 
 import { PaymentEnqueueFailed, PaymentNotFoundError } from "../payment.errors";
-import { PaymentRepository } from "../payment.repository";
 import type { HandleWebhookInput } from "../payment.type";
 import { paymentRegistry } from "../provider/provider.registry";
+import { PaymentRepository } from "../repository/payment.repository";
 
 export class PaymentWebhookService {
   private readonly paymentRepository: PaymentRepository;

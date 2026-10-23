@@ -9,9 +9,9 @@ import type { Payment, TaskVerifyPayment } from "@/payload-types";
 import { generateUniqueReference } from "@/shared/utils/generate-unique-ref";
 import { PAYMENT_STATUS } from "../payment.constants";
 import { PaymentError, PaymentErrorMessage } from "../payment.errors";
-import { PaymentRepository } from "../payment.repository";
 import type { PaymentVerificationResult } from "../payment.type";
 import { paymentRegistry } from "../provider/provider.registry";
+import { PaymentRepository } from "../repository/payment.repository";
 
 type TaskVerifyPaymentOutput = Pick<TaskVerifyPayment, "output">;
 

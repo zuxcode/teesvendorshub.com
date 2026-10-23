@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SimFilterPanelWrapper } from "@/modules/sim/ui/filters/sim-filter-panel-wrapper";
+// import { SimFilterPanelWrapper } from "@/modules/sim/ui/filters/sim-filter-panel-wrapper";
 import { SimDetailsDialog } from "@/modules/sim/ui/sim-details-dialog";
 import { SimGrid } from "@/modules/sim/ui/sim-grid";
 import { SimStoreHeader } from "@/modules/sim/ui/sim-header";
@@ -10,7 +10,7 @@ export default async function ProductsPage() {
     <div>
       <SimStoreHeader />
       <div className="page-container">
-        <SimFilterPanelWrapper />
+        {/* <SimFilterPanelWrapper /> */}
         <SimGrid />
       </div>
       <SimDetailsDialog />

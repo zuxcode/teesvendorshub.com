@@ -2,8 +2,8 @@ import type { CollectionConfig } from "payload";
 
 import { isAdmin } from "@/shared/access";
 import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
-import { canReadPayment } from "./payment.access";
-import { PAYMENT_PROVIDER_NAME, PAYMENT_STATUS } from "./payment.constants";
+import { canReadPayment } from "../payment.access";
+import { PAYMENT_PROVIDER_NAME, PAYMENT_STATUS } from "../payment.constants";
 
 export const PaymentsCollection: CollectionConfig = {
   access: {

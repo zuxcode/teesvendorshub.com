@@ -20,7 +20,7 @@ import { AvatarCollection } from "./modules/media/avatar-collection";
 import { ProductLibraryCollection } from "./modules/media/product-library";
 import { OrdersCollection } from "./modules/order/collections/order.collection";
 import { OrderItemsCollection } from "./modules/order/collections/order-item.collection";
-import { PaymentsCollection } from "./modules/payments/payment.collection";
+import { PaymentsCollection } from "./modules/payments/collection/payment.collection";
 import {
   paymentTasks,
   processPaymentWebhook,
@@ -33,6 +33,7 @@ import { TransactionsCollection } from "./modules/transaction/transaction-collec
 import { UsersCollection } from "./modules/users";
 import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
 import { env } from "./shared/utils/env";
+import { SimSecretCollection } from "./modules/products/collections/sim-secret.collection";
 
 // import { DOMAIN } from "./lib/constant/constant";
 
@@ -84,6 +85,7 @@ export default buildConfig({
     GiftsCollection,
     SimCollection,
     CountryCollection,
+    SimSecretCollection,
   ],
   cookiePrefix: "tvh",
 
