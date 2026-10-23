@@ -27,13 +27,13 @@ import {
 } from "./modules/payments/workflow/payment-tasks";
 import { ProductsCollection } from "./modules/products/collections/product.collection";
 import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
+import { SimSecretCollection } from "./modules/products/collections/sim-secret.collection";
 import { CountryCollection } from "./modules/sim/collection/country-collection";
 import { SimCollection } from "./modules/sim/collection/sim-collection";
 import { TransactionsCollection } from "./modules/transaction/transaction-collection";
 import { UsersCollection } from "./modules/users";
 import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
 import { env } from "./shared/utils/env";
-import { SimSecretCollection } from "./modules/products/collections/sim-secret.collection";
 
 // import { DOMAIN } from "./lib/constant/constant";
 
