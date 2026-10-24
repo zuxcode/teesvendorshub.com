@@ -116,3 +116,12 @@ export const useCancelledOrRefundedOrder = () =>
         (o) => o.status === "cancelled" || o.status === "refunded"
       ) ?? []
   );
+
+export const useOrderByRefrence = (reference: string | null) => {
+  const orders = useOrders();
+  if (orders.length === 0) {
+    return;
+  }
+
+  return orders.find((order) => order.reference === reference);
+};

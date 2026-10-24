@@ -1,14 +1,7 @@
 import { type BasePayload, JobCancelledError, type TaskHandler } from "payload";
 import { PAYMENT_STATUS } from "@/modules/payments/payment.constants";
 import { ProductRepository } from "@/modules/products/repository/product.repository";
-import { SIM_TYPE } from "@/modules/sim/constant";
-import { SimRepository } from "@/modules/sim/repository/sim.repository";
-import type {
-  OrderItem,
-  Product,
-  Sim,
-  TaskValidateOrder,
-} from "@/payload-types";
+import type { OrderItem, Product, TaskValidateOrder } from "@/payload-types";
 import { RELATION_TO, type RelationTo } from "@/shared/constant";
 import { getRelationshipId } from "@/shared/utils/get-relationship-id";
 import { ORDER_STATUS, type OrderStatus } from "../order.constants";
@@ -25,11 +18,7 @@ interface LoadedProducts {
   productsById: Map<string, Product>;
 }
 
-interface LoadedSims {
-  simsById: Map<string, Sim>;
-}
-
-interface LoadedOrderItemDetails extends LoadedProducts, LoadedSims {}
+interface LoadedOrderItemDetails extends LoadedProducts {}
 
 export interface StockAvailabilityProps extends LoadedOrderItemDetails {
   quantitiesByProductType: QuantitiesByProductType;
@@ -37,7 +26,6 @@ export interface StockAvailabilityProps extends LoadedOrderItemDetails {
 
 export interface StockAvailabilityResult {
   unavailableProductIds: Set<string>;
-  unavailableSimIds: Set<string>;
 }
 
 interface OrderValidationResult {
@@ -49,13 +37,11 @@ export class OrderValidationService {
   protected readonly orderRepository: OrderRepository;
   protected readonly orderItemRepository: OrderItemRepository;
   protected readonly productRepository: ProductRepository;
-  protected readonly simRepository: SimRepository;
 
   constructor(payload: BasePayload) {
     this.orderRepository = new OrderRepository(payload);
     this.orderItemRepository = new OrderItemRepository(payload);
     this.productRepository = new ProductRepository(payload);
-    this.simRepository = new SimRepository(payload);
   }
 
   protected groupSystemDeliverableItems(
@@ -64,17 +50,7 @@ export class OrderValidationService {
     const itemsByType: SystemDeliverableItems = new Map();
 
     for (const item of orderedItems) {
-      if (
-        item.productType !== RELATION_TO.PRODUCT &&
-        item.productType !== RELATION_TO.SIM
-      ) {
-        continue;
-      }
-
-      if (
-        item.productType === RELATION_TO.SIM &&
-        item.simType !== SIM_TYPE.ESIM
-      ) {
+      if (item.productType !== RELATION_TO.PRODUCT) {
         continue;
       }
 
@@ -95,9 +71,7 @@ export class OrderValidationService {
       const quantitiesById: QuantitiesById = new Map();
 
       for (const item of orderItems) {
-        const itemId = getRelationshipId(
-          productType === RELATION_TO.PRODUCT ? item.product : item.sim
-        );
+        const itemId = getRelationshipId(item.product);
 
         if (!itemId) {
           throw new JobCancelledError(
@@ -137,18 +111,6 @@ export class OrderValidationService {
     return orderedItems;
   }
 
-  private async loadSims(ids: string[]): Promise<LoadedSims> {
-    if (ids.length === 0) {
-      return { simsById: new Map() };
-    }
-
-    const sims = await this.simRepository.findByIds(ids);
-
-    return {
-      simsById: new Map(sims.map((sim) => [sim.id, sim])),
-    };
-  }
-
   private async loadProducts(ids: string[]): Promise<LoadedProducts> {
     if (ids.length === 0) {
       return { productsById: new Map() };
@@ -165,7 +127,6 @@ export class OrderValidationService {
     systemDeliverableItems: SystemDeliverableItems
   ): Promise<LoadedOrderItemDetails> {
     const productItems = systemDeliverableItems.get(RELATION_TO.PRODUCT) ?? [];
-    const simItems = systemDeliverableItems.get(RELATION_TO.SIM) ?? [];
 
     const productIds = [
       ...new Set(
@@ -183,40 +144,18 @@ export class OrderValidationService {
       ),
     ];
 
-    const simIds = [
-      ...new Set(
-        simItems.map((item) => {
-          const id = getRelationshipId(item.sim);
-
-          if (!id) {
-            throw new JobCancelledError(
-              `Missing SIM relationship for order item ${item.id}.`
-            );
-          }
-
-          return id;
-        })
-      ),
-    ];
-
-    const [products, sims] = await Promise.all([
-      this.loadProducts(productIds),
-      this.loadSims(simIds),
-    ]);
+    const products = await this.loadProducts(productIds);
 
     return {
       productsById: products.productsById,
-      simsById: sims.simsById,
     };
   }
 
   private findUnavailableItemIds({
     productsById,
-    simsById,
     quantitiesByProductType,
   }: StockAvailabilityProps): StockAvailabilityResult {
     const unavailableProductIds = new Set<string>();
-    const unavailableSimIds = new Set<string>();
 
     for (const [productType, quantitiesById] of quantitiesByProductType) {
       for (const [itemId, requestedQuantity] of quantitiesById) {
@@ -226,23 +165,12 @@ export class OrderValidationService {
           if (!product || requestedQuantity > product.stock) {
             unavailableProductIds.add(itemId);
           }
-
-          continue;
-        }
-
-        if (productType === RELATION_TO.SIM) {
-          const sim = simsById.get(itemId);
-
-          if (!sim || requestedQuantity > sim.stock) {
-            unavailableSimIds.add(itemId);
-          }
         }
       }
     }
 
     return {
       unavailableProductIds,
-      unavailableSimIds,
     };
   }
 
@@ -266,18 +194,16 @@ export class OrderValidationService {
       systemDeliverableItems
     );
 
-    const { productsById, simsById } = await this.loadOrderItemDetails(
+    const { productsById } = await this.loadOrderItemDetails(
       systemDeliverableItems
     );
 
-    const { unavailableProductIds, unavailableSimIds } =
-      this.findUnavailableItemIds({
-        productsById,
-        quantitiesByProductType,
-        simsById,
-      });
+    const { unavailableProductIds } = this.findUnavailableItemIds({
+      productsById,
+      quantitiesByProductType,
+    });
 
-    if (unavailableProductIds.size > 0 || unavailableSimIds.size > 0) {
+    if (unavailableProductIds.size > 0) {
       throw new JobCancelledError(OrderErrorMessage.ORDER_ITEMS_UNAVAILABLE);
     }
 

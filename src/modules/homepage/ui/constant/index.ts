@@ -31,21 +31,6 @@ export const categories = [
   },
 ] as const;
 
-// export const featuredProducts = [
-//   {
-//     description: "Digital subscription",
-//     name: "Netflix subscription",
-//     price: "₦12,500",
-//     visual: "subscription",
-//   },
-//   {
-//     description: "Featured electronics",
-//     name: "Smartphone",
-//     price: "₦1,250,000",
-//     visual: "phone",
-//   },
-// ] as const;
-
 export const categoryColors = {
   blue: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   emerald: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",

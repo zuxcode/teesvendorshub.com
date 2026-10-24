@@ -606,7 +606,7 @@ export class CheckoutService {
           phone,
           redirectUrl: new URL(
             PAYMENT_CHECKOUT_REDIRECT_URL,
-            env.NEXT_PUBLIC_APP_URL
+            env.NEXT_PUBLIC_APP_URL, 
           ).toString(),
           reference,
         },

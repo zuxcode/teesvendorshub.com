@@ -26,7 +26,6 @@ import {
 } from "./modules/payments/workflow/payment-tasks";
 import { ProductsCollection } from "./modules/products/collections/product.collection";
 import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
-import { SimSecretCollection } from "./modules/products/collections/sim-secret.collection";
 import { CountryCollection } from "./modules/sim/collection/country-collection";
 import { SimCollection } from "./modules/sim/collection/sim-collection";
 import { TransactionsCollection } from "./modules/transaction/transaction-collection";
@@ -83,7 +82,6 @@ export default buildConfig({
     GiftsCollection,
     SimCollection,
     CountryCollection,
-    SimSecretCollection,
   ],
   cookiePrefix: "tvh",
 
@@ -113,8 +111,9 @@ export default buildConfig({
 
   jobs: {
     autoRun: [{ allQueues: true }],
-    deleteJobOnComplete: false,
+    deleteJobOnComplete: true,
     enableConcurrencyControl: true,
+    
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
         defaultJobsCollection.admin = {};
