@@ -1,7 +1,5 @@
-import "server-only";
-
-import { env } from "@/env";
 import { TRANSACTPAY_BASE_URL } from "@/shared/config/app-config";
+import { env } from "@/shared/utils/env";
 
 import { PaymentProviderError } from "../../payment.errors";
 import type { PaymentAdaptor } from "../../payment.type";

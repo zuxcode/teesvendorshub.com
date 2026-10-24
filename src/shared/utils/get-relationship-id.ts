@@ -1,10 +1,8 @@
-import type { ResourceId } from "../types";
-
-type RelationshipValue = ResourceId | { id: ResourceId } | null | undefined;
+type RelationshipValue = string | { id: string } | null | undefined;
 
 export function getRelationshipId(
   relationship: RelationshipValue
-): ResourceId | null {
+): string | null {
   if (!relationship) {
     return null;
   }

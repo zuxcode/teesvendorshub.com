@@ -1,12 +1,11 @@
 import { connection } from "next/server";
-import { type ReactNode, Suspense } from "react";
+import type { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { DashboardEffect } from "@/features/dashboard/dashboard-effect";
-import { ProductImagesServer } from "@/features/products/product-images-server";
-import { DashboardFooter } from "@/layout/footer/dashboard-footer";
-import { DashboardTopNav } from "@/layout/nav/dashboard-top-nav";
-import { getAuthenticateUser } from "@/lib/services/get-auth";
 import { cn } from "@/lib/utils";
+import { getAuthenticateUser } from "@/modules/authentication/libs/get-auth";
+import { DashboardEffect } from "@/modules/dashboard/dashboard-effect";
+import { DashboardFooter } from "@/shared/layout/footer/dashboard-footer";
+import { DashboardTopNav } from "@/shared/layout/nav/dashboard-top-nav";
 
 export default async function DashboardLayout({
   children,
@@ -25,10 +24,7 @@ export default async function DashboardLayout({
       <SidebarInset>
         <DashboardTopNav />
         <div
-          className={cn(
-            "mx-auto flex w-full max-w-[1600px] flex-1 flex-col",
-            "container mx-auto px-4 py-8 lg:py-8" // Layout
-          )}
+          className={cn("mx-auto flex w-full max-w-[1600px] flex-1 flex-col")}
         >
           {children}
         </div>
@@ -36,10 +32,6 @@ export default async function DashboardLayout({
         <DashboardEffect user={user} />
         <DashboardFooter />
       </SidebarInset>
-
-      <Suspense fallback={null}>
-        <ProductImagesServer />
-      </Suspense>
     </SidebarProvider>
   );
 }

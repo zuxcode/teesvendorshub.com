@@ -7,18 +7,10 @@ export type PaymentProviderName =
 
 export const PAYMENT_STATUS = {
   FAILED: "failed",
-  PARTIALLY_PAID: "partially-paid",
-  PARTIALLY_REFUNDED: "partially-refunded",
   PENDING: "pending",
   REFUNDED: "refunded",
   SUCCESSFUL: "successful",
 } as const;
 
-export const PAYMENT_VERIFICATION_STATUS = {
-  FAILED: "failed",
-  PENDING: "pending",
-  SUCCESSFUL: "successful",
-} as const;
-
-export type PaymentVerificationStatus =
-  (typeof PAYMENT_VERIFICATION_STATUS)[keyof typeof PAYMENT_VERIFICATION_STATUS];
+export type PaymentStatus =
+  (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS];

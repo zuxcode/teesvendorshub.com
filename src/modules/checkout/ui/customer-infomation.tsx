@@ -5,13 +5,13 @@ import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { CheckOutSchemaValues } from "../lib/check-out-schema";
+import type { CheckoutPhysicalSchemaValues } from "../lib/check-out-schema";
 
 export function CustomerInformation() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<CheckOutSchemaValues>();
+  } = useFormContext<CheckoutPhysicalSchemaValues>();
 
   return (
     <Card>

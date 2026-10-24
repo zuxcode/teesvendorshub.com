@@ -1,69 +1,64 @@
-/**
- *                          TransactPay
- *                               │
- *                               │ POST webhook
- *                               ▼
- *                   /api/webhooks/transactpay
- *                               │
- *                     ┌─────────┴─────────┐
- *                     │                   │
- *               Parse payload      Verify transaction
- *                     │             with TransactPay
- *                     │                   │
- *                     └─────────┬─────────┘
- *                               ▼
- *                    paymentService
- *                    .handleWebhook()
- *                               │
- *                  ┌────────────┼────────────┐
- *                  │            │            │
- *             Find payment   Validate     Validate
- *                            amount       currency
- *                  │            │            │
- *                  └────────────┼────────────┘
- *                               ▼
- *                       Check payment status
- *                               │
- *                     ┌─────────┴─────────┐
- *                     │                   │
- *                Already final          Pending
- *                     │                   │
- *                   Ignore          Mark successful
- *                                         │
- *                                         ▼
- *                               createSaleMovement()
- *                                         │
- *                                         ▼
- *                                   Confirm order
- */
-
 import { captureException } from "@sentry/nextjs";
 import { NextResponse } from "next/server";
+
 import { PAYMENT_PROVIDER_NAME } from "@/modules/payments/payment.constants";
-import { paymentService } from "@/modules/payments/payment.service";
+import {
+  PaymentError,
+  PaymentErrorCode,
+} from "@/modules/payments/payment.errors";
+import { PaymentWebhookService } from "@/modules/payments/service/payment-webhook.service";
+import { payload } from "@/shared/payload/utils/payload";
+
+const provider = PAYMENT_PROVIDER_NAME.TRANSACTPAY;
+const actionName = "POST";
+const flow = "Webhook";
+const type = "payment webhook";
+
+const tags = {
+  actionName,
+  flow,
+  provider,
+  type,
+};
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+  let body: unknown;
 
-    await paymentService.handleWebhook({
+  try {
+    body = await request.json();
+  } catch (error) {
+    captureException(error, {
+      tags: {
+        ...tags,
+        reason: "invalid_json_body",
+      },
+    });
+
+    return NextResponse.json({ received: true }, { status: 400 });
+  }
+
+  try {
+    await PaymentWebhookService.handleWebhook(payload, {
       body,
-      provider: PAYMENT_PROVIDER_NAME.TRANSACTPAY,
+      provider,
     });
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
-    console.log(error);
-
     captureException(error, {
       tags: {
-        actionName: "POST",
-        flow: "Webhook",
-        provider: "TransactPay",
-        type: "payment webhook",
+        ...tags,
+        errorCode: error instanceof PaymentError ? error.code : "UNKNOWN_ERROR",
       },
     });
 
-    return NextResponse.json({ received: false }, { status: 500 });
+    if (
+      error instanceof PaymentError &&
+      error.code === PaymentErrorCode.PAYMENT_NOT_FOUND
+    ) {
+      return NextResponse.json({ received: true }, { status: 400 });
+    }
+
+    return NextResponse.json({ received: true }, { status: 500 });
   }
 }

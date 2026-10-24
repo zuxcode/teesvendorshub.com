@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
+import { isAdmin, isPublicAccess } from "@/shared/access";
+import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
 
-import { isAdmin, isPublicAccess } from "@/access";
-import { IMAGE_MIME_TYPES } from "@/lib/config/collection-config";
-import { createAuditActorHook } from "../../shared/payload/hooks/audit-actor";
+import { IMAGE_MIME_TYPES } from "./constants/constant";
 import { validateAltText } from "./validation";
 
 export const ProductLibraryCollection: CollectionConfig = {
@@ -73,7 +73,6 @@ export const ProductLibraryCollection: CollectionConfig = {
   timestamps: true,
 
   upload: {
-    filenameCompoundIndex: ["filename"],
     imageSizes: [
       {
         crop: "center",
@@ -96,6 +95,5 @@ export const ProductLibraryCollection: CollectionConfig = {
       },
     ],
     mimeTypes: [...IMAGE_MIME_TYPES],
-    staticDir: "tmp",
   },
 };

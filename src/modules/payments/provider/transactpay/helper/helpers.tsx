@@ -1,8 +1,8 @@
-import type { Currency } from "@/modules/order/order.constants";
 import type {
   PaymentVerificationResult,
   PaymentWebhookData,
 } from "@/modules/payments/payment.type";
+import type { Currency } from "@/shared/constant";
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -60,6 +60,9 @@ export function normalizePaymentStatus(
 
     case "failed":
       return "failed";
+
+    case "reversed":
+      return "refunded";
 
     default:
       return "pending";

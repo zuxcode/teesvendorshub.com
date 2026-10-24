@@ -5,9 +5,3 @@ export interface TeesLink {
   label: string;
   tag?: string | undefined;
 }
-
-export type DocumentId = string | number;
-
-export type FilterValue = "all" | (string & {});
-
-export type StoreStatus = "idle" | "loading" | "ready" | "error";

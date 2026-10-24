@@ -11,6 +11,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import { AuthError } from "@/modules/authentication/libs/auth-errors";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -25,6 +26,12 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
       },
     });
   }, [error]);
+
+  useEffect(() => {
+    if (error instanceof AuthError && error.code === "AUTH_ACCOUNT_REQUIRED") {
+      // redirect to login
+    }
+  });
 
   return (
     <Card className="border-dashed shadow-none">

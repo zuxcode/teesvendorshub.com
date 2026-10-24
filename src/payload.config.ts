@@ -8,25 +8,30 @@ import { sentryPlugin } from "@payloadcms/plugin-sentry";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import * as Sentry from "@sentry/nextjs";
-
 import { buildConfig } from "payload";
 import pg from "pg";
 import sharp from "sharp";
 
-import { CategoriesCollection } from "./collections/category/category-collection";
-import { TaxRulesCollection } from "./collections/tax/tax-rule";
-import { TransactionsCollection } from "./collections/transaction/transaction-collection";
-import { UsersCollection } from "./collections/users";
 import { APP_NAME, APP_URL, APP_URL_WWW } from "./constant";
-import { env } from "./env";
-import { sendWelcomeEmailTask } from "./lib/tasks/send-welcome-email";
-
-import { InventoryCollection } from "./modules/inventory/inventory.collection";
+import { CategoriesCollection } from "./modules/category/collection/category-collection";
+import { GiftsCollection } from "./modules/gift/collection/gift-collection";
+import { AvatarCollection } from "./modules/media/avatar-collection";
 import { ProductLibraryCollection } from "./modules/media/product-library";
-import { OrdersCollection } from "./modules/order/order.collection";
-import { OrderItemsCollection } from "./modules/order/order-item.collection";
-import { PaymentsCollection } from "./modules/payments/payment.collection";
-import { ProductsCollection } from "./modules/products/product.collection";
+import { OrdersCollection } from "./modules/order/collections/order.collection";
+import { OrderItemsCollection } from "./modules/order/collections/order-item.collection";
+import { PaymentsCollection } from "./modules/payments/collection/payment.collection";
+import {
+  paymentTasks,
+  processPaymentWebhook,
+} from "./modules/payments/workflow/payment-tasks";
+import { ProductsCollection } from "./modules/products/collections/product.collection";
+import { ProductSecretCollection } from "./modules/products/collections/product-secret.collection";
+import { CountryCollection } from "./modules/sim/collection/country-collection";
+import { SimCollection } from "./modules/sim/collection/sim-collection";
+import { TransactionsCollection } from "./modules/transaction/transaction-collection";
+import { UsersCollection } from "./modules/users";
+import { sendWelcomeEmailTask } from "./modules/users/tasks/send-welcome-email";
+import { env } from "./shared/utils/env";
 
 // import { DOMAIN } from "./lib/constant/constant";
 
@@ -39,10 +44,25 @@ const COR_DEV = "http://localhost:3000" as const;
 const COR_PREVIEW = "https://thv-nu.vercel.app" as const;
 const COR_PROD = [APP_URL, APP_URL_WWW] as const;
 
-const COR = IS_DEVELOPMENT ? [...COR_PROD, COR_DEV, COR_PREVIEW] : COR_PROD;
+const _COR = IS_DEVELOPMENT ? [...COR_PROD, COR_DEV, COR_PREVIEW] : COR_PROD;
 
 export default buildConfig({
   admin: {
+    autoRefresh: true,
+    // dashboard: {
+    //   widgets: [
+    //     {
+    //       Component: {
+    //         exportName: "ConnectTelegramButton",
+    //         path: "./modules/notifications/ui/connect-telegram-button.tsx",
+    //       },
+    //       label: "Connect telegram",
+    //       maxWidth: "full",
+    //       minWidth: "x-small",
+    //       slug: "connect-telegram",
+    //     },
+    //   ],
+    // },
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -53,22 +73,26 @@ export default buildConfig({
     ProductLibraryCollection,
     ProductsCollection,
     CategoriesCollection,
-    InventoryCollection,
-    TaxRulesCollection,
     OrdersCollection,
     OrderItemsCollection,
     TransactionsCollection,
     PaymentsCollection,
+    AvatarCollection,
+    ProductSecretCollection,
+    GiftsCollection,
+    SimCollection,
+    CountryCollection,
   ],
   cookiePrefix: "tvh",
 
-  cors: {
-    headers: ["x-custom-header"],
-    origins: [...COR],
-  },
-  csrf: [...COR],
+  // cors: {
+  //   headers: ["x-custom-header"],
+  //   origins: [...COR],
+  // },
+  // csrf: [...COR],
 
   db: postgresAdapter({
+    idType: "uuidv7",
     pg,
     pool: {
       connectionString: env.DATABASE_URL,
@@ -86,6 +110,10 @@ export default buildConfig({
   }),
 
   jobs: {
+    autoRun: [{ allQueues: true }],
+    deleteJobOnComplete: true,
+    enableConcurrencyControl: true,
+    
     jobsCollectionOverrides: ({ defaultJobsCollection }) => {
       if (!defaultJobsCollection.admin) {
         defaultJobsCollection.admin = {};
@@ -94,13 +122,19 @@ export default buildConfig({
       defaultJobsCollection.admin.hidden = false;
       return defaultJobsCollection;
     },
-    tasks: [sendWelcomeEmailTask],
+    tasks: [sendWelcomeEmailTask, ...paymentTasks],
+
+    workflows: [processPaymentWebhook],
   },
+
   plugins: [
     vercelBlobStorage({
       access: "public",
       clientUploads: false,
       collections: {
+        avatars: {
+          prefix: "avatars",
+        },
         "product-library": {
           prefix: "product",
         },
@@ -130,7 +164,8 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
+
   upload: {
-    safeFileNames: true,
+    // safeFileNames: true,
   },
 });

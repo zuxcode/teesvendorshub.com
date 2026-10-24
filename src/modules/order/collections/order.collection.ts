@@ -1,0 +1,253 @@
+import type { CollectionConfig } from "payload";
+
+import { isAdmin, isAdminOrBuyerOnlyFieldAccess } from "@/shared/access";
+import { createAuditActorHook } from "@/shared/payload/hooks/audit-actor";
+import {  ORDER_STATUS } from "../order.constants";
+import { CURRENCY } from "@/shared/constant";
+
+export const OrdersCollection: CollectionConfig = {
+  access: {
+    create: isAdmin,
+    delete: isAdmin,
+    read: isAdminOrBuyerOnlyFieldAccess,
+    update: isAdmin,
+  },
+
+  admin: {
+    defaultColumns: [
+      "reference",
+      "buyer",
+      "status",
+      "total",
+      "currency",
+      "createdAt",
+    ],
+
+    description: "Customer orders and their transaction lifecycle.",
+
+    group: "Ecommerce",
+
+    useAsTitle: "reference",
+  },
+
+  fields: [
+    {
+      admin: {
+        description: "Unique customer-facing order number.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "reference",
+      required: true,
+      type: "text",
+      unique: true,
+    },
+
+    {
+      admin: {
+        description: "Customer who placed the order.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "buyer",
+      relationTo: "users",
+      required: true,
+      type: "relationship",
+    },
+
+    {
+      admin: {
+        description: "Overall lifecycle status of the order.",
+        position: "sidebar",
+      },
+      defaultValue: ORDER_STATUS.PENDING,
+      index: true,
+      name: "status",
+      options: [
+        { label: "Pending", value: ORDER_STATUS.PENDING },
+        { label: "Processing", value: ORDER_STATUS.PROCESSING },
+        { label: "Completed", value: ORDER_STATUS.COMPLETED },
+        { label: "Cancelled", value: ORDER_STATUS.CANCELLED },
+        { label: "Refunded", value: ORDER_STATUS.REFUNDED },
+      ],
+      required: true,
+      type: "select",
+    },
+
+    {
+      admin: {
+        description: "Currency used for the order.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      defaultValue: CURRENCY.NGN,
+      index: true,
+      name: "currency",
+      options: [
+        {
+          label: "NGN",
+          value: CURRENCY.NGN,
+        },
+      ],
+      required: true,
+      type: "select",
+    },
+
+    {
+      admin: {
+        description:
+          "Sum of all order item line totals before shipping and tax.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      min: 0,
+      name: "subtotal",
+      required: true,
+      type: "number",
+    },
+
+    {
+      admin: {
+        description:
+          "Final amount payable by the customer, including shipping and tax.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      min: 0,
+      name: "total",
+      required: true,
+      type: "number",
+    },
+
+    {
+      admin: {
+        description: "Customer email captured when the order was placed.",
+        readOnly: true,
+      },
+      name: "email",
+      required: true,
+      type: "email",
+    },
+
+    {
+      admin: {
+        description:
+          "Customer phone number captured when the order was placed.",
+        readOnly: true,
+      },
+      name: "phone",
+      type: "text",
+    },
+
+    {
+      admin: {
+        description: "Shipping information captured when the order was placed.",
+      },
+      fields: [
+        {
+          name: "fullName",
+          type: "text",
+        },
+        {
+          name: "addressLine1",
+          type: "text",
+        },
+        {
+          name: "addressLine2",
+          type: "text",
+        },
+        {
+          name: "city",
+          type: "text",
+        },
+        {
+          name: "state",
+          type: "text",
+        },
+        {
+          name: "postalCode",
+          type: "text",
+        },
+        {
+          name: "country",
+          type: "text",
+        },
+      ],
+      name: "shippingAddress",
+      type: "group",
+    },
+
+    {
+      admin: {
+        description: "Customer-provided instructions concerning delivery.",
+      },
+      name: "deliveryInstructions",
+      type: "textarea",
+    },
+
+    {
+      admin: {
+        description:
+          "Internal administrative notes. Never expose these to customers.",
+      },
+      name: "internalNotes",
+      type: "textarea",
+    },
+
+    {
+      admin: {
+        description: "User responsible for creating the order.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "createdBy",
+      relationTo: "users",
+      type: "relationship",
+    },
+
+    {
+      admin: {
+        description: "User responsible for the most recent order update.",
+        position: "sidebar",
+        readOnly: true,
+      },
+      index: true,
+      name: "updatedBy",
+      relationTo: "users",
+      type: "relationship",
+    },
+  ],
+
+  hooks: {
+    beforeChange: [createAuditActorHook()],
+  },
+
+  indexes: [
+    {
+      fields: ["buyer", "createdAt"],
+      unique: false,
+    },
+
+    {
+      fields: ["status", "createdAt"],
+      unique: false,
+    },
+
+    {
+      fields: ["buyer", "status", "createdAt"],
+      unique: false,
+    },
+  ],
+
+  labels: {
+    plural: "Orders",
+    singular: "Order",
+  },
+
+  slug: "orders",
+
+  timestamps: true,
+};
