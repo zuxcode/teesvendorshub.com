@@ -7,7 +7,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_products_status" AS ENUM('active', 'draft', 'inactive', 'archived');
   CREATE TYPE "public"."enum_products_currency" AS ENUM('NGN');
   CREATE TYPE "public"."enum_categories_status" AS ENUM('active', 'inactive');
-  CREATE TYPE "public"."enum_inventory_type" AS ENUM('newstock', 'restock', 'sale', 'return', 'adjustment', 'damaged', 'expired');
   CREATE TYPE "public"."enum_orders_status" AS ENUM('pending', 'processing', 'completed', 'cancelled', 'refunded');
   CREATE TYPE "public"."enum_orders_currency" AS ENUM('NGN');
   CREATE TYPE "public"."enum_order_items_product_type" AS ENUM('product', 'gift', 'sim');
@@ -27,7 +26,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_sims_sim_type" AS ENUM('esim', 'physical');
   CREATE TYPE "public"."enum_sims_status" AS ENUM('active', 'draft', 'inactive', 'archived');
   CREATE TYPE "public"."enum_sims_currency" AS ENUM('NGN');
-  CREATE TYPE "public"."enum_sim_secrets_status" AS ENUM('available', 'sold');
   CREATE TYPE "public"."enum_payload_jobs_log_task_slug" AS ENUM('inline', 'sendWelcomeEmail', 'verifyPayment', 'deliverOrder', 'validateOrder');
   CREATE TYPE "public"."enum_payload_jobs_log_state" AS ENUM('failed', 'succeeded');
   CREATE TYPE "public"."enum_payload_jobs_workflow_slug" AS ENUM('processPaymentWebhook');
@@ -128,21 +126,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"parent_id" uuid,
   	"status" "enum_categories_status" DEFAULT 'active' NOT NULL,
   	"created_by_id" uuid NOT NULL,
-  	"updated_by_id" uuid,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "inventory" (
-  	"id" uuid PRIMARY KEY NOT NULL,
-  	"product_id" uuid NOT NULL,
-  	"type" "enum_inventory_type" NOT NULL,
-  	"quantity" numeric NOT NULL,
-  	"quantity_before" numeric DEFAULT 0 NOT NULL,
-  	"quantity_after" numeric DEFAULT 0 NOT NULL,
-  	"reference" varchar,
-  	"notes" varchar,
-  	"created_by_id" uuid,
   	"updated_by_id" uuid,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
@@ -348,18 +331,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
-  CREATE TABLE "sim_secrets" (
-  	"id" uuid PRIMARY KEY NOT NULL,
-  	"secret" varchar NOT NULL,
-  	"sim_id" uuid NOT NULL,
-  	"status" "enum_sim_secrets_status" DEFAULT 'available' NOT NULL,
-  	"sold_at" timestamp(3) with time zone,
-  	"created_by_id" uuid NOT NULL,
-  	"updated_by_id" uuid,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
   CREATE TABLE "payload_kv" (
   	"id" uuid PRIMARY KEY NOT NULL,
   	"key" varchar NOT NULL,
@@ -413,7 +384,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"product_library_id" uuid,
   	"products_id" uuid,
   	"categories_id" uuid,
-  	"inventory_id" uuid,
   	"orders_id" uuid,
   	"order_items_id" uuid,
   	"transactions_id" uuid,
@@ -422,8 +392,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"product_secrets_id" uuid,
   	"gifts_id" uuid,
   	"sims_id" uuid,
-  	"countries_id" uuid,
-  	"sim_secrets_id" uuid
+  	"countries_id" uuid
   );
   
   CREATE TABLE "payload_preferences" (
@@ -462,9 +431,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "categories" ADD CONSTRAINT "categories_parent_id_categories_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "categories" ADD CONSTRAINT "categories_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "categories" ADD CONSTRAINT "categories_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "inventory" ADD CONSTRAINT "inventory_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "inventory" ADD CONSTRAINT "inventory_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "inventory" ADD CONSTRAINT "inventory_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "orders" ADD CONSTRAINT "orders_buyer_id_users_id_fk" FOREIGN KEY ("buyer_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "orders" ADD CONSTRAINT "orders_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "orders" ADD CONSTRAINT "orders_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
@@ -502,16 +468,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "sims" ADD CONSTRAINT "sims_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "countries" ADD CONSTRAINT "countries_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "countries" ADD CONSTRAINT "countries_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "sim_secrets" ADD CONSTRAINT "sim_secrets_sim_id_sims_id_fk" FOREIGN KEY ("sim_id") REFERENCES "public"."sims"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "sim_secrets" ADD CONSTRAINT "sim_secrets_created_by_id_users_id_fk" FOREIGN KEY ("created_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "sim_secrets" ADD CONSTRAINT "sim_secrets_updated_by_id_users_id_fk" FOREIGN KEY ("updated_by_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "payload_jobs_log" ADD CONSTRAINT "payload_jobs_log_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."payload_jobs"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_locked_documents"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_product_library_fk" FOREIGN KEY ("product_library_id") REFERENCES "public"."product_library"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_categories_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_inventory_fk" FOREIGN KEY ("inventory_id") REFERENCES "public"."inventory"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_orders_fk" FOREIGN KEY ("orders_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_order_items_fk" FOREIGN KEY ("order_items_id") REFERENCES "public"."order_items"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_transactions_fk" FOREIGN KEY ("transactions_id") REFERENCES "public"."transactions"("id") ON DELETE cascade ON UPDATE no action;
@@ -521,7 +483,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_gifts_fk" FOREIGN KEY ("gifts_id") REFERENCES "public"."gifts"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_sims_fk" FOREIGN KEY ("sims_id") REFERENCES "public"."sims"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_countries_fk" FOREIGN KEY ("countries_id") REFERENCES "public"."countries"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_sim_secrets_fk" FOREIGN KEY ("sim_secrets_id") REFERENCES "public"."sim_secrets"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   CREATE INDEX "users_sessions_order_idx" ON "users_sessions" USING btree ("_order");
@@ -564,17 +525,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "categories_created_at_idx" ON "categories" USING btree ("created_at");
   CREATE INDEX "status_parent_idx" ON "categories" USING btree ("status","parent_id");
   CREATE INDEX "createdBy_createdAt_1_idx" ON "categories" USING btree ("created_by_id","created_at");
-  CREATE INDEX "inventory_product_idx" ON "inventory" USING btree ("product_id");
-  CREATE INDEX "inventory_type_idx" ON "inventory" USING btree ("type");
-  CREATE INDEX "inventory_reference_idx" ON "inventory" USING btree ("reference");
-  CREATE INDEX "inventory_created_by_idx" ON "inventory" USING btree ("created_by_id");
-  CREATE INDEX "inventory_updated_by_idx" ON "inventory" USING btree ("updated_by_id");
-  CREATE INDEX "inventory_updated_at_idx" ON "inventory" USING btree ("updated_at");
-  CREATE INDEX "inventory_created_at_idx" ON "inventory" USING btree ("created_at");
-  CREATE INDEX "product_createdAt_idx" ON "inventory" USING btree ("product_id","created_at");
-  CREATE INDEX "product_type_createdAt_idx" ON "inventory" USING btree ("product_id","type","created_at");
-  CREATE INDEX "createdBy_createdAt_2_idx" ON "inventory" USING btree ("created_by_id","created_at");
-  CREATE INDEX "reference_idx" ON "inventory" USING btree ("reference");
   CREATE UNIQUE INDEX "orders_reference_idx" ON "orders" USING btree ("reference");
   CREATE INDEX "orders_buyer_idx" ON "orders" USING btree ("buyer_id");
   CREATE INDEX "orders_status_idx" ON "orders" USING btree ("status");
@@ -626,7 +576,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "provider_providerReference_idx" ON "transactions" USING btree ("provider","provider_reference");
   CREATE INDEX "type_status_createdAt_idx" ON "transactions" USING btree ("type","status","created_at");
   CREATE INDEX "parentTransaction_idx" ON "transactions" USING btree ("parent_transaction_id");
-  CREATE INDEX "createdBy_createdAt_3_idx" ON "transactions" USING btree ("created_by_id","created_at");
+  CREATE INDEX "createdBy_createdAt_2_idx" ON "transactions" USING btree ("created_by_id","created_at");
   CREATE UNIQUE INDEX "payments_order_reference_idx" ON "payments" USING btree ("order_reference");
   CREATE INDEX "payments_provider_reference_idx" ON "payments" USING btree ("provider_reference");
   CREATE UNIQUE INDEX "payments_order_idx" ON "payments" USING btree ("order_id");
@@ -668,7 +618,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "gifts_created_at_idx" ON "gifts" USING btree ("created_at");
   CREATE INDEX "category_status_1_idx" ON "gifts" USING btree ("category_id","status");
   CREATE INDEX "status_priceKobo_1_idx" ON "gifts" USING btree ("status","price_kobo");
-  CREATE INDEX "createdBy_createdAt_4_idx" ON "gifts" USING btree ("created_by_id","created_at");
+  CREATE INDEX "createdBy_createdAt_3_idx" ON "gifts" USING btree ("created_by_id","created_at");
   CREATE INDEX "sims_badges_order_idx" ON "sims_badges" USING btree ("order");
   CREATE INDEX "sims_badges_parent_idx" ON "sims_badges" USING btree ("parent_id");
   CREATE INDEX "sims_product_image_idx" ON "sims" USING btree ("product_image_id");
@@ -684,21 +634,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "sims_created_at_idx" ON "sims" USING btree ("created_at");
   CREATE INDEX "category_status_2_idx" ON "sims" USING btree ("category_id","status");
   CREATE INDEX "status_priceKobo_2_idx" ON "sims" USING btree ("status","price_kobo");
-  CREATE INDEX "createdBy_createdAt_5_idx" ON "sims" USING btree ("created_by_id","created_at");
+  CREATE INDEX "createdBy_createdAt_4_idx" ON "sims" USING btree ("created_by_id","created_at");
   CREATE UNIQUE INDEX "countries_name_idx" ON "countries" USING btree ("name");
   CREATE UNIQUE INDEX "countries_slug_idx" ON "countries" USING btree ("slug");
   CREATE INDEX "countries_created_by_idx" ON "countries" USING btree ("created_by_id");
   CREATE INDEX "countries_updated_by_idx" ON "countries" USING btree ("updated_by_id");
   CREATE INDEX "countries_updated_at_idx" ON "countries" USING btree ("updated_at");
   CREATE INDEX "countries_created_at_idx" ON "countries" USING btree ("created_at");
-  CREATE INDEX "createdBy_createdAt_6_idx" ON "countries" USING btree ("created_by_id","created_at");
-  CREATE INDEX "sim_secrets_sim_idx" ON "sim_secrets" USING btree ("sim_id");
-  CREATE INDEX "sim_secrets_status_idx" ON "sim_secrets" USING btree ("status");
-  CREATE INDEX "sim_secrets_sold_at_idx" ON "sim_secrets" USING btree ("sold_at");
-  CREATE INDEX "sim_secrets_created_by_idx" ON "sim_secrets" USING btree ("created_by_id");
-  CREATE INDEX "sim_secrets_updated_by_idx" ON "sim_secrets" USING btree ("updated_by_id");
-  CREATE INDEX "sim_secrets_updated_at_idx" ON "sim_secrets" USING btree ("updated_at");
-  CREATE INDEX "sim_secrets_created_at_idx" ON "sim_secrets" USING btree ("created_at");
+  CREATE INDEX "createdBy_createdAt_5_idx" ON "countries" USING btree ("created_by_id","created_at");
   CREATE UNIQUE INDEX "payload_kv_key_idx" ON "payload_kv" USING btree ("key");
   CREATE INDEX "payload_jobs_log_order_idx" ON "payload_jobs_log" USING btree ("_order");
   CREATE INDEX "payload_jobs_log_parent_id_idx" ON "payload_jobs_log" USING btree ("_parent_id");
@@ -723,7 +666,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_product_library_id_idx" ON "payload_locked_documents_rels" USING btree ("product_library_id");
   CREATE INDEX "payload_locked_documents_rels_products_id_idx" ON "payload_locked_documents_rels" USING btree ("products_id");
   CREATE INDEX "payload_locked_documents_rels_categories_id_idx" ON "payload_locked_documents_rels" USING btree ("categories_id");
-  CREATE INDEX "payload_locked_documents_rels_inventory_id_idx" ON "payload_locked_documents_rels" USING btree ("inventory_id");
   CREATE INDEX "payload_locked_documents_rels_orders_id_idx" ON "payload_locked_documents_rels" USING btree ("orders_id");
   CREATE INDEX "payload_locked_documents_rels_order_items_id_idx" ON "payload_locked_documents_rels" USING btree ("order_items_id");
   CREATE INDEX "payload_locked_documents_rels_transactions_id_idx" ON "payload_locked_documents_rels" USING btree ("transactions_id");
@@ -733,7 +675,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_gifts_id_idx" ON "payload_locked_documents_rels" USING btree ("gifts_id");
   CREATE INDEX "payload_locked_documents_rels_sims_id_idx" ON "payload_locked_documents_rels" USING btree ("sims_id");
   CREATE INDEX "payload_locked_documents_rels_countries_id_idx" ON "payload_locked_documents_rels" USING btree ("countries_id");
-  CREATE INDEX "payload_locked_documents_rels_sim_secrets_id_idx" ON "payload_locked_documents_rels" USING btree ("sim_secrets_id");
   CREATE INDEX "payload_preferences_key_idx" ON "payload_preferences" USING btree ("key");
   CREATE INDEX "payload_preferences_updated_at_idx" ON "payload_preferences" USING btree ("updated_at");
   CREATE INDEX "payload_preferences_created_at_idx" ON "payload_preferences" USING btree ("created_at");
@@ -753,7 +694,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "products_badges" CASCADE;
   DROP TABLE "products" CASCADE;
   DROP TABLE "categories" CASCADE;
-  DROP TABLE "inventory" CASCADE;
   DROP TABLE "orders" CASCADE;
   DROP TABLE "order_items_secrets" CASCADE;
   DROP TABLE "order_items" CASCADE;
@@ -765,7 +705,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "sims_badges" CASCADE;
   DROP TABLE "sims" CASCADE;
   DROP TABLE "countries" CASCADE;
-  DROP TABLE "sim_secrets" CASCADE;
   DROP TABLE "payload_kv" CASCADE;
   DROP TABLE "payload_jobs_log" CASCADE;
   DROP TABLE "payload_jobs" CASCADE;
@@ -779,7 +718,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_products_status";
   DROP TYPE "public"."enum_products_currency";
   DROP TYPE "public"."enum_categories_status";
-  DROP TYPE "public"."enum_inventory_type";
   DROP TYPE "public"."enum_orders_status";
   DROP TYPE "public"."enum_orders_currency";
   DROP TYPE "public"."enum_order_items_product_type";
@@ -799,7 +737,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_sims_sim_type";
   DROP TYPE "public"."enum_sims_status";
   DROP TYPE "public"."enum_sims_currency";
-  DROP TYPE "public"."enum_sim_secrets_status";
   DROP TYPE "public"."enum_payload_jobs_log_task_slug";
   DROP TYPE "public"."enum_payload_jobs_log_state";
   DROP TYPE "public"."enum_payload_jobs_workflow_slug";

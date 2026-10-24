@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import type { Order, OrderItem } from "@/payload-types";
-import { useClearCart } from "../hooks/use-clear-cart";
+import { useClearCart } from "../../checkout/hooks/use-clear-cart";
 import { usePollPendingOrder } from "../hooks/use-poll-pending-order";
 import { useOrderActions } from "../store/order-store";
 

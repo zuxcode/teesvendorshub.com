@@ -1397,326 +1397,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.inventory": {
-      "name": "inventory",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "enum_inventory_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "quantity": {
-          "name": "quantity",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "quantity_before": {
-          "name": "quantity_before",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "quantity_after": {
-          "name": "quantity_after",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "reference": {
-          "name": "reference",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "notes": {
-          "name": "notes",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_by_id": {
-          "name": "created_by_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_by_id": {
-          "name": "updated_by_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "inventory_product_idx": {
-          "name": "inventory_product_idx",
-          "columns": [
-            {
-              "expression": "product_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_type_idx": {
-          "name": "inventory_type_idx",
-          "columns": [
-            {
-              "expression": "type",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_reference_idx": {
-          "name": "inventory_reference_idx",
-          "columns": [
-            {
-              "expression": "reference",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_created_by_idx": {
-          "name": "inventory_created_by_idx",
-          "columns": [
-            {
-              "expression": "created_by_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_updated_by_idx": {
-          "name": "inventory_updated_by_idx",
-          "columns": [
-            {
-              "expression": "updated_by_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_updated_at_idx": {
-          "name": "inventory_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "inventory_created_at_idx": {
-          "name": "inventory_created_at_idx",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "product_createdAt_idx": {
-          "name": "product_createdAt_idx",
-          "columns": [
-            {
-              "expression": "product_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "product_type_createdAt_idx": {
-          "name": "product_type_createdAt_idx",
-          "columns": [
-            {
-              "expression": "product_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "type",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "createdBy_createdAt_2_idx": {
-          "name": "createdBy_createdAt_2_idx",
-          "columns": [
-            {
-              "expression": "created_by_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "reference_idx": {
-          "name": "reference_idx",
-          "columns": [
-            {
-              "expression": "reference",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "inventory_product_id_products_id_fk": {
-          "name": "inventory_product_id_products_id_fk",
-          "tableFrom": "inventory",
-          "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "inventory_created_by_id_users_id_fk": {
-          "name": "inventory_created_by_id_users_id_fk",
-          "tableFrom": "inventory",
-          "tableTo": "users",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "inventory_updated_by_id_users_id_fk": {
-          "name": "inventory_updated_by_id_users_id_fk",
-          "tableFrom": "inventory",
-          "tableTo": "users",
-          "columnsFrom": [
-            "updated_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.orders": {
       "name": "orders",
       "schema": "",
@@ -3127,8 +2807,8 @@
           "method": "btree",
           "with": {}
         },
-        "createdBy_createdAt_3_idx": {
-          "name": "createdBy_createdAt_3_idx",
+        "createdBy_createdAt_2_idx": {
+          "name": "createdBy_createdAt_2_idx",
           "columns": [
             {
               "expression": "created_by_id",
@@ -4539,8 +4219,8 @@
           "method": "btree",
           "with": {}
         },
-        "createdBy_createdAt_4_idx": {
-          "name": "createdBy_createdAt_4_idx",
+        "createdBy_createdAt_3_idx": {
+          "name": "createdBy_createdAt_3_idx",
           "columns": [
             {
               "expression": "created_by_id",
@@ -5029,8 +4709,8 @@
           "method": "btree",
           "with": {}
         },
-        "createdBy_createdAt_5_idx": {
-          "name": "createdBy_createdAt_5_idx",
+        "createdBy_createdAt_4_idx": {
+          "name": "createdBy_createdAt_4_idx",
           "columns": [
             {
               "expression": "created_by_id",
@@ -5264,8 +4944,8 @@
           "method": "btree",
           "with": {}
         },
-        "createdBy_createdAt_6_idx": {
-          "name": "createdBy_createdAt_6_idx",
+        "createdBy_createdAt_5_idx": {
+          "name": "createdBy_createdAt_5_idx",
           "columns": [
             {
               "expression": "created_by_id",
@@ -5303,223 +4983,6 @@
         "countries_updated_by_id_users_id_fk": {
           "name": "countries_updated_by_id_users_id_fk",
           "tableFrom": "countries",
-          "tableTo": "users",
-          "columnsFrom": [
-            "updated_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.sim_secrets": {
-      "name": "sim_secrets",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "secret": {
-          "name": "secret",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "sim_id": {
-          "name": "sim_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "enum_sim_secrets_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'available'"
-        },
-        "sold_at": {
-          "name": "sold_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_by_id": {
-          "name": "created_by_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_by_id": {
-          "name": "updated_by_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "sim_secrets_sim_idx": {
-          "name": "sim_secrets_sim_idx",
-          "columns": [
-            {
-              "expression": "sim_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_status_idx": {
-          "name": "sim_secrets_status_idx",
-          "columns": [
-            {
-              "expression": "status",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_sold_at_idx": {
-          "name": "sim_secrets_sold_at_idx",
-          "columns": [
-            {
-              "expression": "sold_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_created_by_idx": {
-          "name": "sim_secrets_created_by_idx",
-          "columns": [
-            {
-              "expression": "created_by_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_updated_by_idx": {
-          "name": "sim_secrets_updated_by_idx",
-          "columns": [
-            {
-              "expression": "updated_by_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_updated_at_idx": {
-          "name": "sim_secrets_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "sim_secrets_created_at_idx": {
-          "name": "sim_secrets_created_at_idx",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "sim_secrets_sim_id_sims_id_fk": {
-          "name": "sim_secrets_sim_id_sims_id_fk",
-          "tableFrom": "sim_secrets",
-          "tableTo": "sims",
-          "columnsFrom": [
-            "sim_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "sim_secrets_created_by_id_users_id_fk": {
-          "name": "sim_secrets_created_by_id_users_id_fk",
-          "tableFrom": "sim_secrets",
-          "tableTo": "users",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "sim_secrets_updated_by_id_users_id_fk": {
-          "name": "sim_secrets_updated_by_id_users_id_fk",
-          "tableFrom": "sim_secrets",
           "tableTo": "users",
           "columnsFrom": [
             "updated_by_id"
@@ -6118,12 +5581,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "inventory_id": {
-          "name": "inventory_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "orders_id": {
           "name": "orders_id",
           "type": "uuid",
@@ -6174,12 +5631,6 @@
         },
         "countries_id": {
           "name": "countries_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sim_secrets_id": {
-          "name": "sim_secrets_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -6281,21 +5732,6 @@
           "columns": [
             {
               "expression": "categories_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "payload_locked_documents_rels_inventory_id_idx": {
-          "name": "payload_locked_documents_rels_inventory_id_idx",
-          "columns": [
-            {
-              "expression": "inventory_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6440,21 +5876,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "payload_locked_documents_rels_sim_secrets_id_idx": {
-          "name": "payload_locked_documents_rels_sim_secrets_id_idx",
-          "columns": [
-            {
-              "expression": "sim_secrets_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -6516,19 +5937,6 @@
           "tableTo": "categories",
           "columnsFrom": [
             "categories_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "payload_locked_documents_rels_inventory_fk": {
-          "name": "payload_locked_documents_rels_inventory_fk",
-          "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "inventory",
-          "columnsFrom": [
-            "inventory_id"
           ],
           "columnsTo": [
             "id"
@@ -6646,19 +6054,6 @@
           "tableTo": "countries",
           "columnsFrom": [
             "countries_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "payload_locked_documents_rels_sim_secrets_fk": {
-          "name": "payload_locked_documents_rels_sim_secrets_fk",
-          "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "sim_secrets",
-          "columnsFrom": [
-            "sim_secrets_id"
           ],
           "columnsTo": [
             "id"
@@ -7016,19 +6411,6 @@
         "inactive"
       ]
     },
-    "public.enum_inventory_type": {
-      "name": "enum_inventory_type",
-      "schema": "public",
-      "values": [
-        "newstock",
-        "restock",
-        "sale",
-        "return",
-        "adjustment",
-        "damaged",
-        "expired"
-      ]
-    },
     "public.enum_orders_status": {
       "name": "enum_orders_status",
       "schema": "public",
@@ -7191,14 +6573,6 @@
         "NGN"
       ]
     },
-    "public.enum_sim_secrets_status": {
-      "name": "enum_sim_secrets_status",
-      "schema": "public",
-      "values": [
-        "available",
-        "sold"
-      ]
-    },
     "public.enum_payload_jobs_log_task_slug": {
       "name": "enum_payload_jobs_log_task_slug",
       "schema": "public",
@@ -7247,6 +6621,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "6c347575-6b97-4105-aea1-e7c3d4d70dde",
+  "id": "582b0992-91fb-4d51-b786-2ed846a62368",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
